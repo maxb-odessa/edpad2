@@ -1,8 +1,6 @@
 package router
 
 import (
-	"fmt"
-
 	"github.com/maxb-odessa/slog"
 )
 
@@ -22,45 +20,72 @@ const (
 	FilterFile
 )
 
-type Route struct {
+func (ep Endpoint) String() string {
+	switch ep {
+	case NetJoystick:
+		return "NetJoystick"
+	case NetFile:
+		return "NetFile"
+	case NetKeyboard:
+		return "NetKeyboard"
+	case NetSound:
+		return "NetSound"
+	case LocalSound:
+		return "LocalSound"
+	case LocalDisplay:
+		return "LocalDisplay"
+	case FilterFile:
+		return "FilterFile"
+	}
+	return "Unknown"
+}
+
+type Message struct {
 	Src, Dst Endpoint
 	Data     interface{}
 }
 
-type connector struct {
-	readCh  <-chan Route
-	writeCh chan<- Route
+type Connector struct {
+	ReadCh  <-chan Message
+	WriteCh chan<- Message
 }
 
-var endpoints map[Endpoint]connector
+var endpoints map[Endpoint]*Connector
 
 func Init() error {
 
-	endpoints = make(map[Endpoint]connector)
+	endpoints = make(map[Endpoint]*Connector)
 
 	return nil
 }
 
-func Register(ep Endpoint, rc <-chan Route, wc chan<- Route) error {
+func Register(ep Endpoint, con *Connector) error {
 
-	if _, ok := endpoints[ep]; !ok {
-		return fmt.Errorf("endpoint already registered")
+	if _, ok := endpoints[ep]; ok {
+		slog.Fatal("endpoint %s is already registered!", ep)
 	}
 
-	endpoints[ep] = connector{readCh: rc, writeCh: wc}
+	slog.Debug(1, "router: registered endpoint %s", ep)
+	endpoints[ep] = con
 
 	return nil
+}
+
+// TODO
+func Unregister(ep Endpoint) {
+	//close(endpoints[ep].ReadCh)
+	//close(endpoints[ep].WriteCh)
 }
 
 // this must be called after all endpoints have registered!
 func DoRouting() {
 	for ep, con := range endpoints {
-		slog.Debug(1, "routing endpoint %d", ep)
-		go direct(ep, con.readCh)
+		slog.Debug(5, "routing endpoint %s", ep)
+		go direct(ep, con.ReadCh)
 	}
 }
 
-func direct(ep Endpoint, rc <-chan Route) {
+func direct(ep Endpoint, rc <-chan Message) {
 	for {
 		select {
 		case data, ok := <-rc:
@@ -69,9 +94,9 @@ func direct(ep Endpoint, rc <-chan Route) {
 			}
 			if dstEp, ok := endpoints[data.Dst]; ok {
 				data.Src = ep
-				dstEp.writeCh <- data
+				dstEp.WriteCh <- data
 			} else {
-				slog.Err("endpoint %d is not registered (src = %d)", data.Dst, ep)
+				slog.Err("endpoint %s is not registered (src = %s)", data.Dst, ep)
 			}
 		}
 	} //for

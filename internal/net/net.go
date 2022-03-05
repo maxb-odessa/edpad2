@@ -2,6 +2,7 @@ package net
 
 import (
 	"context"
+	"edpad2/internal/router"
 	"io"
 	"log"
 	"time"
@@ -10,6 +11,27 @@ import (
 
 	"google.golang.org/grpc"
 )
+
+type handler struct {
+	endpoint  router.Endpoint
+	connector *router.Connector
+}
+
+func Connect(ep router.Endpoint) *router.Connector {
+
+	h := new(handler)
+	h.endpoint = ep
+	h.connector = new(router.Connector)
+	h.connector.ReadCh = make(chan router.Message)
+	h.connector.WriteCh = make(chan router.Message)
+
+	// h.Init()
+	// go h.runReader()
+	// go h.runWriter()
+
+	// return router connector
+	return h.connector
+}
 
 func Run() {
 

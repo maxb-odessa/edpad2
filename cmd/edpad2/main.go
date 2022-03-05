@@ -1,7 +1,6 @@
 package main
 
 import (
-	"edpad2/internal/router"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,6 +9,9 @@ import (
 
 	"github.com/maxb-odessa/sconf"
 	"github.com/maxb-odessa/slog"
+
+	"edpad2/internal/net"
+	"edpad2/internal/router"
 )
 
 func main() {
@@ -40,14 +42,23 @@ func main() {
 		slog.Fatal("config failed: %s", err)
 	}
 
-	// start main loop: serve network<->backends requests
+	// init the router
 	if err := router.Init(); err != nil {
 		slog.Fatal("router, failed to init: %s", err)
 	}
 
 	// register everything in router
-	// router.Register(display...)???????? HERE!
-	// defer ???????
+	router.Register(router.NetFile, net.Connect(router.NetFile))
+	defer router.Unregister(router.NetFile)
+
+	router.Register(router.NetJoystick, net.Connect(router.NetJoystick))
+	defer router.Unregister(router.NetJoystick)
+
+	router.Register(router.NetKeyboard, net.Connect(router.NetKeyboard))
+	defer router.Unregister(router.NetKeyboard)
+
+	router.Register(router.NetSound, net.Connect(router.NetSound))
+	defer router.Unregister(router.NetSound)
 
 	// run router
 	go router.DoRouting()
