@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	"github.com/pborman/getopt/v2"
@@ -48,34 +49,43 @@ func main() {
 	}
 
 	// register everything in router
+	// no special error check, router.Register() will take care of them
 	router.Register(router.NetFile, net.Connect(router.NetFile))
-	defer router.Unregister(router.NetFile)
-
 	router.Register(router.NetJoystick, net.Connect(router.NetJoystick))
-	defer router.Unregister(router.NetJoystick)
-
 	router.Register(router.NetKeyboard, net.Connect(router.NetKeyboard))
-	defer router.Unregister(router.NetKeyboard)
-
 	router.Register(router.NetSound, net.Connect(router.NetSound))
-	defer router.Unregister(router.NetSound)
 
-	// run router
-	go router.DoRouting()
-
-	// wait for termiation
-	// wait for a system signal
+	// set proggie termination signal handler(s)
 	done := make(chan bool)
 	go func() {
 		sigChan := make(chan os.Signal, 1)
 		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 		for sig := range sigChan {
-			slog.Info("got signal %d\n", sig)
+			slog.Info("got signal '%s'", sig)
 			done <- true
 		}
 	}()
 
+	// run the router
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		router.DoRouting()
+	}()
+
+	// wait for term signal
 	<-done
+
+	// unregister all endpoints
+	router.Unregister(router.NetFile)
+	router.Unregister(router.NetJoystick)
+	router.Unregister(router.NetKeyboard)
+	router.Unregister(router.NetSound)
+
+	// wait for the router to finish
+	wg.Wait()
+
 	slog.Info("stopped")
 
 	// all done
