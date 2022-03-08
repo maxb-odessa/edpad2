@@ -3,8 +3,8 @@ package net
 import (
 	"context"
 	"edpad2/internal/router"
-	"fmt"
 	"io"
+	"sync"
 
 	pb "github.com/maxb-odessa/gamenode/pkg/gamenodepb"
 	"github.com/maxb-odessa/sconf"
@@ -16,11 +16,14 @@ import (
 type handler struct {
 	endpoint  router.Endpoint
 	connector *router.Connector
+	dst       router.Endpoint
 	sender    func(interface{}) error
 	reader    func() (interface{}, error)
 }
 
-func Connect(ep router.Endpoint) *router.Connector {
+var once sync.Once
+
+func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 
 	h := new(handler)
 	h.endpoint = ep
@@ -29,29 +32,52 @@ func Connect(ep router.Endpoint) *router.Connector {
 	h.connector.ToRouterCh = make(chan *router.Message)   // send messages to the router into this chan
 	h.connector.DoneCh = make(chan bool)                  // termination chan
 
-	if err := h.Init(); err != nil {
-		slog.Err("endpoint '%s': init failed: %s", ep, err)
-		return nil
-	}
+	once.Do(grpcConnect)
+
+	go h.Run()
 
 	// all done, return router connector
-	return h.connector
+	return ep, h.connector
 }
 
-func (h *handler) Init() error {
+var grpcConn *grpc.ClientConn
+var grpcReady *sync.Mutex
+
+func grpcConnect() {
+
+	grpcReady = &sync.Mutex{}
+	grpcReady.Lock()
 
 	// will connect to configured server or to default "127.0.0.1:12346"
 	addr := sconf.StrDef("net", "connect", "127.0.0.1:12346")
 
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
-	if err != nil {
-		return fmt.Errorf("fail to dial: %s", err)
-	}
+	// wait for the connection to be establish and inform everybody faiting for it
+	slog.Debug(1, "grpc: connecting to '%s'", addr)
+	grpcConn, _ = grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 
-	slog.Debug(1, "endpoint '%s': connected to '%s'", h.endpoint, addr)
-	client := pb.NewGameNodeClient(conn)
+	slog.Debug(1, "grpc: connected to '%s'", addr)
+	grpcReady.Unlock()
+}
+
+func (h *handler) Run() error {
+
+	// wait for grpc connection to be established
+	slog.Debug(1, "endpoint '%s': waiting for server", h.endpoint)
+	grpcReady.Lock()
+	slog.Debug(1, "endpoint '%s': connected to server", h.endpoint)
+	grpcReady.Unlock()
+
+	client := pb.NewGameNodeClient(grpcConn)
 
 	ctx, cancel := context.WithCancel(context.Background())
+
+	// go and wait for DoneCh event, then cancel sender and reader
+	go func() {
+		<-h.connector.DoneCh
+		cancel()
+		close(h.connector.ToRouterCh)
+		close(h.connector.FromRouterCh)
+	}()
 
 	switch h.endpoint {
 
@@ -60,6 +86,7 @@ func (h *handler) Init() error {
 		if err != nil {
 			return err
 		}
+		h.dst = router.FilterFile
 		h.sender = func(m interface{}) error {
 			d := m.(*pb.FileMsg)
 			return stream.Send(d)
@@ -73,6 +100,7 @@ func (h *handler) Init() error {
 		if err != nil {
 			return err
 		}
+		h.dst = router.FilterJoystick
 		h.sender = func(m interface{}) error {
 			d := m.(*pb.JoyMsg)
 			return stream.Send(d)
@@ -86,6 +114,7 @@ func (h *handler) Init() error {
 		if err != nil {
 			return err
 		}
+		h.dst = router.FilterKeyboard
 		h.sender = func(m interface{}) error {
 			d := m.(*pb.KbdMsg)
 			return stream.Send(d)
@@ -95,6 +124,7 @@ func (h *handler) Init() error {
 		}
 
 	case router.NetSound:
+		h.dst = router.FilterSound
 		stream, err := client.Snd(ctx)
 		if err != nil {
 			return err
@@ -108,14 +138,6 @@ func (h *handler) Init() error {
 		}
 
 	}
-
-	// go and wait for DoneCh event, then cancel sender and reader
-	go func() {
-		<-h.connector.DoneCh
-		cancel()
-		close(h.connector.ToRouterCh)
-		close(h.connector.FromRouterCh)
-	}()
 
 	// run sender and reader
 	go h.runReader()
@@ -143,7 +165,7 @@ func (h *handler) runReader() {
 
 		slog.Debug(9, "endpoint '%s': got msg: '%+v'", h.endpoint, msg)
 
-		h.connector.ToRouterCh <- &router.Message{Dst: router.FilterFile, Data: msg}
+		h.connector.ToRouterCh <- &router.Message{Dst: h.dst, Data: msg}
 
 	} //for
 

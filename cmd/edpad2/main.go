@@ -11,7 +11,9 @@ import (
 	"github.com/maxb-odessa/sconf"
 	"github.com/maxb-odessa/slog"
 
-	"edpad2/internal/net"
+	filterFile "edpad2/internal/filter/file"
+	localDisplay "edpad2/internal/local/display"
+	network "edpad2/internal/net"
 	"edpad2/internal/router"
 )
 
@@ -50,10 +52,12 @@ func main() {
 
 	// register everything in router
 	// no special error check, router.Register() will take care of them
-	router.Register(router.NetFile, net.Connect(router.NetFile))
-	router.Register(router.NetJoystick, net.Connect(router.NetJoystick))
-	router.Register(router.NetKeyboard, net.Connect(router.NetKeyboard))
-	router.Register(router.NetSound, net.Connect(router.NetSound))
+	router.Register(network.Connect(router.NetFile))
+	router.Register(network.Connect(router.NetJoystick))
+	router.Register(network.Connect(router.NetKeyboard))
+	router.Register(network.Connect(router.NetSound))
+	router.Register(filterFile.Connect(router.FilterFile))
+	router.Register(localDisplay.Connect(router.LocalDisplay))
 
 	// set proggie termination signal handler(s)
 	done := make(chan bool)
