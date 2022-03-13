@@ -3,6 +3,8 @@ package file
 import (
 	"github.com/maxb-odessa/slog"
 
+	pb "github.com/maxb-odessa/gamenode/pkg/gamenodepb"
+
 	"edpad2/internal/router"
 )
 
@@ -19,68 +21,53 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	h.connector.ToRouterCh = make(chan *router.Message)   // send messages to the router into this chan
 	h.connector.DoneCh = make(chan bool)                  // termination chan
 
-	if err := h.Init(); err != nil {
-		slog.Err("endpoint '%s': init failed: %s", ep, err)
-		return ep, nil
-	}
+	go h.Run()
 
 	// all done, return router connector
 	return ep, h.connector
 }
 
-func (h *handler) Init() error {
+func (h *handler) Run() {
 
-	// do configs
+	// get configured processors
+	processors := map[string]func(*pb.FileEvent){
+		"ed journal": func(m *pb.FileEvent) { h.processJournalMsg(m) },
+	}
 
-	// go reader()
-
-	// go sender()
-
-	return nil
-}
-
-/*
-func (h *handler) runReader() {
-
-	for {
-
-		msg, err := h.reader()
-
-		// remote closed
-		if err == io.EOF {
-			return
-		}
-
-		// cancelled, other error
-		if err != nil {
-			//slog.Debug(5, "endpoint '%s' failed to receive: %s", h.endpoint, err)
-			return
-		}
-
-		slog.Debug(9, "endpoint '%s': got msg: '%+v'", h.endpoint, msg)
-
-		h.connector.ToRouterCh <- &router.Message{Dst: router.FilterFile, Data: msg}
-
-	} //for
-
-}
-
-func (h *handler) runSender() {
-
+	// start messages processing
 	for {
 
 		select {
-		case data, ok := <-h.connector.FromRouterCh:
-			if !ok {
-				return // must exit
-			}
-			msg := data.Data
-			if err := h.sender(msg); err != nil {
-				slog.Warn("endpoint '%s': failed to send: %s", h.endpoint, err)
-				return
-			}
-		}
 
-	} //for
+		case <-h.connector.DoneCh:
+
+			close(h.connector.ToRouterCh)
+			close(h.connector.FromRouterCh)
+			return
+
+		case m := <-h.connector.FromRouterCh:
+
+			slog.Debug(9, "file filter got msg! %+v", m)
+
+			msg := m.Data.(*pb.FileMsg)
+
+			name := msg.GetName()
+			if proc, ok := processors[name]; !ok {
+				slog.Warn("filter file: unconfigured source file '%s'", name)
+			} else {
+				proc(msg.GetEvent())
+			}
+
+		} //select...
+
+	} //for...
+
+	return
 }
-*/
+
+func (h *handler) processJournalMsg(ev *pb.FileEvent) {
+
+	line := ev.GetLine()
+	slog.Debug(9, "get line: %s", line)
+
+}

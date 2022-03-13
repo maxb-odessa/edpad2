@@ -100,13 +100,14 @@ func DoRouting() {
 	// each director lives while it can read from endpoint chan
 	var wg sync.WaitGroup
 
-	for ep, con := range endpoints {
-		slog.Debug(5, "routing endpoint %s", ep)
+	for e, c := range endpoints {
+		slog.Debug(5, "routing endpoint %s", e)
 		wg.Add(1)
-		e := ep
+		ep := e
+		con := c
 		go func() {
 			defer wg.Done()
-			direct(e, con.ToRouterCh)
+			distribute(ep, con.ToRouterCh)
 		}()
 	}
 
@@ -114,22 +115,22 @@ func DoRouting() {
 
 }
 
-func direct(ep Endpoint, rc <-chan *Message) {
+func distribute(ep Endpoint, rc <-chan *Message) {
 	for {
 		select {
 		case data, ok := <-rc:
 			// read chan closed - the endpoint is terminated
 			if !ok {
-				slog.Debug(5, "director: endpoint '%s' closed its read chan", ep)
+				slog.Debug(5, "distribute: endpoint '%s' closed its read chan", ep)
 				return
 			}
 			if dstEp, ok := endpoints[data.Dst]; ok {
 				data.Src = ep
-				slog.Debug(9, "director: writing to ep '%s': %+v", ep, data)
+				slog.Debug(9, "distribute: writing to ep '%s': %+v", ep, data)
 				dstEp.FromRouterCh <- data
 			} else {
 				// impossible case (?)
-				slog.Err("endpoint %s is not registered (src = %s)", data.Dst, ep)
+				slog.Err("distribute: endpoint %s is not registered (src = %s)", data.Dst, ep)
 			}
 		}
 	} //for
