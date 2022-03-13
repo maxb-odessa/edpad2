@@ -64,10 +64,3 @@ func (h *handler) Run() {
 
 	return
 }
-
-func (h *handler) processJournalMsg(ev *pb.FileEvent) {
-
-	line := ev.GetLine()
-	slog.Debug(9, "get line: %s", line)
-
-}
