@@ -13,8 +13,8 @@ type state struct {
 
 func (h *handler) processJournalMsg(ev *pb.FileEvent) {
 
-	line := ev.GetLine().String()
-	slog.Debug(9, "get line: %s", line)
+	line := ev.GetLine().GetLine()
+	slog.Debug(9, "get line: '%+v", line)
 
 	var entry map[string]interface{}
 
