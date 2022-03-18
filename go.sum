@@ -44,11 +44,15 @@ github.com/google/go-cmp v0.5.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.5 h1:Khx7svrCpmxxtHBq5j2mp/xVjsi8hQMfNLvJFAlrGgU=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/gotk3/gotk3 v0.6.1 h1:GJ400a0ecEEWrzjBvzBzH+pB/esEMIGdB9zPSmBdoeo=
+github.com/gotk3/gotk3 v0.6.1/go.mod h1:/hqFpkNa9T3JgNAE2fLvCdov7c5bw//FHNZrZ3Uv9/Q=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
-github.com/maxb-odessa/gamenode v0.0.0 h1:0Zc3Z5/22OmapcXMRkeOpbL7YWYtxnH3qINJk7rc8LA=
-github.com/maxb-odessa/gamenode v0.0.0/go.mod h1:yHoT5C/A9e34kbv04DKuA/b7imbnQ78Ws0hNr6ugNwA=
+github.com/maxb-odessa/gamenode v0.0.1 h1:S+qDco/R7CZwUgZtSn59yH39s7d15+JVZHBsp3V8Kzw=
+github.com/maxb-odessa/gamenode v0.0.1/go.mod h1:yHoT5C/A9e34kbv04DKuA/b7imbnQ78Ws0hNr6ugNwA=
 github.com/maxb-odessa/sconf v0.0.1 h1:Kq8TcTK0VtK0c+PN2pvMbMok+tESRyGHBPQ81z+yV/I=
 github.com/maxb-odessa/sconf v0.0.1/go.mod h1:9YtVGmd04i0zuET91rbGRbjKWfJ2xplF1Po0Y2O7Bm0=
+github.com/maxb-odessa/sconf v0.0.2 h1:0LYwMXYRHtCxHipsG7t9NBSf09zZXC4zK6gPlnOgSro=
+github.com/maxb-odessa/sconf v0.0.2/go.mod h1:9YtVGmd04i0zuET91rbGRbjKWfJ2xplF1Po0Y2O7Bm0=
 github.com/maxb-odessa/slog v0.0.1 h1:a2BiA3FDa24mpfep8PT76bsUPpuHkY3UtYJin2mlkMo=
 github.com/maxb-odessa/slog v0.0.1/go.mod h1:eUBS6Exy35SDbJpU0InWujgG8A2wf1M+qA9j7o3a+Fs=
 github.com/nxadm/tail v1.4.8/go.mod h1:+ncqLTQzXmGhMZNUePPaPqPvBxHAIsmXswZKocGu+AU=

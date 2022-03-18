@@ -126,7 +126,7 @@ func distribute(ep Endpoint, rc <-chan *Message) {
 			}
 			if dstEp, ok := endpoints[data.Dst]; ok {
 				data.Src = ep
-				slog.Debug(9, "distribute: writing: %+v", data)
+				slog.Debug(99, "distribute: writing: %+v", data)
 				dstEp.FromRouterCh <- data
 			} else {
 				// impossible case (?)
