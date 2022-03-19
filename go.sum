@@ -49,12 +49,13 @@ github.com/gotk3/gotk3 v0.6.1/go.mod h1:/hqFpkNa9T3JgNAE2fLvCdov7c5bw//FHNZrZ3Uv
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/maxb-odessa/gamenode v0.0.1 h1:S+qDco/R7CZwUgZtSn59yH39s7d15+JVZHBsp3V8Kzw=
 github.com/maxb-odessa/gamenode v0.0.1/go.mod h1:yHoT5C/A9e34kbv04DKuA/b7imbnQ78Ws0hNr6ugNwA=
-github.com/maxb-odessa/sconf v0.0.1 h1:Kq8TcTK0VtK0c+PN2pvMbMok+tESRyGHBPQ81z+yV/I=
 github.com/maxb-odessa/sconf v0.0.1/go.mod h1:9YtVGmd04i0zuET91rbGRbjKWfJ2xplF1Po0Y2O7Bm0=
 github.com/maxb-odessa/sconf v0.0.2 h1:0LYwMXYRHtCxHipsG7t9NBSf09zZXC4zK6gPlnOgSro=
 github.com/maxb-odessa/sconf v0.0.2/go.mod h1:9YtVGmd04i0zuET91rbGRbjKWfJ2xplF1Po0Y2O7Bm0=
 github.com/maxb-odessa/slog v0.0.1 h1:a2BiA3FDa24mpfep8PT76bsUPpuHkY3UtYJin2mlkMo=
 github.com/maxb-odessa/slog v0.0.1/go.mod h1:eUBS6Exy35SDbJpU0InWujgG8A2wf1M+qA9j7o3a+Fs=
+github.com/mitchellh/mapstructure v1.4.3 h1:OVowDSCllw/YjdLkam3/sm7wEtOy59d8ndGgCcyj8cs=
+github.com/mitchellh/mapstructure v1.4.3/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/nxadm/tail v1.4.8/go.mod h1:+ncqLTQzXmGhMZNUePPaPqPvBxHAIsmXswZKocGu+AU=
 github.com/pborman/getopt/v2 v2.1.0 h1:eNfR+r+dWLdWmV8g5OlpyrTYHkhVNxHBdN2cCrJmOEA=
 github.com/pborman/getopt/v2 v2.1.0/go.mod h1:4NtW75ny4eBw9fO1bhtNdYTlZKYX5/tBLtsOpwKIKd0=

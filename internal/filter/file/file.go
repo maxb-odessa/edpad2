@@ -1,14 +1,10 @@
 package file
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/maxb-odessa/slog"
 
 	pb "github.com/maxb-odessa/gamenode/pkg/gamenodepb"
 
-	"edpad2/internal/local/display"
 	"edpad2/internal/router"
 )
 
@@ -32,34 +28,6 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 }
 
 func (h *handler) run() {
-
-	// TEST
-	go func() {
-		for {
-			time.Sleep(time.Second * 1)
-			h.connector.ToRouterCh <- &router.Message{
-				Dst: router.LocalDisplay,
-				Data: &display.Text{
-					ViewPort: display.VP_SYS,
-					Text:     fmt.Sprintf("<i>TEST SYSTEMO ITALICO! %d</i>", time.Now()),
-				},
-			}
-		}
-	}()
-
-	// TEST
-	go func() {
-		for {
-			time.Sleep(time.Second * 1)
-			h.connector.ToRouterCh <- &router.Message{
-				Dst: router.LocalDisplay,
-				Data: &display.Text{
-					ViewPort: display.VP_DSS,
-					Text:     fmt.Sprintf("<b>TEST DSS BOLDO! %d</b>", time.Now()),
-				},
-			}
-		}
-	}()
 
 	// configure supported processors
 	processors := map[string]func(*pb.FileEvent){

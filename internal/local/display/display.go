@@ -29,8 +29,10 @@ type Text struct {
 }
 
 type viewPort struct {
-	view *gtk.TextView
-	buff *gtk.TextBuffer
+	title string
+	view  *gtk.TextView
+	buff  *gtk.TextBuffer
+	sw    *gtk.ScrolledWindow
 }
 
 type handler struct {
@@ -39,6 +41,7 @@ type handler struct {
 	resourceDir string
 	gtkBuilder  *gtk.Builder
 	viewPorts   map[int]*viewPort
+	gtkStack    *gtk.Stack
 }
 
 func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
@@ -108,13 +111,25 @@ func (h *handler) init() (err error) {
 
 	h.viewPorts = make(map[int]*viewPort)
 
+	st, err := h.gtkBuilder.GetObject("stack")
+	if err != nil {
+		return err
+	}
+	h.gtkStack = st.(*gtk.Stack)
+
 	if obj, err = h.gtkBuilder.GetObject("system_tv"); err != nil {
 		return
 	} else {
 		h.viewPorts[VP_SYS] = new(viewPort)
+		h.viewPorts[VP_SYS].title = "System"
 		h.viewPorts[VP_SYS].view = obj.(*gtk.TextView)
 		if h.viewPorts[VP_SYS].buff, err = h.viewPorts[VP_SYS].view.GetBuffer(); err != nil {
 			return
+		}
+		if sw, err := h.gtkBuilder.GetObject("system_sw"); err != nil {
+			return err
+		} else {
+			h.viewPorts[VP_SYS].sw = sw.(*gtk.ScrolledWindow)
 		}
 	}
 
@@ -122,9 +137,15 @@ func (h *handler) init() (err error) {
 		return
 	} else {
 		h.viewPorts[VP_SIG] = new(viewPort)
+		h.viewPorts[VP_SIG].title = "Signals"
 		h.viewPorts[VP_SIG].view = obj.(*gtk.TextView)
 		if h.viewPorts[VP_SIG].buff, err = h.viewPorts[VP_SIG].view.GetBuffer(); err != nil {
 			return
+		}
+		if sw, err := h.gtkBuilder.GetObject("signals_sw"); err != nil {
+			return err
+		} else {
+			h.viewPorts[VP_SIG].sw = sw.(*gtk.ScrolledWindow)
 		}
 	}
 
@@ -132,9 +153,15 @@ func (h *handler) init() (err error) {
 		return
 	} else {
 		h.viewPorts[VP_DSS] = new(viewPort)
+		h.viewPorts[VP_DSS].title = "DSS"
 		h.viewPorts[VP_DSS].view = obj.(*gtk.TextView)
 		if h.viewPorts[VP_DSS].buff, err = h.viewPorts[VP_DSS].view.GetBuffer(); err != nil {
 			return
+		}
+		if sw, err := h.gtkBuilder.GetObject("dss_sw"); err != nil {
+			return err
+		} else {
+			h.viewPorts[VP_DSS].sw = sw.(*gtk.ScrolledWindow)
 		}
 	}
 
@@ -142,9 +169,15 @@ func (h *handler) init() (err error) {
 		return
 	} else {
 		h.viewPorts[VP_SRV] = new(viewPort)
+		h.viewPorts[VP_SRV].title = "SRV"
 		h.viewPorts[VP_SRV].view = obj.(*gtk.TextView)
 		if h.viewPorts[VP_SRV].buff, err = h.viewPorts[VP_SRV].view.GetBuffer(); err != nil {
 			return
+		}
+		if sw, err := h.gtkBuilder.GetObject("srv_sw"); err != nil {
+			return err
+		} else {
+			h.viewPorts[VP_SRV].sw = sw.(*gtk.ScrolledWindow)
 		}
 	}
 
@@ -208,4 +241,9 @@ func (h *handler) printText(t *Text) (ret bool) {
 	vp.buff.InsertMarkup(vp.buff.GetEndIter(), t.Text)
 
 	return
+}
+
+// TODO this works, dunno how to use it yet
+func (h *handler) vpSetTitle(id int, title string) {
+	h.gtkStack.ChildSetProperty(h.viewPorts[id].sw, "title", title)
 }
