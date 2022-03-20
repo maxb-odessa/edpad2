@@ -18,7 +18,7 @@ import (
 const (
 	VP_SYS int = iota
 	VP_SIG
-	VP_DSS
+	VP_BODY
 	VP_SRV
 )
 
@@ -26,6 +26,8 @@ const (
 type Text struct {
 	ViewPort int
 	Text     string
+	SubTitle string
+	Append   bool
 }
 
 type viewPort struct {
@@ -149,19 +151,19 @@ func (h *handler) init() (err error) {
 		}
 	}
 
-	if obj, err = h.gtkBuilder.GetObject("dss_tv"); err != nil {
+	if obj, err = h.gtkBuilder.GetObject("body_tv"); err != nil {
 		return
 	} else {
-		h.viewPorts[VP_DSS] = new(viewPort)
-		h.viewPorts[VP_DSS].title = "DSS"
-		h.viewPorts[VP_DSS].view = obj.(*gtk.TextView)
-		if h.viewPorts[VP_DSS].buff, err = h.viewPorts[VP_DSS].view.GetBuffer(); err != nil {
+		h.viewPorts[VP_BODY] = new(viewPort)
+		h.viewPorts[VP_BODY].title = "BODY"
+		h.viewPorts[VP_BODY].view = obj.(*gtk.TextView)
+		if h.viewPorts[VP_BODY].buff, err = h.viewPorts[VP_BODY].view.GetBuffer(); err != nil {
 			return
 		}
-		if sw, err := h.gtkBuilder.GetObject("dss_sw"); err != nil {
+		if sw, err := h.gtkBuilder.GetObject("body_sw"); err != nil {
 			return err
 		} else {
-			h.viewPorts[VP_DSS].sw = sw.(*gtk.ScrolledWindow)
+			h.viewPorts[VP_BODY].sw = sw.(*gtk.ScrolledWindow)
 		}
 	}
 
@@ -234,16 +236,17 @@ func (h *handler) printText(t *Text) (ret bool) {
 		return
 	}
 
-	// clear viewport
-	vp.buff.SetText("")
+	// update title
+	title := vp.title + "\n" + t.SubTitle
+	h.gtkStack.ChildSetProperty(vp.sw, "title", title)
+
+	// clear viewport if needed
+	if !t.Append {
+		vp.buff.SetText("")
+	}
 
 	// print the text
 	vp.buff.InsertMarkup(vp.buff.GetEndIter(), t.Text)
 
 	return
-}
-
-// TODO this works, dunno how to use it yet
-func (h *handler) vpSetTitle(id int, title string) {
-	h.gtkStack.ChildSetProperty(h.viewPorts[id].sw, "title", title)
 }

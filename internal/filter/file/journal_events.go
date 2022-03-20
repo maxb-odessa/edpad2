@@ -2107,6 +2107,8 @@ func (h *handler) evScan(ev *ScanEvent) {
 		Data: &display.Text{
 			ViewPort: display.VP_SRV,
 			Text:     fmt.Sprintf("%+v", ev),
+			Append:   false,
+			SubTitle: "(123)",
 		},
 	}
 	h.connector.ToRouterCh <- m
