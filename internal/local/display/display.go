@@ -2,6 +2,7 @@ package display
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"runtime"
 
@@ -70,12 +71,23 @@ func (h *handler) init() (err error) {
 
 	runtime.LockOSThread()
 
-	gtk.Init(nil)
-
 	h.resourceDir = os.ExpandEnv(sconf.StrDef("local display", "resource dir", "$HOME/.local/share/edpad2"))
 	slog.Debug(9, "endpoint '%s': resource dir is '%s'", h.endpoint, h.resourceDir)
 
-	if h.gtkBuilder, err = gtk.BuilderNewFromFile(h.resourceDir + "/edpad2.ui"); err != nil {
+	// read ui into mem
+	bres, err := ioutil.ReadFile(h.resourceDir + "/edpad2.ui")
+	if err != nil {
+		return
+	}
+
+	gtk.Init(nil)
+
+	h.gtkBuilder, err = gtk.BuilderNew()
+	if err != nil {
+		return
+	}
+
+	if err = h.gtkBuilder.AddFromString(string(bres)); err != nil {
 		return
 	}
 
@@ -237,8 +249,11 @@ func (h *handler) printText(t *Text) (ret bool) {
 	}
 
 	// update title
-	title := vp.title + "\n" + t.SubTitle
-	h.gtkStack.ChildSetProperty(vp.sw, "title", title)
+	if t.SubTitle != "" {
+		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title+"\n"+t.SubTitle)
+	} else {
+		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title)
+	}
 
 	// clear viewport if needed
 	if !t.Append {
