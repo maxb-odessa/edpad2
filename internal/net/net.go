@@ -22,6 +22,8 @@ type handler struct {
 }
 
 var once sync.Once
+var grpcConn *grpc.ClientConn
+var grpcReady *sync.Mutex
 
 func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 
@@ -32,7 +34,21 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	h.connector.ToRouterCh = make(chan *router.Message)   // send messages to the router into this chan
 	h.connector.DoneCh = make(chan bool)                  // termination chan
 
-	once.Do(grpcConnect)
+	// will connect to configured server or to default "127.0.0.1:12346"
+	addr := sconf.StrDef("net", "connect", "127.0.0.1:12346")
+
+	grpcReady = &sync.Mutex{}
+	grpcReady.Lock()
+
+	// wait for the connection to be establish and inform everybody faiting for it
+	cf := func() {
+		slog.Debug(1, "grpc: connecting to '%s'", addr)
+		grpcConn, _ = grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
+		slog.Debug(1, "grpc: connected to '%s'", addr)
+		grpcReady.Unlock()
+	}
+
+	go once.Do(cf)
 
 	go h.Run()
 
@@ -40,34 +56,7 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	return ep, h.connector
 }
 
-var grpcConn *grpc.ClientConn
-var grpcReady *sync.Mutex
-
-func grpcConnect() {
-
-	grpcReady = &sync.Mutex{}
-	grpcReady.Lock()
-
-	// will connect to configured server or to default "127.0.0.1:12346"
-	addr := sconf.StrDef("net", "connect", "127.0.0.1:12346")
-
-	// wait for the connection to be establish and inform everybody faiting for it
-	slog.Debug(1, "grpc: connecting to '%s'", addr)
-	grpcConn, _ = grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
-
-	slog.Debug(1, "grpc: connected to '%s'", addr)
-	grpcReady.Unlock()
-}
-
 func (h *handler) Run() error {
-
-	// wait for grpc connection to be established
-	slog.Debug(1, "endpoint '%s': waiting for server", h.endpoint)
-	grpcReady.Lock()
-	slog.Debug(1, "endpoint '%s': connected to server", h.endpoint)
-	grpcReady.Unlock()
-
-	client := pb.NewGameNodeClient(grpcConn)
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -78,6 +67,14 @@ func (h *handler) Run() error {
 		close(h.connector.ToRouterCh)
 		close(h.connector.FromRouterCh)
 	}()
+
+	// wait for grpc connection to be established
+	slog.Debug(1, "endpoint '%s': waiting for server", h.endpoint)
+	grpcReady.Lock()
+	slog.Debug(1, "endpoint '%s': connected to server", h.endpoint)
+	grpcReady.Unlock()
+
+	client := pb.NewGameNodeClient(grpcConn)
 
 	switch h.endpoint {
 
