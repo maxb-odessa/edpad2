@@ -28,6 +28,8 @@ func (h *handler) processJournalMsg(ev *pb.FileEvent) {
 	var evName string
 	if e, ok := mData["event"]; ok {
 		evName = e.(string)
+	} else {
+		return
 	}
 
 	// process journal event

@@ -6,6 +6,8 @@ GOBIN		=	${PREFIX}/bin
 
 GO111MODULE	=	auto
 
+CC="gcc -march=znver3"
+
 all: build
 
 build:

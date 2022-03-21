@@ -19,7 +19,7 @@ import (
 const (
 	VP_SYS int = iota
 	VP_SIG
-	VP_BODY
+	VP_PLANETS
 	VP_SRV
 )
 
@@ -165,19 +165,19 @@ func (h *handler) init() (err error) {
 		}
 	}
 
-	if obj, err = h.gtkBuilder.GetObject("body_tv"); err != nil {
+	if obj, err = h.gtkBuilder.GetObject("planets_tv"); err != nil {
 		return
 	} else {
-		h.viewPorts[VP_BODY] = new(viewPort)
-		h.viewPorts[VP_BODY].title = "BODY"
-		h.viewPorts[VP_BODY].view = obj.(*gtk.TextView)
-		if h.viewPorts[VP_BODY].buff, err = h.viewPorts[VP_BODY].view.GetBuffer(); err != nil {
+		h.viewPorts[VP_PLANETS] = new(viewPort)
+		h.viewPorts[VP_PLANETS].title = "PLANETS"
+		h.viewPorts[VP_PLANETS].view = obj.(*gtk.TextView)
+		if h.viewPorts[VP_PLANETS].buff, err = h.viewPorts[VP_PLANETS].view.GetBuffer(); err != nil {
 			return
 		}
-		if sw, err := h.gtkBuilder.GetObject("body_sw"); err != nil {
+		if sw, err := h.gtkBuilder.GetObject("planets_sw"); err != nil {
 			return err
 		} else {
-			h.viewPorts[VP_BODY].sw = sw.(*gtk.ScrolledWindow)
+			h.viewPorts[VP_PLANETS].sw = sw.(*gtk.ScrolledWindow)
 		}
 	}
 

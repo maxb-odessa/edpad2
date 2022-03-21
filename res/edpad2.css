@@ -2,18 +2,45 @@ window {
     background-image: url('/home/maxb/.local/share/edpad/edpad.png');
     background-repeat: no-repeat;
     background-position: center;
+    /*opacity: 0.0;*/
 }
 
 image {
     -gtk-icon-transform: scale(2.5);
 }
 
+* {
+    background: alpha (#000000, 0.0);
+}
+
+
+#topbox * {
+    border-style: none;
+}
+
+#route_tv {
+    font-size: 22px;
+    background: #101030;
+}
+
+#route_tv text {
+    color: #0000ff;
+}
+
+
+#info_tv {
+    font-size: 22px;
+}
+
+#info_tv text {
+    color: #ff0000;
+}
 
 #stack_switcher button {
-    border-radius: 4px;
-    border-style: solid;
-    border-width: 1px 1px 1px 1px;
-    border-color: #aaaaaa;
+    margin: 5px;
+    box-shadow: 7px 5px 3px black;
+    border-radius: 15px;
+    border-style: none;
     color: #ffaa00;
     background: #552200;
     font-weight: bold;
@@ -22,28 +49,24 @@ image {
 }
 
 #stack_switcher button:checked {
-    color: #dddddd;
+    color: #eeeeee;
     background: #ff9900;
-    opacity: 0.8;
+    opacity: 0.6;
 }
 
-
-scrolledwindow {
-    border-radius: 4px;
-    border-style: solid;
-    border-width: 1px 1px 1px 1px;
-    border-color: #ffaa00;
-    background: #000000;
-    opacity: 0.10;
+#system_tv,
+#planets_tv,
+#signals_tv,
+#srv_tv {
+    font-size: 24px;
 }
 
-textview {
-    font-size: 26px;
+#system_tv text,
+#planets_tv text,
+#signals_tv text,
+#srv_tv text {
+    color: #aaaaaa;
 }
-textview text {
-    color: #FFFFFF;
-}
-
 
 #keypad {
     border-radius: 4px;
@@ -60,3 +83,4 @@ textview text {
     font-weight: bold;
     font-size: 20px;
 }
+
