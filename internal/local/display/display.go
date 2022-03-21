@@ -25,10 +25,12 @@ const (
 
 // we expect this from file filter
 type Text struct {
-	ViewPort int
-	Text     string
-	SubTitle string
-	Append   bool
+	ViewPort       int
+	Text           string
+	UpdateText     bool
+	AppendText     bool
+	Subtitle       string
+	UpdateSubtitle bool
 }
 
 type viewPort struct {
@@ -198,7 +200,7 @@ func (h *handler) init() (err error) {
 	// inits done, show the window
 	top.ShowAll()
 
-	if m := sconf.BoolDef("local display", "maximize window", false); m {
+	if ok := sconf.BoolDef("local display", "maximize window", false); ok {
 		top.Maximize()
 	}
 
@@ -249,19 +251,18 @@ func (h *handler) printText(t *Text) (ret bool) {
 	}
 
 	// update title
-	if t.SubTitle != "" {
-		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title+"\n"+t.SubTitle)
-	} else {
-		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title)
-	}
-
-	// clear viewport if needed
-	if !t.Append {
-		vp.buff.SetText("")
+	if t.UpdateSubtitle {
+		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title+"\n"+t.Subtitle)
 	}
 
 	// print the text
-	vp.buff.InsertMarkup(vp.buff.GetEndIter(), t.Text)
+	if t.UpdateText {
+		// clear viewport if needed
+		if !t.AppendText {
+			vp.buff.SetText("")
+		}
+		vp.buff.InsertMarkup(vp.buff.GetEndIter(), t.Text)
+	}
 
 	return
 }
