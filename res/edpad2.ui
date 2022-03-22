@@ -18,7 +18,7 @@
     <property name="text" translatable="yes">SRV data</property>
   </object>
   <object class="GtkTextBuffer" id="system_tb">
-    <property name="text" translatable="yes">sytsem buffer</property>
+    <property name="text" translatable="yes">System</property>
   </object>
   <object class="GtkWindow" id="top">
     <property name="name">top</property>
@@ -60,10 +60,7 @@
                 <property name="name">stack</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="hhomogeneous">False</property>
-                <property name="vhomogeneous">False</property>
                 <property name="transition-type">slide-up-down</property>
-                <property name="interpolate-size">True</property>
                 <signal name="button-press-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <child>
                   <object class="GtkScrolledWindow" id="system_sw">
@@ -73,6 +70,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="shadow-type">in</property>
+                    <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
                     <child>
@@ -82,10 +80,12 @@
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
+                        <property name="hscroll-policy">natural</property>
+                        <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
+                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">system_tb</property>
-                        <property name="accepts-tab">False</property>
                         <property name="monospace">True</property>
                       </object>
                     </child>
@@ -103,6 +103,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="shadow-type">in</property>
+                    <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
                     <child>
@@ -112,6 +113,8 @@
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
+                        <property name="hscroll-policy">natural</property>
+                        <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
                         <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
@@ -135,6 +138,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="shadow-type">in</property>
+                    <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
                     <child>
@@ -144,6 +148,8 @@
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
+                        <property name="hscroll-policy">natural</property>
+                        <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
                         <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
@@ -167,6 +173,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="shadow-type">in</property>
+                    <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
                     <child>
@@ -176,6 +183,8 @@
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
+                        <property name="hscroll-policy">natural</property>
+                        <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
                         <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>

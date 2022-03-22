@@ -17,8 +17,10 @@ import (
 )
 
 const (
-	VP_SYS int = iota
-	VP_SIG
+	VP_ROUTE int = iota
+	VP_INFO
+	VP_SYSTEM
+	VP_SIGNALS
 	VP_PLANETS
 	VP_SRV
 )
@@ -34,10 +36,13 @@ type Text struct {
 }
 
 type viewPort struct {
-	title string
-	view  *gtk.TextView
-	buff  *gtk.TextBuffer
-	sw    *gtk.ScrolledWindow
+	title  string
+	tvName string
+	swName string
+	sw     *gtk.ScrolledWindow
+	tv     *gtk.TextView
+	buff   *gtk.TextBuffer
+	mark   *gtk.TextMark
 }
 
 type handler struct {
@@ -123,79 +128,46 @@ func (h *handler) init() (err error) {
 		return
 	}
 
-	// init and setup text view ports
-
-	h.viewPorts = make(map[int]*viewPort)
-
 	st, err := h.gtkBuilder.GetObject("stack")
 	if err != nil {
 		return err
 	}
 	h.gtkStack = st.(*gtk.Stack)
 
-	if obj, err = h.gtkBuilder.GetObject("system_tv"); err != nil {
-		return
-	} else {
-		h.viewPorts[VP_SYS] = new(viewPort)
-		h.viewPorts[VP_SYS].title = "System"
-		h.viewPorts[VP_SYS].view = obj.(*gtk.TextView)
-		if h.viewPorts[VP_SYS].buff, err = h.viewPorts[VP_SYS].view.GetBuffer(); err != nil {
-			return
-		}
-		if sw, err := h.gtkBuilder.GetObject("system_sw"); err != nil {
-			return err
-		} else {
-			h.viewPorts[VP_SYS].sw = sw.(*gtk.ScrolledWindow)
-		}
+	// init and setup text view ports
+
+	//h.viewPorts = make(map[int]*viewPort)
+	h.viewPorts = map[int]*viewPort{
+		VP_ROUTE:   &viewPort{title: "Route", tvName: "route_tv", swName: ""},
+		VP_INFO:    &viewPort{title: "Info", tvName: "info_tv", swName: ""},
+		VP_SYSTEM:  &viewPort{title: "System", tvName: "system_tv", swName: "system_sw"},
+		VP_PLANETS: &viewPort{title: "Planets", tvName: "planets_tv", swName: "planets_sw"},
+		VP_SIGNALS: &viewPort{title: "Signals", tvName: "signals_tv", swName: "signals_sw"},
+		VP_SRV:     &viewPort{title: "SRV", tvName: "srv_tv", swName: "srv_sw"},
 	}
 
-	if obj, err = h.gtkBuilder.GetObject("signals_tv"); err != nil {
-		return
-	} else {
-		h.viewPorts[VP_SIG] = new(viewPort)
-		h.viewPorts[VP_SIG].title = "Signals"
-		h.viewPorts[VP_SIG].view = obj.(*gtk.TextView)
-		if h.viewPorts[VP_SIG].buff, err = h.viewPorts[VP_SIG].view.GetBuffer(); err != nil {
-			return
-		}
-		if sw, err := h.gtkBuilder.GetObject("signals_sw"); err != nil {
-			return err
-		} else {
-			h.viewPorts[VP_SIG].sw = sw.(*gtk.ScrolledWindow)
-		}
-	}
+	for _, vp := range h.viewPorts {
 
-	if obj, err = h.gtkBuilder.GetObject("planets_tv"); err != nil {
-		return
-	} else {
-		h.viewPorts[VP_PLANETS] = new(viewPort)
-		h.viewPorts[VP_PLANETS].title = "PLANETS"
-		h.viewPorts[VP_PLANETS].view = obj.(*gtk.TextView)
-		if h.viewPorts[VP_PLANETS].buff, err = h.viewPorts[VP_PLANETS].view.GetBuffer(); err != nil {
-			return
-		}
-		if sw, err := h.gtkBuilder.GetObject("planets_sw"); err != nil {
+		if obj, err = h.gtkBuilder.GetObject(vp.tvName); err != nil {
 			return err
 		} else {
-			h.viewPorts[VP_PLANETS].sw = sw.(*gtk.ScrolledWindow)
+			vp.tv = obj.(*gtk.TextView)
+			if vp.buff, err = vp.tv.GetBuffer(); err != nil {
+				return err
+			}
+			vp.mark = vp.buff.CreateMark("mark", vp.buff.GetEndIter(), false)
+			// this viewport doesn't have scrolled window
+			if vp.swName == "" {
+				continue
+			}
+			if sw, err := h.gtkBuilder.GetObject(vp.swName); err != nil {
+				return err
+			} else {
+				vp.sw = sw.(*gtk.ScrolledWindow)
+			}
 		}
-	}
 
-	if obj, err = h.gtkBuilder.GetObject("srv_tv"); err != nil {
-		return
-	} else {
-		h.viewPorts[VP_SRV] = new(viewPort)
-		h.viewPorts[VP_SRV].title = "SRV"
-		h.viewPorts[VP_SRV].view = obj.(*gtk.TextView)
-		if h.viewPorts[VP_SRV].buff, err = h.viewPorts[VP_SRV].view.GetBuffer(); err != nil {
-			return
-		}
-		if sw, err := h.gtkBuilder.GetObject("srv_sw"); err != nil {
-			return err
-		} else {
-			h.viewPorts[VP_SRV].sw = sw.(*gtk.ScrolledWindow)
-		}
-	}
+	} //for
 
 	// inits done, show the window
 	top.ShowAll()
@@ -251,7 +223,7 @@ func (h *handler) printText(t *Text) (ret bool) {
 	}
 
 	// update title
-	if t.UpdateSubtitle {
+	if vp.sw != nil && t.UpdateSubtitle {
 		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title+"\n"+t.Subtitle)
 	}
 
@@ -262,7 +234,15 @@ func (h *handler) printText(t *Text) (ret bool) {
 			vp.buff.SetText("")
 		}
 		vp.buff.InsertMarkup(vp.buff.GetEndIter(), t.Text)
+		vp.tv.ScrollToMark(vp.mark, 0.0, false, 0.0, 0.0)
 	}
+
+	/* TODO insert images?
+	   img, _ := gtk.ImageNewFromFile(cfg.GtkResourcesDir + "/img.png")
+	   ch, _ := vp.buff.CreateChildAnchor(vp.buff.GetEndIter())
+	   vp.view.AddChildAtAnchor(img, ch)
+	   img.Show()
+	*/
 
 	return
 }

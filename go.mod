@@ -3,6 +3,7 @@ module edpad2
 go 1.16
 
 require (
+	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
 	github.com/gotk3/gotk3 v0.6.1
 	github.com/maxb-odessa/gamenode v0.0.1
 	github.com/maxb-odessa/sconf v0.0.2

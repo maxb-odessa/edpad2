@@ -4,7 +4,6 @@ import (
 	"edpad2/internal/local/display"
 	"edpad2/internal/router"
 	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -74,11 +73,67 @@ type ScanEvent struct {
 }
 
 func (h *handler) evScan(ev *ScanEvent) {
+
+	text := "\n"
+
+	bodies := []string{"A_BlueWhiteSuperGiant",
+		"AeBe",
+		"A",
+		"B",
+		"CJ",
+		"CN",
+		"DAB",
+		"DA",
+		"DB",
+		"DC",
+		"DCV",
+		"D",
+		"F",
+		"G",
+		"H",
+		"K_OrangeGiant",
+		"K",
+		"L",
+		"M_RedGiant",
+		"MS",
+		"M",
+		"N",
+		"O",
+		"S",
+		"T",
+		"TTS",
+		"WC",
+		"WN",
+		"WO",
+		"W",
+		"Y",
+		"Ammonia world",
+		"Earthlike body",
+		"Gas giant with ammonia based life",
+		"Gas giant with water based life",
+		"High metal content body",
+		"Icy body",
+		"Metal rich body",
+		"Rocky body",
+		"Rocky ice body",
+		"Sudarsky class I gas giant",
+		"Sudarsky class II gas giant",
+		"Sudarsky class III gas giant",
+		"Sudarsky class IV gas giant",
+		"Sudarsky class V gas giant",
+		"Water giant",
+		"Water world",
+	}
+
+	for _, b := range bodies {
+		text += "Jumping to (" + CB(b) + "), System Grea Hypue FV-X d1-123 " + CB(b) + "\n"
+	}
+
 	m := &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
-			ViewPort:       display.VP_SRV,
-			Text:           fmt.Sprintf("%+v", ev),
+			ViewPort:       display.VP_SYSTEM,
+			Text:           text,
 			AppendText:     true,
 			UpdateText:     true,
 			Subtitle:       "(123)",
