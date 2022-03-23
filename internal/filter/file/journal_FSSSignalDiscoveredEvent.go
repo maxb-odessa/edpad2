@@ -20,5 +20,6 @@ type FSSSignalDiscoveredEvent struct {
 }
 
 func (h *handler) evFSSSignalDiscovered(ev *FSSSignalDiscoveredEvent) {
+
 	return
 }

@@ -1,6 +1,11 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"fmt"
+	"time"
+)
 
 type FSDJumpEvent struct {
 	Body      string `json:"Body,omitempty"`
@@ -74,5 +79,36 @@ type FSDJumpEvent struct {
 }
 
 func (h *handler) evFSDJump(ev *FSDJumpEvent) {
+
+	CurrentSystemName = ev.StarSystem // really neede? already set in StartJump event
+
+	text := fmt.Sprintf(`<span size="x-large">`+
+		"\nSystem: %s\n\n"+
+		`<i>`+
+		"Jump distance: %.2f ly\n"+
+		"Fuel level: %.2f tons\n"+
+		"Fuel used: %.2f tons\n"+
+		`</i>`+
+		`</span>`,
+		ev.StarSystem,
+		ev.JumpDist,
+		ev.FuelLevel,
+		ev.FuelUsed)
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_SYSTEM,
+			Text:           text,
+			AppendText:     false,
+			UpdateText:     true,
+			Subtitle:       "",
+			UpdateSubtitle: true,
+		},
+	}
+
+	CurrentMainStarName = ev.Body
+	CurrentSystemName = ev.StarSystem
+
 	return
 }

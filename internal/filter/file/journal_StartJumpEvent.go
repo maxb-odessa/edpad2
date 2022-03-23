@@ -1,6 +1,10 @@
 package file
 
-import "time"
+import (
+	localDisplay "edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"time"
+)
 
 type StartJumpEvent struct {
 	JumpType      string    `json:"JumpType,omitempty"`
@@ -12,5 +16,25 @@ type StartJumpEvent struct {
 }
 
 func (h *handler) evStartJump(ev *StartJumpEvent) {
+
+	if ev.JumpType != "Hyperspace" {
+		return
+	}
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &localDisplay.Text{
+			ViewPort:       localDisplay.VP_SYSTEM,
+			Text:           `<i><span size="x-large">` + "\n\nJumping to: " + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
+			AppendText:     false,
+			UpdateText:     true,
+			Subtitle:       "(!)",
+			UpdateSubtitle: true,
+		},
+	}
+
+	CurrentSystemName = ev.StarSystem
+	CurrentMainStarClass = ev.StarClass
+
 	return
 }

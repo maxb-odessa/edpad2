@@ -94,5 +94,8 @@ type LocationEvent struct {
 }
 
 func (h *handler) evLocation(ev *LocationEvent) {
+
+	CurrentSystemName = ev.StarSystem
+
 	return
 }

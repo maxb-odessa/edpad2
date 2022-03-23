@@ -1,6 +1,11 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"fmt"
+	"time"
+)
 
 type FSSDiscoveryScanEvent struct {
 	BodyCount     int       `json:"BodyCount,omitempty"`
@@ -13,5 +18,18 @@ type FSSDiscoveryScanEvent struct {
 }
 
 func (h *handler) evFSSDiscoveryScan(ev *FSSDiscoveryScanEvent) {
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_SYSTEM,
+			Text:           "",
+			AppendText:     false,
+			UpdateText:     false,
+			Subtitle:       fmt.Sprintf("[b:%d,nb:%d]", ev.BodyCount, ev.NonBodyCount),
+			UpdateSubtitle: true,
+		},
+	}
+
 	return
 }
