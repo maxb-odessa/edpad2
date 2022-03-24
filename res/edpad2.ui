@@ -22,8 +22,8 @@
   </object>
   <object class="GtkWindow" id="top">
     <property name="name">top</property>
-    <property name="width-request">1027</property>
-    <property name="height-request">768</property>
+    <property name="width-request">1280</property>
+    <property name="height-request">800</property>
     <property name="can-focus">False</property>
     <property name="gravity">center</property>
     <child>

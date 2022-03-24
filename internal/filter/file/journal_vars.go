@@ -3,6 +3,7 @@ package file
 var CurrentSystemName string
 var CurrentMainStarName string
 var CurrentMainStarClass string
+var NextJumpSystem string
 
 type starData struct {
 	discovered   bool
@@ -18,6 +19,7 @@ type starData struct {
 }
 
 type planetData struct {
+	shortName     string
 	discovered    bool
 	mapped        bool
 	class         string
@@ -37,6 +39,7 @@ type signalData struct {
 	dummyfornow string
 }
 
+// no just "string" because we must filter out duplicates
 var CurrentSystemStars map[string]starData
 var CurrentSystemPlanets map[string]planetData
 var CurrentSystemSignals map[string]signalData

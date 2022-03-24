@@ -28,7 +28,7 @@ func (h *handler) evStartJump(ev *StartJumpEvent) {
 			Text:           `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
 			AppendText:     false,
 			UpdateText:     true,
-			Subtitle:       "(!)",
+			Subtitle:       "",
 			UpdateSubtitle: true,
 		},
 	}

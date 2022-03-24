@@ -96,9 +96,9 @@ const (
 
 func formatTemp(temp float64) string {
 	if temp > 1000000.0 {
-		return fmt.Sprintf("%.1fM", temp/1000000.0)
+		return fmt.Sprintf("%3.1fM", temp/1000000.0)
 	} else if temp > 1000 {
-		return fmt.Sprintf("%.1fK", temp/1000.0)
+		return fmt.Sprintf("%3.1fK", temp/1000.0)
 	} else {
 		return fmt.Sprintf("%4.0f", temp)
 	}
@@ -126,11 +126,20 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	CurrentSystemStars[ev.BodyName] = sd
 
 	text := "\n" +
-		`     <i><u><span size="smaller">` +
-		` Class       Distance(ls)   Disco  Rings  M(sol)  R(sol)  Temp(K)` +
+		`   <i><u><span color="gray">` +
+		`   Class   Distance(ls)   Disco  Belt   M(sol)  R(sol)  Temp(K)` +
 		`</span></u></i>` +
 		"\n"
+
+	idx := 0
+
 	for _, s := range CurrentSystemStars {
+
+		if (idx % 2) != 0 {
+			text += `<span bgcolor="#202020">`
+		} else {
+			text += `<span>`
+		}
 
 		if s.isMain {
 			text += " *"
@@ -138,23 +147,25 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			text += "  "
 		}
 
-		text += fmt.Sprintf(" %-s%-1d %-3.3s       %8.0f", s.class, s.subClass, s.luminosity, s.distance)
+		text += fmt.Sprintf(" %-s%-1d %-3.3s      %8.0f", s.class, s.subClass, s.luminosity, s.distance)
 
 		if s.discovered {
-			text += `   <span color="yellow">yes</span>`
+			text += `    <span color="yellow">yes</span>`
 		} else {
-			text += `   no `
+			text += `    no `
 		}
 
 		if s.hasBelt {
-			text += "   yes"
+			text += "    yes"
 		} else {
-			text += "   no "
+			text += "    no "
 		}
 
-		text += fmt.Sprintf(`   %3.1f    %3.1f    %s`, s.massSol, s.radiusSol, s.temperatureK)
+		text += fmt.Sprintf(`    %3.1f     %3.1f     %s`, s.massSol, s.radiusSol, s.temperatureK)
 
-		text += "\n"
+		text += "</span>\n"
+
+		idx++
 	}
 
 	slog.Debug(99, "%+v\n%s", sd, text)
@@ -178,16 +189,82 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	var pd planetData
 
-	pd.mapped = false
+	pd.shortName = "A 112" // TODO calc short name from BodyName, like "Graea Hypue FV-X d1-30 2 a" > "2 a"
+	pd.class = CB(ev.PlanetClass, -5)
+	pd.discovered = ev.WasDiscovered
+	pd.mapped = ev.WasMapped
+	pd.massEm = ev.MassEm
+	pd.radiusEm = ev.Radius / EARTH_RADIUS
+	pd.gravityG = ev.SurfaceGravity
+	pd.temperatureK = ev.SurfaceTemperature
+	pd.rings = len(ev.Rings)
+	pd.wideRing = false // TODO calc widest ring
+	pd.landable = ev.Landable
+	if ev.TerraformState != "" {
+		pd.terraformable = true
+	}
+	// not show, for calc only
+	pd.atmosphere = ev.AtmosphereType
+	pd.possibleBio = nil // TODO calh bios
+
+	CurrentSystemPlanets[ev.BodyName] = pd
+
+	text := ` <i><u><span color="gray">` +
+		`Name    Type   Dis/Map  M(e)  R(e)  Grav  T(K)  Rn  WR  Lnd  Bios ` +
+		`</span></u></i>` +
+		"\n"
+
+	idx := 0
+
+	for _, p := range CurrentSystemPlanets {
+
+		if (idx % 2) != 0 {
+			text += `<span bgcolor="#202020">`
+		} else {
+			text += `<span>`
+		}
+
+		discovered := "no "
+		if p.discovered {
+			discovered = `<span color="yellow">yes</span>`
+		}
+
+		mapped := "no "
+		if p.mapped {
+			mapped = `<span color="yellow">yes</span>`
+		}
+
+		text += fmt.Sprintf("%7.7s  %s  %-s/%s %5.2f %5.2f %5.2f %s  %2d  %3s  %3s  %5s",
+			p.shortName,
+			p.class,
+			discovered,
+			mapped,
+			p.massEm,
+			p.radiusEm,
+			p.gravityG,
+			formatTemp(p.temperatureK),
+			p.rings,
+			"no",  // wide ring
+			"yes", // landable
+			"BTFGK",
+		)
+
+		text += "</span>\n"
+
+		idx++
+
+	}
+
+	slog.Info("%s", text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_PLANETS,
-			Text:           "",
+			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
-			Subtitle:       "(1)",
-			UpdateSubtitle: false,
+			Subtitle:       fmt.Sprintf("[%d]", len(CurrentSystemPlanets)),
+			UpdateSubtitle: true,
 		},
 	}
 

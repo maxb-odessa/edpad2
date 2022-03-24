@@ -18,6 +18,8 @@ type FSDTargetEvent struct {
 
 func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 
+	NextJumpSystem = ev.Name
+
 	text := fmt.Sprintf(`<i>%s</i> (%s) >> <span color="white">%d</span> >> (%s) <i>%s</i>`,
 		CurrentSystemName,
 		CB(CurrentMainStarClass),

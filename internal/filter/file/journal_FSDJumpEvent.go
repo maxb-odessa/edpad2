@@ -2,6 +2,7 @@ package file
 
 import (
 	"edpad2/internal/local/display"
+	localDisplay "edpad2/internal/local/display"
 	"edpad2/internal/router"
 	"fmt"
 	"time"
@@ -81,6 +82,21 @@ type FSDJumpEvent struct {
 func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 
 	CurrentSystemName = ev.StarSystem // really neede? already set in StartJump event
+
+	// no more jumps in route
+	if CurrentSystemName == NextJumpSystem {
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalDisplay,
+			Data: &localDisplay.Text{
+				ViewPort:       localDisplay.VP_ROUTE,
+				Text:           `<i>` + CurrentSystemName + `</i>`,
+				AppendText:     false,
+				UpdateText:     true,
+				Subtitle:       "",
+				UpdateSubtitle: false,
+			},
+		}
+	}
 
 	resetCurrentSystemStars()
 	resetCurrentSystemPlanets()
