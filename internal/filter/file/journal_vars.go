@@ -9,6 +9,7 @@ type starData struct {
 	isMain       bool
 	class        string
 	subClass     int
+	distance     float64
 	luminosity   string
 	massSol      float64
 	radiusSol    float64
@@ -17,15 +18,19 @@ type starData struct {
 }
 
 type planetData struct {
-	discovered  bool
-	scanned     bool
-	class       string
-	massEm      float64
-	radiusEm    float64
-	gravity     float64
-	rings       int
-	wideRing    bool
-	possibleBio []string
+	discovered    bool
+	mapped        bool
+	class         string
+	massEm        float64
+	radiusEm      float64
+	gravityG      float64
+	temperatureK  float64
+	rings         int
+	wideRing      bool
+	atmosphere    string
+	landable      bool
+	terraformable bool
+	possibleBio   []string
 }
 
 type signalData struct {

@@ -87,11 +87,11 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 	resetCurrentSystemSignals()
 
 	text := fmt.Sprintf(`<span size="large">`+
-		"\nSystem: %s\n\n"+
+		"\n\nSystem: %s\n\n"+
 		`<i>`+
-		"Jump distance: %.2f ly\n"+
-		"   Fuel level: %.2f tons\n"+
-		"    Fuel used: %.2f tons\n"+
+		"Jump distance: %3.2f ly\n"+
+		"   Fuel level: %3.2f tons\n"+
+		"    Fuel used: %3.2f tons\n"+
 		`</i>`+
 		`</span>`,
 		ev.StarSystem,
@@ -104,6 +104,42 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		Data: &display.Text{
 			ViewPort:       display.VP_SYSTEM,
 			Text:           text,
+			AppendText:     false,
+			UpdateText:     true,
+			Subtitle:       "",
+			UpdateSubtitle: true,
+		},
+	}
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_PLANETS,
+			Text:           "",
+			AppendText:     false,
+			UpdateText:     true,
+			Subtitle:       "",
+			UpdateSubtitle: true,
+		},
+	}
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_SIGNALS,
+			Text:           "",
+			AppendText:     false,
+			UpdateText:     true,
+			Subtitle:       "",
+			UpdateSubtitle: true,
+		},
+	}
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_SRV,
+			Text:           "",
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       "",

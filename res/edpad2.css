@@ -19,7 +19,7 @@ image {
 
 #route_tv {
     font-size: 22px;
-    background: #101030;
+    background: #101010;
 }
 
 #route_tv text {
@@ -28,6 +28,7 @@ image {
 
 
 #info_tv {
+    background: #101010;
     font-size: 22px;
 }
 
@@ -53,9 +54,18 @@ image {
     opacity: 0.6;
 }
 
-#system_tv,
-#planets_tv,
-#signals_tv,
+#system_tv {
+    font-size: 24px;
+}
+
+#planets_tv {
+    font-size: 22px;
+}
+
+#signals_tv {
+    font-size: 22px;
+}
+
 #srv_tv {
     font-size: 22px;
 }

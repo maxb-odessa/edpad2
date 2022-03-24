@@ -114,6 +114,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	}
 	sd.class = CB(ev.StarType, 3)
 	sd.subClass = ev.Subclass
+	sd.distance = ev.DistanceFromArrivalLs
 	sd.luminosity = ev.Luminosity
 	sd.massSol = ev.StellarMass
 	sd.radiusSol = ev.Radius / SOLAR_RADIUS
@@ -124,7 +125,11 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	CurrentSystemStars[ev.BodyName] = sd
 
-	text := "\n"
+	text := "\n" +
+		`     <i><u><span size="smaller">` +
+		` Class       Distance(ls)   Disco  Rings  M(sol)  R(sol)  Temp(K)` +
+		`</span></u></i>` +
+		"\n"
 	for _, s := range CurrentSystemStars {
 
 		if s.isMain {
@@ -133,25 +138,23 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			text += "  "
 		}
 
-		text += fmt.Sprintf(" [%s%1d %-3.3s]", s.class, s.subClass, s.luminosity)
-
-		text += "<i>"
+		text += fmt.Sprintf(" %-s%-1d %-3.3s       %8.0f", s.class, s.subClass, s.luminosity, s.distance)
 
 		if s.discovered {
-			text += ` <span color="yellow">discovered</span>`
+			text += `   <span color="yellow">yes</span>`
 		} else {
-			text += ` <span color="gray">unknown   </span>`
+			text += `   no `
 		}
 
 		if s.hasBelt {
-			text += " belt"
+			text += "   yes"
 		} else {
-			text += "     "
+			text += "   no "
 		}
 
-		text += fmt.Sprintf(`  M(s):<span color="white">%3.1f</span> R(s):<span color="white">%3.1f</span> T(K):<span color="white">%s</span>`, s.massSol, s.radiusSol, s.temperatureK)
+		text += fmt.Sprintf(`   %3.1f    %3.1f    %s`, s.massSol, s.radiusSol, s.temperatureK)
 
-		text += "</i>\n"
+		text += "\n"
 	}
 
 	slog.Debug(99, "%+v\n%s", sd, text)
@@ -173,6 +176,9 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 func (h *handler) parsePlanet(ev *ScanEvent) {
 
+	var pd planetData
+
+	pd.mapped = false
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{

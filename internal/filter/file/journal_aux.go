@@ -18,7 +18,9 @@ func CB(body string, f ...int) (ret string) {
 	if f == nil {
 		format = `<span weight="bold" color="%s">%s</span>`
 	} else {
-		if f[0] == 3 {
+		if f[0] == -3 {
+			format = `<span weight="bold" color="%s">%-3.3s</span>`
+		} else if f[0] == 3 {
 			format = `<span weight="bold" color="%s">%+3.3s</span>`
 		}
 	}
