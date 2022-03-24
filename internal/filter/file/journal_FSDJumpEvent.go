@@ -82,12 +82,16 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 
 	CurrentSystemName = ev.StarSystem // really neede? already set in StartJump event
 
-	text := fmt.Sprintf(`<span size="x-large">`+
+	resetCurrentSystemStars()
+	resetCurrentSystemPlanets()
+	resetCurrentSystemSignals()
+
+	text := fmt.Sprintf(`<span size="large">`+
 		"\nSystem: %s\n\n"+
 		`<i>`+
 		"Jump distance: %.2f ly\n"+
-		"Fuel level: %.2f tons\n"+
-		"Fuel used: %.2f tons\n"+
+		"   Fuel level: %.2f tons\n"+
+		"    Fuel used: %.2f tons\n"+
 		`</i>`+
 		`</span>`,
 		ev.StarSystem,

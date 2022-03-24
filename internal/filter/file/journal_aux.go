@@ -7,13 +7,22 @@ import (
 )
 
 // make fancy body name and color it
-func CB(body string) (ret string) {
+func CB(body string, f ...int) (ret string) {
 
 	if body == "" {
 		return "?"
 	}
 
-	format := `<span weight="bold" color="%s">%s</span>`
+	var format string
+
+	if f == nil {
+		format = `<span weight="bold" color="%s">%s</span>`
+	} else {
+		if f[0] == 3 {
+			format = `<span weight="bold" color="%s">%+3.3s</span>`
+		}
+	}
+
 	color := "#AAAAAA"
 	name := body
 

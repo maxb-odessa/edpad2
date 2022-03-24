@@ -25,7 +25,7 @@ func (h *handler) evStartJump(ev *StartJumpEvent) {
 		Dst: router.LocalDisplay,
 		Data: &localDisplay.Text{
 			ViewPort:       localDisplay.VP_SYSTEM,
-			Text:           `<i><span size="x-large">` + "\n\nJumping to: " + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
+			Text:           `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       "(!)",

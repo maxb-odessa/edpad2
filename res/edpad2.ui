@@ -9,7 +9,7 @@
     <property name="text" translatable="yes">Planets data</property>
   </object>
   <object class="GtkTextBuffer" id="route_tb">
-    <property name="text" translatable="yes">System Name Here AB-C D12-345 (G5) =&gt; [123] Another System FK-J c123 (N)</property>
+    <property name="text" translatable="yes"></property>
   </object>
   <object class="GtkTextBuffer" id="signals_tb">
     <property name="text" translatable="yes">signals buffer</property>
