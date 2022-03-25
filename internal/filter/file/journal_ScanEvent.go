@@ -82,7 +82,7 @@ func (h *handler) evScan(ev *ScanEvent) {
 	} else if ev.PlanetClass != "" {
 		h.parsePlanet(ev)
 	} else {
-		h.parseSignal(ev)
+		// ateroids? other?
 	}
 }
 
@@ -112,7 +112,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	if ev.BodyName == CurrentMainStarName {
 		sd.isMain = true
 	}
-	sd.class = CB(ev.StarType, 3)
+	sd.class = CB(ev.StarType, 4)
 	sd.subClass = ev.Subclass
 	sd.distance = ev.DistanceFromArrivalLs
 	sd.luminosity = ev.Luminosity
@@ -159,7 +159,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			belt = yes
 		}
 
-		text += fmt.Sprintf(" %s %-s%-1d %-3.3s      %8.0f   %s    %s   %3.1f     %3.1f     %s",
+		text += fmt.Sprintf(" %s %-s%-1d %-3.3s     %8.0f   %s    %s   %3.1f     %3.1f     %s",
 			mainstar,
 			s.class,
 			s.subClass,
@@ -196,8 +196,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	var pd planetData
-
-	pd.shortName = "A 112" // TODO calc short name from BodyName, like "Graea Hypue FV-X d1-30 2 a" > "2 a"
+	//  calc short name from BodyName, like "Graea Hypue FV-X d1-30 2 a" > "2 a"
+	pd.shortName = ev.BodyName[len(ev.BodyName)-8:]
 	pd.class = ev.PlanetClass
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
@@ -206,19 +206,25 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	pd.gravityG = ev.SurfaceGravity
 	pd.temperatureK = ev.SurfaceTemperature
 	pd.rings = len(ev.Rings)
-	pd.wideRing = false // TODO calc widest ring
 	pd.landable = ev.Landable
 	if ev.TerraformState != "" {
 		pd.terraformable = true
 	}
 	// not show, for calc only
 	pd.atmosphere = ev.AtmosphereType
-	pd.possibleBio = nil // TODO calc bios
+	pd.possibleBio = "-----" // TODO calc bios
+
+	// calc if has wide ring
+	for _, r := range ev.Rings {
+		if pd.ringRad < r.OuterRad {
+			pd.ringRad = r.OuterRad
+		}
+	}
 
 	CurrentSystemPlanets[ev.BodyName] = pd
 
 	text := ` <i><u><span color="gray">` +
-		` Name   Type   D/M  M(e)  R(e)  Grav  T(K)  Rn WR Ld TF Bios ` +
+		` Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Bio  ` +
 		`</span></u></i>` +
 		"\n"
 
@@ -231,6 +237,11 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 		if !remarkablePlanet(p) {
 			continue
+		}
+
+		ringRad := fmt.Sprintf("%3.0f", p.ringRad/LIGHT_SECOND)
+		if p.ringRad >= MIN_RING_OUT_RAD {
+			ringRad = `<span color="white">` + ringRad + `</span>`
 		}
 
 		if (idx % 2) != 0 {
@@ -259,7 +270,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			landable = yes
 		}
 
-		text += fmt.Sprintf("%7.7s  %s  %s/%s %5.2f %5.2f %5.2f %s  %2d  %s  %s  %s  %5s",
+		text += fmt.Sprintf(" %-8.8s %s %s %s %5.2f %5.2f %5.2f %s  %2d  %s  %s  %s  %5s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,
@@ -269,10 +280,10 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			p.gravityG,
 			formatTemp(p.temperatureK),
 			p.rings,
-			no, // wide ring
-			terraformable,
+			ringRad,
 			landable,
-			"BTFGK",
+			terraformable,
+			pd.possibleBio,
 		)
 
 		text += "</span>\n"
@@ -310,12 +321,17 @@ func remarkablePlanet(pd planetData) bool {
 	}
 
 	// wide ring
-	if pd.wideRing {
+	if pd.ringRad > MIN_RING_OUT_RAD {
 		return true
 	}
 
 	// terraformable
 	if pd.terraformable {
+		return true
+	}
+
+	// heliums ar nice
+	if pd.class[0:6] == "Helium" {
 		return true
 	}
 
@@ -329,21 +345,4 @@ func remarkablePlanet(pd planetData) bool {
 	}
 
 	return false
-}
-
-func (h *handler) parseSignal(ev *ScanEvent) {
-
-	h.connector.ToRouterCh <- &router.Message{
-		Dst: router.LocalDisplay,
-		Data: &display.Text{
-			ViewPort:       display.VP_SIGNALS,
-			Text:           "",
-			AppendText:     false,
-			UpdateText:     true,
-			Subtitle:       "(2)",
-			UpdateSubtitle: false,
-		},
-	}
-
-	return
 }

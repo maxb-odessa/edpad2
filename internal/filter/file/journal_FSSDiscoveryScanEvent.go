@@ -26,7 +26,7 @@ func (h *handler) evFSSDiscoveryScan(ev *FSSDiscoveryScanEvent) {
 			Text:           "",
 			AppendText:     false,
 			UpdateText:     false,
-			Subtitle:       fmt.Sprintf("[b:%d,nb:%d]", ev.BodyCount, ev.NonBodyCount),
+			Subtitle:       fmt.Sprintf("[%d/%d]", ev.BodyCount, ev.NonBodyCount),
 			UpdateSubtitle: true,
 		},
 	}

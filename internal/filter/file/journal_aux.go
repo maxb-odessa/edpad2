@@ -18,10 +18,10 @@ func CB(body string, f ...int) (ret string) {
 	if f == nil {
 		format = `<span weight="bold" color="%s">%s</span>`
 	} else {
-		if f[0] == -3 {
-			format = `<span weight="bold" color="%s">%-3.3s</span>`
-		} else if f[0] == 3 {
-			format = `<span weight="bold" color="%s">%+3.3s</span>`
+		if f[0] == -4 {
+			format = `<span weight="bold" color="%s">%-4.4s</span>`
+		} else if f[0] == 4 {
+			format = `<span weight="bold" color="%s">%+4.4s</span>`
 		}
 		if f[0] == -5 {
 			format = `<span weight="bold" color="%s">%-5.5s</span>`
@@ -71,15 +71,32 @@ func CB(body string, f ...int) (ret string) {
 		name = "R/Ice"
 		color = "#F0F0A0"
 		return
-	case "Gas giant with ammonia based life",
-		"Gas giant with water based life",
-		"Sudarsky class I gas giant",
-		"Sudarsky class II gas giant",
-		"Sudarsky class III gas giant",
-		"Sudarsky class IV gas giant",
-		"Sudarsky class V gas giant",
-		"Water giant":
-		name = "GG"
+	case "Gas giant with ammonia based life":
+		name = "GG/AL"
+		return
+	case "Gas giant with water based life":
+		name = "GG/WL"
+		return
+	case "Sudarsky class I gas giant":
+		name = "GG 1c"
+		return
+	case "Sudarsky class II gas giant":
+		name = "GG 2c"
+		return
+	case "Sudarsky class III gas giant":
+		name = "GG 3c"
+		return
+	case "Sudarsky class IV gas giant":
+		name = "GG 4c"
+		return
+	case "Sudarsky class V gas giant":
+		name = "GG 5c"
+		return
+	case "Water giant":
+		name = "WG"
+		return
+	case "Helium rich gas giant":
+		name = "HeRGG"
 		return
 	}
 

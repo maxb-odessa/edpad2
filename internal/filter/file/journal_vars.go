@@ -28,15 +28,15 @@ type planetData struct {
 	gravityG      float64
 	temperatureK  float64
 	rings         int
-	wideRing      bool
+	ringRad       float64
 	atmosphere    string
 	landable      bool
 	terraformable bool
-	possibleBio   []string
+	possibleBio   string
 }
 
 type signalData struct {
-	dummyfornow string
+	not_used_atm bool
 }
 
 // no just "string" because we must filter out duplicates

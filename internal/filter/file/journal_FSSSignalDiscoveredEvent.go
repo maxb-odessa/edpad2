@@ -1,6 +1,13 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"fmt"
+	"time"
+
+	"github.com/maxb-odessa/slog"
+)
 
 type FSSSignalDiscoveredEvent struct {
 	IsStation                bool      `json:"IsStation,omitempty"`
@@ -20,6 +27,50 @@ type FSSSignalDiscoveredEvent struct {
 }
 
 func (h *handler) evFSSSignalDiscovered(ev *FSSSignalDiscoveredEvent) {
+
+	// TODO here
+
+	// simply print what we've got
+	id := fmt.Sprintf("%v", ev)
+	if _, ok := CurrentSystemSignals[id]; ok {
+		return
+	}
+	CurrentSystemSignals[id] = signalData{}
+
+	name := "unknown"
+	if ev.SignalNameLocalised != "" {
+		name = ev.SignalNameLocalised
+	} else if ev.SignalName != "" {
+		name = ev.SignalName
+	}
+
+	usstype := "unknown"
+	if ev.USSTypeLocalised != "" {
+		usstype = ev.USSTypeLocalised
+	} else if ev.UssType != "" {
+		usstype = ev.UssType
+	}
+
+	text := fmt.Sprintf("\nName: %s, Type: %s, Threat: %d, Station: %v",
+		name,
+		usstype,
+		ev.ThreatLevel,
+		ev.IsStation,
+	)
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_SIGNALS,
+			Text:           text,
+			AppendText:     true,
+			UpdateText:     true,
+			Subtitle:       fmt.Sprintf("[%d]", len(CurrentSystemSignals)),
+			UpdateSubtitle: true,
+		},
+	}
+
+	slog.Info("signal ev: %s\n%+v", text, ev)
 
 	return
 }
