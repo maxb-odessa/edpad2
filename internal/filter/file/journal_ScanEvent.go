@@ -176,7 +176,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		idx++
 	}
 
-	slog.Debug(99, "%+v\n%s", sd, text)
+	slog.Debug(99, "display system: %+v\n%s", sd, text)
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
@@ -281,7 +281,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	}
 
-	slog.Info("%s", text)
+	slog.Debug(99, "display planets: %+v\n%s", pd, text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -310,7 +310,9 @@ func remarkablePlanet(pd planetData) bool {
 	}
 
 	// wide ring
-	// TODO
+	if pd.wideRing {
+		return true
+	}
 
 	// terraformable
 	if pd.terraformable {
