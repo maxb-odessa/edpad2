@@ -127,9 +127,12 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	text := "\n" +
 		`   <i><u><span color="gray">` +
-		`   Class   Distance(ls)   Disco  Belt   M(sol)  R(sol)  Temp(K)` +
+		`  Class   Distance(ls)   Disco  Belt  M(sol)  R(sol)  Temp(K)` +
 		`</span></u></i>` +
 		"\n"
+
+	yes := `<span color="yellow">yes</span>`
+	no := `<span color="gray">no </span>`
 
 	idx := 0
 
@@ -141,27 +144,32 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			text += `<span>`
 		}
 
+		mainstar := " "
 		if s.isMain {
-			text += " *"
-		} else {
-			text += "  "
+			mainstar = "*"
 		}
 
-		text += fmt.Sprintf(" %-s%-1d %-3.3s      %8.0f", s.class, s.subClass, s.luminosity, s.distance)
-
+		discovered := no
 		if s.discovered {
-			text += `    <span color="yellow">yes</span>`
-		} else {
-			text += `    no `
+			discovered = yes
 		}
 
+		belt := no
 		if s.hasBelt {
-			text += "    yes"
-		} else {
-			text += "    no "
+			belt = yes
 		}
 
-		text += fmt.Sprintf(`    %3.1f     %3.1f     %s`, s.massSol, s.radiusSol, s.temperatureK)
+		text += fmt.Sprintf(" %s %-s%-1d %-3.3s      %8.0f   %s    %s   %3.1f     %3.1f     %s",
+			mainstar,
+			s.class,
+			s.subClass,
+			s.luminosity,
+			s.distance,
+			discovered,
+			belt,
+			s.massSol,
+			s.radiusSol,
+			s.temperatureK)
 
 		text += "</span>\n"
 
@@ -190,7 +198,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	var pd planetData
 
 	pd.shortName = "A 112" // TODO calc short name from BodyName, like "Graea Hypue FV-X d1-30 2 a" > "2 a"
-	pd.class = CB(ev.PlanetClass, -5)
+	pd.class = ev.PlanetClass
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
 	pd.massEm = ev.MassEm
@@ -205,18 +213,25 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	}
 	// not show, for calc only
 	pd.atmosphere = ev.AtmosphereType
-	pd.possibleBio = nil // TODO calh bios
+	pd.possibleBio = nil // TODO calc bios
 
 	CurrentSystemPlanets[ev.BodyName] = pd
 
 	text := ` <i><u><span color="gray">` +
-		`Name    Type   Dis/Map  M(e)  R(e)  Grav  T(K)  Rn  WR  Lnd  Bios ` +
+		` Name   Type   D/M  M(e)  R(e)  Grav  T(K)  Rn WR Ld TF Bios ` +
 		`</span></u></i>` +
 		"\n"
 
 	idx := 0
 
+	yes := `<span color="yellow">y</span>`
+	no := `<span color="gray">n</span>`
+
 	for _, p := range CurrentSystemPlanets {
+
+		if !remarkablePlanet(p) {
+			continue
+		}
 
 		if (idx % 2) != 0 {
 			text += `<span bgcolor="#202020">`
@@ -224,19 +239,29 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			text += `<span>`
 		}
 
-		discovered := "no "
+		discovered := no
 		if p.discovered {
-			discovered = `<span color="yellow">yes</span>`
+			discovered = yes
 		}
 
-		mapped := "no "
+		mapped := no
 		if p.mapped {
-			mapped = `<span color="yellow">yes</span>`
+			mapped = yes
 		}
 
-		text += fmt.Sprintf("%7.7s  %s  %-s/%s %5.2f %5.2f %5.2f %s  %2d  %3s  %3s  %5s",
+		terraformable := no
+		if p.terraformable {
+			terraformable = yes
+		}
+
+		landable := no
+		if p.landable {
+			landable = yes
+		}
+
+		text += fmt.Sprintf("%7.7s  %s  %s/%s %5.2f %5.2f %5.2f %s  %2d  %s  %s  %s  %5s",
 			p.shortName,
-			p.class,
+			CB(p.class, -5),
 			discovered,
 			mapped,
 			p.massEm,
@@ -244,8 +269,9 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			p.gravityG,
 			formatTemp(p.temperatureK),
 			p.rings,
-			"no",  // wide ring
-			"yes", // landable
+			no, // wide ring
+			terraformable,
+			landable,
 			"BTFGK",
 		)
 
@@ -270,6 +296,39 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	return
 }
+
+func remarkablePlanet(pd planetData) bool {
+
+	// landable + high G
+	if pd.landable && pd.gravityG > 2.0 {
+		return true
+	}
+
+	// many rings
+	if pd.rings >= 5 {
+		return true
+	}
+
+	// wide ring
+	// TODO
+
+	// terraformable
+	if pd.terraformable {
+		return true
+	}
+
+	// possible interesting bios
+	// TODO
+
+	// class
+	switch pd.class {
+	case "Earthlike body", "Water world", "Ammonia world":
+		return true
+	}
+
+	return false
+}
+
 func (h *handler) parseSignal(ev *ScanEvent) {
 
 	h.connector.ToRouterCh <- &router.Message{
