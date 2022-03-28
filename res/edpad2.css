@@ -1,5 +1,5 @@
 window {
-    background-image: url('$HOME/.local/share/edpad2/edpad2.png');
+    background-image: url('@SHAREDIR@/edpad2.png');
     background-repeat: no-repeat;
     background-position: center;
     /*opacity: 0.0;*/
@@ -10,6 +10,7 @@ image {
 }
 
 * {
+    color: #ffffff;
     background: alpha (#000000, 0.0);
 }
 
@@ -19,17 +20,19 @@ image {
 
 #route_tv {
     font-size: 26px;
-    background: #101010;
+    font-weight: bold;
+    background: alpha (#000000, 0.20);
 }
 
 #route_tv text {
-    color: #0000ff;
+    color: #a0a000;
 }
 
 
 #info_tv {
-    background: #101010;
+    background: alpha (#000000, 0.20);
     font-size: 24px;
+    font-weight: bold;
 }
 
 #info_tv text {
@@ -38,43 +41,47 @@ image {
 
 #stack_switcher button {
     margin: 5px;
-    box-shadow: 7px 5px 3px black;
+    box-shadow: 7px 5px 3px #505050;
     border-radius: 15px;
     border-style: none;
-    color: #ffaa00;
-    background: #552200;
+    border-color: #ffffff;
+    color: #ffffff;
+    background: #404080;
     font-weight: bold;
     font-size: 20px;
-    opacity: 0.5;
+    opacity: 0.3;
 }
 
 #stack_switcher button:checked {
-    color: #eeeeee;
-    background: #ff9900;
+    background: #b0b0ff;
     opacity: 0.6;
 }
 
 #system_tv {
     font-size: 26px;
+    background: alpha (#000000, 0.1);
 }
 
 #planets_tv {
     font-size: 26px;
+    background: alpha (#000000, 0.1);
 }
 
 #signals_tv {
     font-size: 26px;
+    background: alpha (#000000, 0.1);
 }
 
 #srv_tv {
     font-size: 26px;
+    background: alpha (#000000, 0.1);
 }
 
 #system_tv text,
 #planets_tv text,
 #signals_tv text,
 #srv_tv text {
-    color: #aaaaaa;
+    color: #cccccc;
 }
 
 #keypad {

@@ -203,7 +203,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	pd.mapped = ev.WasMapped
 	pd.massEm = ev.MassEm
 	pd.radiusEm = ev.Radius / EARTH_RADIUS
-	pd.gravityG = ev.SurfaceGravity
+	pd.gravityG = ev.SurfaceGravity / 10.0
 	pd.temperatureK = ev.SurfaceTemperature
 	pd.rings = len(ev.Rings)
 	pd.landable = ev.Landable
@@ -311,7 +311,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 func remarkablePlanet(pd planetData) bool {
 
 	// landable + high G
-	if pd.landable && pd.gravityG > 2.0 {
+	if pd.landable && pd.gravityG >= 2.0 {
 		return true
 	}
 

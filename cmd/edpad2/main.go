@@ -22,7 +22,7 @@ func main() {
 	// get cmdline args and parse them
 	help := false
 	debug := 0
-	configFile := "etc/edpad2.conf"
+	configFile := os.ExpandEnv("$HOME/.local/etc/edpad2.conf")
 	getopt.HelpColumn = 0
 	getopt.FlagLong(&help, "help", 'h', "Show this help")
 	getopt.FlagLong(&debug, "debug", 'd', "Set debug log level")
