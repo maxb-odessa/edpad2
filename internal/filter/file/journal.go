@@ -250,6 +250,10 @@ func (h *handler) processJournalMsg(ev *pb.FileEvent) {
 		ev := new(FSSAllBodiesFoundEvent)
 		mapstructure.Decode(mData, ev)
 		h.evFSSAllBodiesFound(ev)
+	case "FSSBodySignals":
+		ev := new(FSSBodySignalsEvent)
+		mapstructure.Decode(mData, ev)
+		h.evFSSBodySignals(ev)
 	case "FSSDiscoveryScan":
 		ev := new(FSSDiscoveryScanEvent)
 		mapstructure.Decode(mData, ev)

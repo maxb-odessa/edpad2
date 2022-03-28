@@ -31,11 +31,6 @@ func (h *handler) evFSSSignalDiscovered(ev *FSSSignalDiscoveredEvent) {
 	// TODO here
 
 	// simply print what we've got
-	id := fmt.Sprintf("%v", ev)
-	if _, ok := CurrentSystemSignals[id]; ok {
-		return
-	}
-	CurrentSystemSignals[id] = signalData{}
 
 	name := "unknown"
 	if ev.SignalNameLocalised != "" {

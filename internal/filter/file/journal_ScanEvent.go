@@ -6,8 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-
-	"github.com/maxb-odessa/slog"
 )
 
 type ScanEvent struct {
@@ -95,18 +93,26 @@ const (
 )
 
 func formatTemp(temp float64) string {
-	if temp > 1000000.0 {
+	if temp >= 1000000.0 {
 		return fmt.Sprintf("%3.1fM", temp/1000000.0)
-	} else if temp > 1000 {
+	} else if temp >= 1000.0 {
 		return fmt.Sprintf("%3.1fK", temp/1000.0)
 	} else {
 		return fmt.Sprintf("%4.0f", temp)
 	}
 }
 
+func formatE(val float64) string {
+	if val >= 100.0 { // yes, 100.0 is correct
+		return fmt.Sprintf("%4.1fK", val/1000.0)
+	} else {
+		return fmt.Sprintf("%5.2f", val)
+	}
+}
+
 func (h *handler) parseStar(ev *ScanEvent) {
 
-	var sd starData
+	sd := new(starData)
 
 	sd.discovered = ev.WasDiscovered
 	if ev.BodyName == CurrentMainStarName {
@@ -131,7 +137,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		`</span></u></i>` +
 		"\n"
 
-	yes := `<span color="yellow">yes</span>`
+	dyes := `<span color="yellow">yes</span>`
+	yes := `<span color="white">yes</span>`
 	no := `<span color="gray">no </span>`
 
 	idx := 0
@@ -151,7 +158,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 		discovered := no
 		if s.discovered {
-			discovered = yes
+			discovered = dyes
 		}
 
 		belt := no
@@ -176,8 +183,6 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		idx++
 	}
 
-	slog.Debug(99, "display system: %+v\n%s", sd, text)
-
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -185,7 +190,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
-			Subtitle:       "",
+			Subtitle:       fmt.Sprintf("[%s]", idx),
 			UpdateSubtitle: false,
 		},
 	}
@@ -195,9 +200,17 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 func (h *handler) parsePlanet(ev *ScanEvent) {
 
-	var pd planetData
+	// either add new or update existing one
+	pd, ok := CurrentSystemPlanets[ev.BodyName]
+	if !ok {
+		pd = new(planetData)
+		pd.signals = new(bodySignals)
+		CurrentSystemPlanets[ev.BodyName] = pd
+	}
+
 	//  calc short name from BodyName, like "Graea Hypue FV-X d1-30 2 a" > "2 a"
-	pd.shortName = ev.BodyName[len(ev.BodyName)-8:]
+	bname := "        " + ev.BodyName // a hack to avoid too short names
+	pd.shortName = bname[len(bname)-8:]
 	pd.class = ev.PlanetClass
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
@@ -210,9 +223,6 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	if ev.TerraformState != "" {
 		pd.terraformable = true
 	}
-	// not show, for calc only
-	pd.atmosphere = ev.AtmosphereType
-	pd.possibleBio = "-----" // TODO calc bios
 
 	// calc if has wide ring
 	for _, r := range ev.Rings {
@@ -221,19 +231,31 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		}
 	}
 
-	CurrentSystemPlanets[ev.BodyName] = pd
+	// show planets list
+	h.refreshPlanets()
 
+}
+
+func (h *handler) refreshPlanets() {
+
+	// table headers
 	text := ` <i><u><span color="gray">` +
-		` Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Bio  ` +
+		` Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Sigs ` +
 		`</span></u></i>` +
 		"\n"
 
 	idx := 0
 
-	yes := `<span color="yellow">y</span>`
+	dyes := `<span color="yellow">y</span>`
+	yes := `<span color="white">y</span>`
 	no := `<span color="gray">n</span>`
 
 	for _, p := range CurrentSystemPlanets {
+
+		// not enuff data yet (i.e. signals only detected, no Scan event happened), skip it
+		if p.shortName == "" {
+			continue
+		}
 
 		if !remarkablePlanet(p) {
 			continue
@@ -245,14 +267,14 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		}
 
 		if (idx % 2) != 0 {
-			text += `<span bgcolor="#202020">`
+			text += `<span bgcolor="#20202090">`
 		} else {
 			text += `<span>`
 		}
 
 		discovered := no
 		if p.discovered {
-			discovered = yes
+			discovered = dyes
 		}
 
 		mapped := no
@@ -270,20 +292,20 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			landable = yes
 		}
 
-		text += fmt.Sprintf(" %-8.8s %s %s %s %5.2f %5.2f %5.2f %s  %2d  %s  %s  %s  %5s",
+		text += fmt.Sprintf("~%-8.8s %s %s %s %s %s %s %s  %2d  %s  %s  %s  %s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,
 			mapped,
-			p.massEm,
-			p.radiusEm,
-			p.gravityG,
+			formatE(p.massEm),
+			formatE(p.radiusEm),
+			formatE(p.gravityG),
 			formatTemp(p.temperatureK),
 			p.rings,
 			ringRad,
 			landable,
 			terraformable,
-			pd.possibleBio,
+			calcSignals(p.signals),
 		)
 
 		text += "</span>\n"
@@ -292,7 +314,6 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	}
 
-	slog.Debug(99, "display planets: %+v\n%s", pd, text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -300,7 +321,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
-			Subtitle:       fmt.Sprintf("[%d]", len(CurrentSystemPlanets)),
+			Subtitle:       fmt.Sprintf("[%d]", idx),
 			UpdateSubtitle: true,
 		},
 	}
@@ -308,7 +329,44 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	return
 }
 
-func remarkablePlanet(pd planetData) bool {
+func calcSignals(bs *bodySignals) string {
+
+	sig := ""
+
+	if bs.biological > 0 {
+		sig += `<span color="green">b</span>`
+	} else {
+		sig += "-"
+	}
+
+	if bs.geological > 0 {
+		sig += `<span color="brown">g</span>`
+	} else {
+		sig += "-"
+	}
+
+	if bs.human > 0 {
+		sig += `<span color="blue">H</span>`
+	} else {
+		sig += "-"
+	}
+
+	if bs.guardian > 0 {
+		sig += `<span color="cyan">G"</span>`
+	} else {
+		sig += "-"
+	}
+
+	if bs.other > 0 {
+		sig += `<span color="red">T</span>`
+	} else {
+		sig += "-"
+	}
+
+	return sig
+}
+
+func remarkablePlanet(pd *planetData) bool {
 
 	// landable + high G
 	if pd.landable && pd.gravityG >= 2.0 {
@@ -335,8 +393,10 @@ func remarkablePlanet(pd planetData) bool {
 		return true
 	}
 
-	// possible interesting bios
-	// TODO
+	// possible interesting signals
+	if pd.signals.biological+pd.signals.geological+pd.signals.human+pd.signals.guardian+pd.signals.other > 0 {
+		return true
+	}
 
 	// class
 	switch pd.class {
