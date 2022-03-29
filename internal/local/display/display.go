@@ -33,6 +33,7 @@ type Text struct {
 	AppendText     bool
 	Subtitle       string
 	UpdateSubtitle bool
+	SetVisible     bool
 }
 
 type viewPort struct {
@@ -235,6 +236,12 @@ func (h *handler) printText(t *Text) (ret bool) {
 		}
 		vp.buff.InsertMarkup(vp.buff.GetEndIter(), t.Text)
 		vp.tv.ScrollToMark(vp.mark, 0.0, false, 0.0, 0.0)
+	}
+
+	// make it visible
+	if t.SetVisible {
+		vp.sw.Show()
+		h.gtkStack.SetVisibleChildName(vp.title)
 	}
 
 	/* TODO insert images?

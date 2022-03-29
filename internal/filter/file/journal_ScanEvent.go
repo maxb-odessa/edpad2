@@ -145,12 +145,6 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	for _, s := range CurrentSystemStars {
 
-		if (idx % 2) != 0 {
-			text += `<span bgcolor="#202020">`
-		} else {
-			text += `<span>`
-		}
-
 		mainstar := " "
 		if s.isMain {
 			mainstar = "*"
@@ -178,9 +172,9 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			s.radiusSol,
 			s.temperatureK)
 
-		text += "</span>\n"
-
 		idx++
+
+		text += "\n"
 	}
 
 	h.connector.ToRouterCh <- &router.Message{
@@ -240,7 +234,7 @@ func (h *handler) refreshPlanets() {
 
 	// table headers
 	text := ` <i><u><span color="gray">` +
-		` Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Sigs ` +
+		`  Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Sigs ` +
 		`</span></u></i>` +
 		"\n"
 
@@ -266,12 +260,6 @@ func (h *handler) refreshPlanets() {
 			ringRad = `<span color="white">` + ringRad + `</span>`
 		}
 
-		if (idx % 2) != 0 {
-			text += `<span bgcolor="#20202090">`
-		} else {
-			text += `<span>`
-		}
-
 		discovered := no
 		if p.discovered {
 			discovered = dyes
@@ -292,7 +280,7 @@ func (h *handler) refreshPlanets() {
 			landable = yes
 		}
 
-		text += fmt.Sprintf("~%-8.8s %s %s %s %s %s %s %s  %2d  %s  %s  %s  %s",
+		text += fmt.Sprintf(" ~%-8.8s %s %s %s %s %s %s  %s  %2d %s  %s  %s  %s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,
@@ -308,7 +296,7 @@ func (h *handler) refreshPlanets() {
 			calcSignals(p.signals),
 		)
 
-		text += "</span>\n"
+		text += "\n"
 
 		idx++
 

@@ -47,6 +47,8 @@ type signalData struct {
 	not_used_atm bool
 }
 
+var FuelLevel float64
+
 // no just "string" because we must filter out duplicates
 var CurrentSystemStars map[string]*starData
 var CurrentSystemPlanets map[string]*planetData

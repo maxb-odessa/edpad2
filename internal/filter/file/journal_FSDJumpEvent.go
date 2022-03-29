@@ -115,6 +115,18 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		ev.FuelLevel,
 		ev.FuelUsed)
 
+	FuelLevel = ev.FuelLevel
+
+	alertText := ""
+	if ev.FuelLevel < 12.0 {
+		alertText = `<span color="yellow">`
+		if ev.FuelLevel < 6.0 {
+			alertText = `<span color="red">`
+		}
+		alertText += "Alert! Low fuel level (%.1f tons)"
+		alertText += `</span>`
+	}
+
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -124,6 +136,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 			UpdateText:     true,
 			Subtitle:       "",
 			UpdateSubtitle: true,
+			SetVisible:     true,
 		},
 	}
 
@@ -160,6 +173,18 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 			UpdateText:     true,
 			Subtitle:       "",
 			UpdateSubtitle: true,
+		},
+	}
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_INFO,
+			Text:           alertText,
+			AppendText:     false,
+			UpdateText:     true,
+			Subtitle:       "",
+			UpdateSubtitle: false,
 		},
 	}
 
