@@ -15,7 +15,7 @@ func (h *handler) keypad() error {
 
 	kp, ok := obj.(*gtk.Popover)
 	if !ok {
-		return fmt.Errorf("endpoint '%s': 'keypad' is not a *gtk.Popover obj")
+		return fmt.Errorf("endpoint '%s': 'keypad' is not a *gtk.Popover obj", h.endpoint)
 	}
 
 	kp.Popdown()

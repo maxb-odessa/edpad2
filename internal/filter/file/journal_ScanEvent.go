@@ -184,7 +184,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
-			Subtitle:       fmt.Sprintf("[%s]", idx),
+			Subtitle:       fmt.Sprintf("[%d]", idx),
 			UpdateSubtitle: false,
 		},
 	}
@@ -233,7 +233,8 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 func (h *handler) refreshPlanets() {
 
 	// table headers
-	text := ` <i><u><span color="gray">` +
+	text := "\n" +
+		` <i><u><span color="gray">` +
 		`  Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Sigs ` +
 		`</span></u></i>` +
 		"\n"
