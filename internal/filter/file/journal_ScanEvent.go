@@ -89,7 +89,7 @@ const (
 	SOLAR_RADIUS     = 696340000.0
 	EARTH_RADIUS     = 6371.0 * 1000.0
 	LIGHT_SECOND     = 299792.0 * 1000.
-	MIN_RING_OUT_RAD = 20.0 * LIGHT_SECOND
+	MIN_RING_OUT_RAD = 15.0 * LIGHT_SECOND
 )
 
 func formatTemp(temp float64) string {
