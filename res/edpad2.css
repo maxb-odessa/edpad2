@@ -21,7 +21,7 @@ image {
 #route_tv {
     font-size: 26px;
     font-weight: bold;
-    background: alpha (#000000, 0.20);
+    background: alpha (#000000, 0.50);
 }
 
 #route_tv text {
@@ -30,7 +30,7 @@ image {
 
 
 #info_tv {
-    background: alpha (#000000, 0.20);
+    background: alpha (#000000, 0.50);
     font-size: 24px;
     font-weight: bold;
 }
@@ -59,22 +59,22 @@ image {
 
 #system_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.1);
+    background: alpha (#000000, 0.40);
 }
 
 #planets_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.1);
+    background: alpha (#000000, 0.40);
 }
 
 #signals_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.1);
+    background: alpha (#000000, 0.40);
 }
 
 #srv_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.1);
+    background: alpha (#000000, 0.40);
 }
 
 #system_tv text,

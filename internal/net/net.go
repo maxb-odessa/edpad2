@@ -2,6 +2,7 @@ package net
 
 import (
 	"context"
+	"edpad2/internal/local/display"
 	"edpad2/internal/router"
 	"io"
 	"sync"
@@ -68,11 +69,19 @@ func (h *handler) Run() error {
 		close(h.connector.FromRouterCh)
 	}()
 
-	// wait for grpc connection to be established
 	slog.Debug(1, "endpoint '%s': waiting for server", h.endpoint)
 	grpcReady.Lock()
 	slog.Debug(1, "endpoint '%s': connected to server", h.endpoint)
 	grpcReady.Unlock()
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:   display.VP_INFO,
+			Text:       "Connected!",
+			UpdateText: true,
+		},
+	}
 
 	client := pb.NewGameNodeClient(grpcConn)
 
