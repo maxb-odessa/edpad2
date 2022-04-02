@@ -25,7 +25,7 @@ image {
 }
 
 #route_tv text {
-    color: #a0a000;
+    color: #c0c000;
 }
 
 
@@ -46,35 +46,35 @@ image {
     border-style: none;
     border-color: #ffffff;
     color: #ffffff;
-    background: #404080;
+    background: #8080b0;
     font-weight: bold;
     font-size: 20px;
     opacity: 0.3;
 }
 
 #stack_switcher button:checked {
-    background: #b0b0ff;
+    background: #c0c0ff;
     opacity: 0.6;
 }
 
 #system_tv {
-    font-size: 26px;
-    background: alpha (#000000, 0.40);
+    font-size: 30px;
+    background: alpha (#000000, 0.30);
 }
 
 #planets_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.40);
+    background: alpha (#000000, 0.30);
 }
 
 #signals_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.40);
+    background: alpha (#000000, 0.30);
 }
 
 #srv_tv {
     font-size: 26px;
-    background: alpha (#000000, 0.40);
+    background: alpha (#000000, 0.30);
 }
 
 #system_tv text,

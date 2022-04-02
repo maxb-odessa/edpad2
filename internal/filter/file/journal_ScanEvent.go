@@ -89,7 +89,7 @@ const (
 	SOLAR_RADIUS     = 696340000.0
 	EARTH_RADIUS     = 6371.0 * 1000.0
 	LIGHT_SECOND     = 299792.0 * 1000.
-	MIN_RING_OUT_RAD = 15.0 * LIGHT_SECOND
+	MIN_RING_OUT_RAD = 25.0 * LIGHT_SECOND
 )
 
 func formatTemp(temp float64) string {
@@ -133,7 +133,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	text := "\n" +
 		`   <i><u><span color="gray">` +
-		`  Class   Distance(ls)   Disco  Belt  M(sol)  R(sol)  Temp(K)` +
+		`  Class  Distance(ls)  Disco Belt  M(sol) R(sol) Temp(K)` +
 		`</span></u></i>` +
 		"\n"
 
@@ -160,7 +160,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			belt = yes
 		}
 
-		text += fmt.Sprintf(" %s %-s%-1d %-3.3s     %8.0f   %s    %s   %3.1f     %3.1f     %s",
+		text += fmt.Sprintf(" %s %-s%-1d %-3.3s    %8.0f  %s   %s   %3.1f    %3.1f    %s",
 			mainstar,
 			s.class,
 			s.subClass,
@@ -235,7 +235,7 @@ func (h *handler) refreshPlanets() {
 	// table headers
 	text := "\n" +
 		` <i><u><span color="gray">` +
-		`  Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF Sigs ` +
+		`   Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF bgHGO` +
 		`</span></u></i>` +
 		"\n"
 
@@ -281,7 +281,7 @@ func (h *handler) refreshPlanets() {
 			landable = yes
 		}
 
-		text += fmt.Sprintf(" ~%-8.8s %s %s %s %s %s %s  %s  %2d %s  %s  %s  %s",
+		text += fmt.Sprintf("  ~%-8.8s %s %s %s %s %s %s  %s  %2d %s  %s  %s  %s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,
@@ -323,31 +323,39 @@ func calcSignals(bs *bodySignals) string {
 	sig := ""
 
 	if bs.biological > 0 {
-		sig += `<span color="green">b</span>`
+		if bs.biological > 6 {
+			sig += fmt.Sprintf(`<span color="#80ff80">%d</span>`, bs.biological)
+		} else {
+			sig += fmt.Sprintf(`<span color="#50dd50">%d</span>`, bs.biological)
+		}
 	} else {
 		sig += "-"
 	}
 
 	if bs.geological > 0 {
-		sig += `<span color="brown">g</span>`
+		if bs.geological > 6 {
+			sig += fmt.Sprintf(`<span color="#ffff80">%d</span>`, bs.geological)
+		} else {
+			sig += fmt.Sprintf(`<span color="#dddd50">%d</span>`, bs.geological)
+		}
 	} else {
 		sig += "-"
 	}
 
 	if bs.human > 0 {
-		sig += `<span color="blue">H</span>`
+		sig += fmt.Sprintf(`<span color="#3090ff">%d</span>`, bs.human)
 	} else {
 		sig += "-"
 	}
 
 	if bs.guardian > 0 {
-		sig += `<span color="cyan">G"</span>`
+		sig += fmt.Sprintf(`<span color="#9030ff">%d"</span>`, bs.guardian)
 	} else {
 		sig += "-"
 	}
 
 	if bs.other > 0 {
-		sig += `<span color="red">T</span>`
+		sig += fmt.Sprintf(`<span color="ff3030">%d</span>`, bs.other)
 	} else {
 		sig += "-"
 	}

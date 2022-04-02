@@ -30,7 +30,7 @@ func CB(body string, f ...int) (ret string) {
 		}
 	}
 
-	color := "#AAAAAA"
+	color := "#EEEEEE"
 	name := body
 
 	defer func() {
@@ -53,11 +53,11 @@ func CB(body string, f ...int) (ret string) {
 		return
 	case "High metal content body":
 		name = "HMC"
-		color = "#A0A0E0"
+		color = "#A0A0FF"
 		return
 	case "Metal rich body":
 		name = "Metal"
-		color = "#E0E0F0"
+		color = "#E0E0FF"
 		return
 	case "Icy body":
 		name = "Icy"
@@ -65,11 +65,11 @@ func CB(body string, f ...int) (ret string) {
 		return
 	case "Rocky body":
 		name = "Rocky"
-		color = "#D09080"
+		color = "#FF9080"
 		return
 	case "Rocky ice body":
 		name = "R/Ice"
-		color = "#F0F0A0"
+		color = "#FFFFA0"
 		return
 	case "Gas giant with ammonia based life":
 		name = "GG/AL"
@@ -137,11 +137,11 @@ func CB(body string, f ...int) (ret string) {
 		name = "@"
 		color = "#A0A0A0"
 	case 'L', 'Y', 'T':
-		color = "#A00000"
+		color = "#FF2000"
 	case 'N':
 		color = "#AAAAFF"
 	case 'S':
-		color = "#AAAA70"
+		color = "#CCCC70"
 	case 'W':
 		color = "#E0E0E0"
 	}

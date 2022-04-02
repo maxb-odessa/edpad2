@@ -60,7 +60,7 @@
                 <property name="name">stack</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="transition-type">crossfade</property>
+                <property name="transition-type">over-down-up</property>
                 <signal name="button-press-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <signal name="touch-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <child>
