@@ -133,7 +133,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	text := "\n" +
 		`   <i><u><span color="gray">` +
-		`  Class  Distance(ls)  Disco Belt  M(sol) R(sol) Temp(K)` +
+		`  Class    Distance(ls)  Dis  Belt  M(sol) R(sol) Temp(K)` +
 		`</span></u></i>` +
 		"\n"
 
@@ -160,7 +160,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			belt = yes
 		}
 
-		text += fmt.Sprintf(" %s %-s%-1d %-3.3s    %8.0f  %s   %s   %3.1f    %3.1f    %s",
+		text += fmt.Sprintf(" %s %-s%-1d %-3.3s      %8.0f  %s  %s   %3.1f    %3.1f    %s",
 			mainstar,
 			s.class,
 			s.subClass,
@@ -235,7 +235,7 @@ func (h *handler) refreshPlanets() {
 	// table headers
 	text := "\n" +
 		` <i><u><span color="gray">` +
-		`   Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF bgHGO` +
+		`  Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF bgHGO` +
 		`</span></u></i>` +
 		"\n"
 
@@ -281,7 +281,7 @@ func (h *handler) refreshPlanets() {
 			landable = yes
 		}
 
-		text += fmt.Sprintf("  ~%-8.8s %s %s %s %s %s %s  %s  %2d %s  %s  %s  %s",
+		text += fmt.Sprintf(" ~%-8.8s %s %s %s %s %s %s  %s  %2d %s  %s  %s  %s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,

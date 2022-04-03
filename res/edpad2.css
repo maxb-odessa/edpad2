@@ -25,7 +25,7 @@ image {
 }
 
 #route_tv text {
-    color: #c0c000;
+    color: #c0c0c0;
 }
 
 
@@ -62,7 +62,7 @@ image {
 }
 
 #system_tv {
-    font-size: 30px;
+    font-size: 28px;
     background: alpha (#000000, 0.30);
 }
 
