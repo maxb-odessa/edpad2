@@ -115,23 +115,16 @@ func DoRouting() {
 
 }
 
-func distribute(ep Endpoint, rc <-chan *Message) {
-	for {
-		select {
-		case data, ok := <-rc:
-			// read chan closed - the endpoint is terminated
-			if !ok {
-				slog.Debug(5, "distribute: endpoint '%s' closed its read chan", ep)
-				return
-			}
-			if dstEp, ok := endpoints[data.Dst]; ok {
-				data.Src = ep
-				slog.Debug(99, "distribute: writing: %+v", data)
-				dstEp.FromRouterCh <- data
-			} else {
-				// impossible case (?)
-				slog.Err("distribute: endpoint %s is not registered (src = %s)", data.Dst, ep)
-			}
+func distribute(ep Endpoint, rch <-chan *Message) {
+	for data := range rch {
+		if dstEp, ok := endpoints[data.Dst]; ok {
+			data.Src = ep
+			slog.Debug(99, "distribute: writing: %+v", data)
+			dstEp.FromRouterCh <- data
+		} else {
+			// impossible case (?)
+			slog.Err("distribute: endpoint %s is not registered (src = %s)", data.Dst, ep)
 		}
 	} //for
+	slog.Debug(5, "distribute: endpoint '%s' closed its read chan", ep)
 }

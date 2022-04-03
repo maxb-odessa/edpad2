@@ -4,6 +4,7 @@ import (
 	"context"
 	"edpad2/internal/local/display"
 	"edpad2/internal/router"
+	"fmt"
 	"io"
 	"sync"
 
@@ -31,9 +32,9 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	h := new(handler)
 	h.endpoint = ep
 	h.connector = new(router.Connector)
-	h.connector.FromRouterCh = make(chan *router.Message) // wait for router messages on this chan
-	h.connector.ToRouterCh = make(chan *router.Message)   // send messages to the router into this chan
-	h.connector.DoneCh = make(chan bool)                  // termination chan
+	h.connector.FromRouterCh = make(chan *router.Message, 8) // wait for router messages on this chan
+	h.connector.ToRouterCh = make(chan *router.Message, 8)   // send messages to the router into this chan
+	h.connector.DoneCh = make(chan bool)                     // termination chan
 
 	// will connect to configured server or to default "127.0.0.1:12346"
 	addr := sconf.StrDef("net", "connect", "127.0.0.1:12346")
@@ -69,19 +70,31 @@ func (h *handler) Run() error {
 		close(h.connector.FromRouterCh)
 	}()
 
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:   display.VP_SYSTEM,
+			Text:       fmt.Sprintf("\n%s: connecting...", h.endpoint),
+			UpdateText: true,
+			AppendText: true,
+		},
+	}
+
 	slog.Debug(1, "endpoint '%s': waiting for server", h.endpoint)
 	grpcReady.Lock()
 	slog.Debug(1, "endpoint '%s': connected to server", h.endpoint)
-	grpcReady.Unlock()
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
-			ViewPort:   display.VP_INFO,
-			Text:       "Connected!",
+			ViewPort:   display.VP_SYSTEM,
+			Text:       fmt.Sprintf("\n%s: connected!", h.endpoint),
 			UpdateText: true,
+			AppendText: true,
 		},
 	}
+
+	grpcReady.Unlock()
 
 	client := pb.NewGameNodeClient(grpcConn)
 

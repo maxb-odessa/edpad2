@@ -17,9 +17,9 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	h := new(handler)
 	h.endpoint = ep
 	h.connector = new(router.Connector)
-	h.connector.FromRouterCh = make(chan *router.Message) // wait for router messages on this chan
-	h.connector.ToRouterCh = make(chan *router.Message)   // send messages to the router into this chan
-	h.connector.DoneCh = make(chan bool)                  // termination chan
+	h.connector.FromRouterCh = make(chan *router.Message, 8) // wait for router messages on this chan
+	h.connector.ToRouterCh = make(chan *router.Message, 8)   // send messages to the router into this chan
+	h.connector.DoneCh = make(chan bool)                     // termination chan
 
 	go h.run()
 

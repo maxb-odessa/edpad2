@@ -59,9 +59,9 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	h := new(handler)
 	h.endpoint = ep
 	h.connector = new(router.Connector)
-	h.connector.FromRouterCh = make(chan *router.Message) // wait for router messages on this chan
-	h.connector.ToRouterCh = make(chan *router.Message)   // send messages to the router into this chan
-	h.connector.DoneCh = make(chan bool)                  // termination chan
+	h.connector.FromRouterCh = make(chan *router.Message, 8) // wait for router messages on this chan
+	h.connector.ToRouterCh = make(chan *router.Message, 8)   // send messages to the router into this chan
+	h.connector.DoneCh = make(chan bool)                     // termination chan
 
 	if err := h.init(); err != nil {
 		slog.Err("endpoint '%s': failed: %s", ep, err)
@@ -201,9 +201,9 @@ func (h *handler) run() {
 			}
 
 			// we support file filter only atm
-			if d.Src != router.FilterFile {
-				continue
-			}
+			//if d.Src != router.FilterFile {
+			//	continue
+			//}
 
 			// display data from file filter
 			glib.IdleAdd(func() bool { return h.printText(d.Data.(*Text)) })
