@@ -133,7 +133,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	text := "\n" +
 		`   <i><u><span color="gray">` +
-		`  Class    Distance(ls)  Dis  Belt  M(sol) R(sol) Temp(K)` +
+		`  Class    Distance  Dis  Belt  M(sol) R(sol) Temp(K)` +
 		`</span></u></i>` +
 		"\n"
 
@@ -160,7 +160,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			belt = yes
 		}
 
-		text += fmt.Sprintf(" %s %-s%-1d %-3.3s      %8.0f  %s  %s   %3.1f    %3.1f    %s",
+		text += fmt.Sprintf(" %s %-s%-1d %-3.3s  %8.0f  %s  %s   %3.1f    %3.1f    %s",
 			mainstar,
 			s.class,
 			s.subClass,
@@ -256,9 +256,17 @@ func (h *handler) refreshPlanets() {
 			continue
 		}
 
-		ringRad := fmt.Sprintf("%3.0f", p.ringRad/LIGHT_SECOND)
-		if p.ringRad >= MIN_RING_OUT_RAD {
-			ringRad = `<span color="white">` + ringRad + `</span>`
+		ringRad := " - "
+		if p.rings > 0 {
+			ringRad = fmt.Sprintf("%3.0f", p.ringRad/LIGHT_SECOND)
+			if p.ringRad >= MIN_RING_OUT_RAD {
+				ringRad = `<span color="white">` + ringRad + `</span>`
+			}
+		}
+
+		ringsNum := " -"
+		if p.rings > 0 {
+			ringsNum = fmt.Sprintf("%2d", p.rings)
 		}
 
 		discovered := no
@@ -281,7 +289,7 @@ func (h *handler) refreshPlanets() {
 			landable = yes
 		}
 
-		text += fmt.Sprintf(" ~%-8.8s %s %s %s %s %s %s  %s  %2d %s  %s  %s  %s",
+		text += fmt.Sprintf(" ~%-8.8s %s %s %s %s %s %s  %s  %s %s  %s  %s  %s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,
@@ -290,7 +298,7 @@ func (h *handler) refreshPlanets() {
 			formatE(p.radiusEm),
 			formatE(p.gravityG),
 			formatTemp(p.temperatureK),
-			p.rings,
+			ringsNum,
 			ringRad,
 			landable,
 			terraformable,
@@ -366,7 +374,7 @@ func calcSignals(bs *bodySignals) string {
 func remarkablePlanet(pd *planetData) bool {
 
 	// landable + high G
-	if pd.landable && pd.gravityG >= 2.0 {
+	if pd.landable && pd.gravityG >= 2.5 {
 		return true
 	}
 
@@ -391,9 +399,16 @@ func remarkablePlanet(pd *planetData) bool {
 	}
 
 	// possible interesting signals
-	if pd.signals.biological+pd.signals.geological+pd.signals.human+pd.signals.guardian+pd.signals.other > 0 {
+	if pd.signals.biological+pd.signals.human+pd.signals.guardian+pd.signals.other > 0 {
 		return true
 	}
+
+	// i don't need geo signals atm
+	/*
+		if pd.signals.geological > 0 {
+			return true
+		}
+	*/
 
 	// class
 	switch pd.class {

@@ -68,35 +68,38 @@ func CB(body string, f ...int) (ret string) {
 		color = "#FF9080"
 		return
 	case "Rocky ice body":
-		name = "R/Ice"
+		name = "RkIce"
 		color = "#FFFFA0"
 		return
 	case "Gas giant with ammonia based life":
-		name = "GG/AL"
+		name = "GgAbl"
 		return
 	case "Gas giant with water based life":
-		name = "GG/WL"
+		name = "GgWbl"
 		return
 	case "Sudarsky class I gas giant":
-		name = "GG 1c"
+		name = "GgI"
 		return
 	case "Sudarsky class II gas giant":
-		name = "GG 2c"
+		name = "GgII"
 		return
 	case "Sudarsky class III gas giant":
-		name = "GG 3c"
+		name = "GgIII"
 		return
 	case "Sudarsky class IV gas giant":
-		name = "GG 4c"
+		name = "GgIV"
 		return
 	case "Sudarsky class V gas giant":
-		name = "GG 5c"
+		name = "GgV"
 		return
 	case "Water giant":
 		name = "WG"
 		return
 	case "Helium rich gas giant":
-		name = "HeRGG"
+		name = "GgHeR"
+		return
+	case "Helium gas giant":
+		name = "GgHe"
 		return
 	}
 
