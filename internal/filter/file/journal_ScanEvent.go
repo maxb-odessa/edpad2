@@ -3,9 +3,12 @@ package file
 import (
 	"edpad2/internal/local/display"
 	"edpad2/internal/router"
+
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/maxb-odessa/slog"
 )
 
 type ScanEvent struct {
@@ -86,9 +89,9 @@ func (h *handler) evScan(ev *ScanEvent) {
 
 func formatE(val float64) string {
 	if val >= 100.0 { // yes, 100.0 is correct
-		return fmt.Sprintf("%4.1fK", val/1000.0)
+		return fmt.Sprintf("%3.1fK", val/1000.0)
 	} else {
-		return fmt.Sprintf("%4.2f", val)
+		return fmt.Sprintf("%4.1f", val)
 	}
 }
 
@@ -158,6 +161,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			s.radiusSol,
 			s.temperatureK)
 
+		slog.Debug(0, "TEXT: \n%s\n", text)
+
 		idx++
 
 		text += "\n"
@@ -215,7 +220,7 @@ func (h *handler) refreshPlanets() {
 	// table headers
 	text := "\n" +
 		` <i><u><span color="gray">` +
-		`  Name    Type  D M  M(e)  R(e)  Grav  T(K)  Rn  Rr  Ld TF bgHGO` +
+		`  Name    Type  D M   M(e) R(e)  Grav  T(K)  Rn  Rr  Ld TF bgHGO` +
 		`</span></u></i>` +
 		"\n"
 
@@ -266,7 +271,7 @@ func (h *handler) refreshPlanets() {
 			landable = yes
 		}
 
-		text += fmt.Sprintf(" ~%-8.8s %s %s %s %s %s %s  %s  %s %s  %s  %s  %s",
+		text += fmt.Sprintf(" ~%-8.8s %s %s %s  %s  %s   %s  %s  %s %s  %s  %s  %s",
 			p.shortName,
 			CB(p.class, -5),
 			discovered,
