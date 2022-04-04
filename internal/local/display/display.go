@@ -22,7 +22,7 @@ const (
 	VP_SYSTEM
 	VP_SIGNALS
 	VP_PLANETS
-	VP_SRV
+	VP_NOTES
 )
 
 // we expect this from file filter
@@ -144,7 +144,7 @@ func (h *handler) init() (err error) {
 		VP_SYSTEM:  &viewPort{title: "System", tvName: "system_tv", swName: "system_sw"},
 		VP_PLANETS: &viewPort{title: "Planets", tvName: "planets_tv", swName: "planets_sw"},
 		VP_SIGNALS: &viewPort{title: "Signals", tvName: "signals_tv", swName: "signals_sw"},
-		VP_SRV:     &viewPort{title: "SRV", tvName: "srv_tv", swName: "srv_sw"},
+		VP_NOTES:   &viewPort{title: "NOTES", tvName: "notes_tv", swName: "notes_sw"},
 	}
 
 	for _, vp := range h.viewPorts {

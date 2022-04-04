@@ -1,6 +1,11 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"fmt"
+	"time"
+)
 
 type MaterialCollectedEvent struct {
 	Category      string    `json:"Category,omitempty"`
@@ -12,5 +17,19 @@ type MaterialCollectedEvent struct {
 }
 
 func (h *handler) evMaterialCollected(ev *MaterialCollectedEvent) {
-	return
+
+	text := fmt.Sprintf("Material collected: %s\n --> %s (%d)\n", ev.Category, ev.Name, ev.Count)
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_NOTES,
+			Text:           text,
+			AppendText:     true,
+			UpdateText:     true,
+			Subtitle:       "[!]",
+			UpdateSubtitle: false,
+		},
+	}
+
 }

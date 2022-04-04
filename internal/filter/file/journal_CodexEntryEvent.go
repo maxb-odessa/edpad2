@@ -1,6 +1,10 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"time"
+)
 
 type CodexEntryEvent struct {
 	Category                    string    `json:"Category,omitempty"`
@@ -25,5 +29,25 @@ type CodexEntryEvent struct {
 }
 
 func (h *handler) evCodexEntry(ev *CodexEntryEvent) {
+
+	isNew := ""
+	if !ev.IsNewEntry {
+		isNew = " (NEW)"
+	}
+
+	text := "Codex" + isNew + ":" + ev.CategoryLocalised + ", " + ev.SubCategoryLocalised + "\n --> " + ev.NameLocalised + "\n"
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_NOTES,
+			Text:           text,
+			AppendText:     true,
+			UpdateText:     true,
+			Subtitle:       "[!]",
+			UpdateSubtitle: false,
+		},
+	}
+
 	return
 }

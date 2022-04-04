@@ -76,7 +76,7 @@ image {
     background: alpha (#000000, 0.30);
 }
 
-#srv_tv {
+#notes_tv {
     font-size: 26px;
     background: alpha (#000000, 0.30);
 }
@@ -84,7 +84,7 @@ image {
 #system_tv text,
 #planets_tv text,
 #signals_tv text,
-#srv_tv text {
+#notes_tv text {
     color: #cccccc;
 }
 
