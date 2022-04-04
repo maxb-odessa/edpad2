@@ -15,7 +15,8 @@ type starData struct {
 	massSol      float64
 	radiusSol    float64
 	temperatureK string
-	hasBelt      bool
+	rings        int
+	ringRad      float64
 }
 
 type bodySignals struct {

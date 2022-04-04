@@ -46,7 +46,7 @@ func (h *handler) evFSSSignalDiscovered(ev *FSSSignalDiscoveredEvent) {
 		usstype = ev.UssType
 	}
 
-	text := fmt.Sprintf("\nName: %s, Type: %s, Threat: %d, Station: %v",
+	text := fmt.Sprintf("Name: %s\n --> Type: %s, Threat: %d, Station: %v\n",
 		name,
 		usstype,
 		ev.ThreatLevel,

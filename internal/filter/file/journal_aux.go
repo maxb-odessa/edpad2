@@ -151,3 +151,21 @@ func CB(body string, f ...int) (ret string) {
 
 	return
 }
+
+// in meters
+const (
+	SOLAR_RADIUS     = 696340000.0
+	EARTH_RADIUS     = 6371.0 * 1000.0
+	LIGHT_SECOND     = 299792.0 * 1000.
+	MIN_RING_OUT_RAD = 25.0 * LIGHT_SECOND
+)
+
+func formatLargeNum(val float64) string {
+	if val >= 1000000.0 {
+		return fmt.Sprintf("%3.1fM", val/1000000.0)
+	} else if val >= 1000.0 {
+		return fmt.Sprintf("%3.1fK", val/1000.0)
+	} else {
+		return fmt.Sprintf("%4.0f", val)
+	}
+}

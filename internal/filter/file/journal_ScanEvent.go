@@ -84,29 +84,11 @@ func (h *handler) evScan(ev *ScanEvent) {
 	}
 }
 
-// in meters
-const (
-	SOLAR_RADIUS     = 696340000.0
-	EARTH_RADIUS     = 6371.0 * 1000.0
-	LIGHT_SECOND     = 299792.0 * 1000.
-	MIN_RING_OUT_RAD = 25.0 * LIGHT_SECOND
-)
-
-func formatTemp(temp float64) string {
-	if temp >= 1000000.0 {
-		return fmt.Sprintf("%3.1fM", temp/1000000.0)
-	} else if temp >= 1000.0 {
-		return fmt.Sprintf("%3.1fK", temp/1000.0)
-	} else {
-		return fmt.Sprintf("%4.0f", temp)
-	}
-}
-
 func formatE(val float64) string {
 	if val >= 100.0 { // yes, 100.0 is correct
 		return fmt.Sprintf("%4.1fK", val/1000.0)
 	} else {
-		return fmt.Sprintf("%5.2f", val)
+		return fmt.Sprintf("%4.2f", val)
 	}
 }
 
@@ -122,23 +104,21 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	sd.subClass = ev.Subclass
 	sd.distance = ev.DistanceFromArrivalLs
 	sd.luminosity = ev.Luminosity
+	sd.rings = len(ev.Rings)
 	sd.massSol = ev.StellarMass
 	sd.radiusSol = ev.Radius / SOLAR_RADIUS
-	sd.temperatureK = formatTemp(ev.SurfaceTemperature)
-	if len(ev.Rings) > 0 {
-		sd.hasBelt = true
-	}
+	sd.temperatureK = formatLargeNum(ev.SurfaceTemperature)
+	sd.rings, sd.ringRad = calcRings(ev)
 
 	CurrentSystemStars[ev.BodyName] = sd
 
 	text := "\n" +
-		`   <i><u><span color="gray">` +
-		`  Class    Distance  Dis  Belt  M(sol) R(sol) Temp(K)` +
+		` <i><u><span color="gray">` +
+		`     Class   Dst(ls) Disc  Rn   Rr  M(sol) R(sol) Temp(K)` +
 		`</span></u></i>` +
 		"\n"
 
-	dyes := `<span color="yellow">yes</span>`
-	yes := `<span color="white">yes</span>`
+	yes := `<span color="yellow">yes</span>`
 	no := `<span color="gray">no </span>`
 
 	idx := 0
@@ -152,22 +132,28 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 		discovered := no
 		if s.discovered {
-			discovered = dyes
+			discovered = yes
 		}
 
-		belt := no
-		if s.hasBelt {
-			belt = yes
+		ringRad := "   -"
+		ringsNum := " -"
+		if s.rings > 0 {
+			ringRad = fmt.Sprintf("%4.0f", s.ringRad/LIGHT_SECOND)
+			if s.ringRad >= MIN_RING_OUT_RAD {
+				ringRad = `<span color="white">` + ringRad + `</span>`
+			}
+			ringsNum = fmt.Sprintf("%2d", s.rings)
 		}
 
-		text += fmt.Sprintf(" %s %-s%-1d %-3.3s  %8.0f  %s  %s   %3.1f    %3.1f    %s",
+		text += fmt.Sprintf(" %s %-s%-1d %-3.3s  %6.6s  %s   %2.2s %4.4s  %3.2f   %3.2f   %s",
 			mainstar,
 			s.class,
 			s.subClass,
 			s.luminosity,
-			s.distance,
+			formatLargeNum(s.distance),
 			discovered,
-			belt,
+			ringsNum,
+			ringRad,
 			s.massSol,
 			s.radiusSol,
 			s.temperatureK)
@@ -217,13 +203,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	if ev.TerraformState != "" {
 		pd.terraformable = true
 	}
-
-	// calc if has wide ring
-	for _, r := range ev.Rings {
-		if pd.ringRad < r.OuterRad {
-			pd.ringRad = r.OuterRad
-		}
-	}
+	pd.rings, pd.ringRad = calcRings(ev)
 
 	// show planets list
 	h.refreshPlanets()
@@ -257,15 +237,12 @@ func (h *handler) refreshPlanets() {
 		}
 
 		ringRad := " - "
+		ringsNum := " -"
 		if p.rings > 0 {
 			ringRad = fmt.Sprintf("%3.0f", p.ringRad/LIGHT_SECOND)
 			if p.ringRad >= MIN_RING_OUT_RAD {
 				ringRad = `<span color="white">` + ringRad + `</span>`
 			}
-		}
-
-		ringsNum := " -"
-		if p.rings > 0 {
 			ringsNum = fmt.Sprintf("%2d", p.rings)
 		}
 
@@ -297,7 +274,7 @@ func (h *handler) refreshPlanets() {
 			formatE(p.massEm),
 			formatE(p.radiusEm),
 			formatE(p.gravityG),
-			formatTemp(p.temperatureK),
+			formatLargeNum(p.temperatureK),
 			ringsNum,
 			ringRad,
 			landable,
@@ -417,4 +394,20 @@ func remarkablePlanet(pd *planetData) bool {
 	}
 
 	return false
+}
+
+// calc if has wide ring
+func calcRings(ev *ScanEvent) (rNum int, wRad float64) {
+
+	for _, r := range ev.Rings {
+		if r.Name[len(r.Name)-5:] != " Ring" {
+			continue
+		}
+		rNum++
+		if wRad < r.OuterRad {
+			wRad = r.OuterRad
+		}
+	}
+
+	return
 }

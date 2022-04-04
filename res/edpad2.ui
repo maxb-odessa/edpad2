@@ -196,8 +196,8 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="name">SRV</property>
-                    <property name="title" translatable="yes">SRV</property>
+                    <property name="name">Notes</property>
+                    <property name="title" translatable="yes">Notes</property>
                     <property name="position">3</property>
                   </packing>
                 </child>
