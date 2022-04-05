@@ -168,6 +168,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		text += "\n"
 	}
 
+	slog.Debug(9, "STAR SCAN TEXT:\n%s\n", text)
+
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -292,6 +294,8 @@ func (h *handler) refreshPlanets() {
 		idx++
 
 	}
+
+	slog.Debug(9, "PLANET SCAN TEXT:\n%s\n", text)
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
