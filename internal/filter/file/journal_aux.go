@@ -7,35 +7,14 @@ import (
 )
 
 // make fancy body name and color it
-func CB(body string, f ...int) (ret string) {
+func CB(body string) (name, color string) {
 
 	if body == "" {
-		return "?"
+		return "?", ""
 	}
 
-	var format string
-
-	if f == nil {
-		format = `<span weight="bold" color="%s">%s</span>`
-	} else {
-		if f[0] == -4 {
-			format = `<span weight="bold" color="%s">%-4.4s</span>`
-		} else if f[0] == 4 {
-			format = `<span weight="bold" color="%s">%+4.4s</span>`
-		}
-		if f[0] == -5 {
-			format = `<span weight="bold" color="%s">%-5.5s</span>`
-		} else if f[0] == 5 {
-			format = `<span weight="bold" color="%s">%5.5s</span>`
-		}
-	}
-
-	color := "#EEEEEE"
-	name := body
-
-	defer func() {
-		ret = fmt.Sprintf(format, color, name)
-	}()
+	color = "#EEEEEE"
+	name = body
 
 	// planets
 	switch body {

@@ -3,6 +3,7 @@ package file
 import (
 	"edpad2/internal/local/display"
 	"edpad2/internal/router"
+	"edpad2/pkg/fwt"
 
 	"encoding/json"
 	"fmt"
@@ -103,78 +104,76 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	if ev.BodyName == CurrentMainStarName {
 		sd.isMain = true
 	}
-	sd.class = CB(ev.StarType, 4)
+	sd.class = ev.StarType
 	sd.subClass = ev.Subclass
 	sd.distance = ev.DistanceFromArrivalLs
 	sd.luminosity = ev.Luminosity
 	sd.rings = len(ev.Rings)
 	sd.massSol = ev.StellarMass
 	sd.radiusSol = ev.Radius / SOLAR_RADIUS
-	sd.temperatureK = formatLargeNum(ev.SurfaceTemperature)
+	sd.temperatureK = ev.SurfaceTemperature
 	sd.rings, sd.ringRad = calcRings(ev)
 
 	CurrentSystemStars[ev.BodyName] = sd
 
-	text := "\n" +
-		` <i><u><span color="gray">` +
-		`     Class   Dst(ls) Disc  Rn   Rr  M(sol) R(sol) Temp(K)` +
-		`</span></u></i>` +
-		"\n"
+	t := &fwt.Table{
+		Delimiter: " ",
+		Pango:     true,
+		Default:   "-",
+	}
 
-	yes := `<span color="yellow">yes</span>`
-	no := `<span color="gray">no </span>`
+	t.Header(&fwt.Header{Text: "*", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "  Class   ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Dist(ls)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Disc", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " Rn", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "M(sol)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "R(sol)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Temp(K)", FgColor: "gray", Underline: true, Italic: true})
 
 	idx := 0
 
 	for _, s := range CurrentSystemStars {
 
-		mainstar := " "
 		if s.isMain {
-			mainstar = "*"
+			t.Cell(idx, &fwt.Cell{Text: "*", FgColor: "white", Bold: true})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: ""})
 		}
+		sname, scolor := CB(s.class)
+		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%s %d %s", sname, s.subClass, s.luminosity), FgColor: scolor, Left: true, Bold: true})
 
-		discovered := no
+		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distance)})
+
 		if s.discovered {
-			discovered = yes
+			t.Cell(idx, &fwt.Cell{Text: "yes", FgColor: "yellow"})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: "no", FgColor: "gray"})
 		}
 
-		ringRad := "   -"
-		ringsNum := " -"
+		ringRad := "-"
+		ringsNum := "-"
 		if s.rings > 0 {
-			ringRad = fmt.Sprintf("%4.0f", s.ringRad/LIGHT_SECOND)
-			if s.ringRad >= MIN_RING_OUT_RAD {
-				ringRad = `<span color="white">` + ringRad + `</span>`
-			}
-			ringsNum = fmt.Sprintf("%2d", s.rings)
+			ringRad = fmt.Sprintf("%.0f", s.ringRad/LIGHT_SECOND)
+			ringsNum = fmt.Sprintf("%d", s.rings)
 		}
+		t.Cell(idx, &fwt.Cell{Text: ringsNum})
+		t.Cell(idx, &fwt.Cell{Text: ringRad})
 
-		text += fmt.Sprintf(" %s %-s%-1d %-3.3s  %6.6s  %s   %2.2s %4.4s  %3.2f   %3.2f   %s",
-			mainstar,
-			s.class,
-			s.subClass,
-			s.luminosity,
-			formatLargeNum(s.distance),
-			discovered,
-			ringsNum,
-			ringRad,
-			s.massSol,
-			s.radiusSol,
-			s.temperatureK)
-
-		slog.Debug(0, "TEXT: \n%s\n", text)
+		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%.2f", s.massSol)})
+		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%.2f", s.radiusSol)})
+		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.temperatureK)})
 
 		idx++
 
-		text += "\n"
 	}
-
-	slog.Debug(9, "STAR SCAN TEXT:\n%s\n", text)
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_SYSTEM,
-			Text:           text,
+			Text:           t.Text(),
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       fmt.Sprintf("[%d]", idx),
@@ -195,9 +194,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		CurrentSystemPlanets[ev.BodyName] = pd
 	}
 
-	//  calc short name from BodyName, like "Graea Hypue FV-X d1-30 2 a" > "2 a"
-	bname := "        " + ev.BodyName // a hack to avoid too short names
-	pd.shortName = bname[len(bname)-8:]
+	pd.bodyName = ev.BodyName
 	pd.class = ev.PlanetClass
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
@@ -219,23 +216,32 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 func (h *handler) refreshPlanets() {
 
-	// table headers
-	text := "\n" +
-		` <i><u><span color="gray">` +
-		`  Name    Type  D M   M(e) R(e)  Grav  T(K)  Rn  Rr  Ld TF bgHGO` +
-		`</span></u></i>` +
-		"\n"
+	t := fwt.Table{
+		Default:   "-",
+		Delimiter: " ",
+		Pango:     true,
+	}
+
+	t.Header(&fwt.Header{Text: "  Name  ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Type ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "D", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "M", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "  M(e)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "  R(e)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "  Grav", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " T(K)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Rn", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Ld", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Tf", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "bgHGO", FgColor: "gray", Underline: true, Italic: true})
 
 	idx := 0
-
-	dyes := `<span color="yellow">y</span>`
-	yes := `<span color="white">y</span>`
-	no := `<span color="gray">n</span>`
 
 	for _, p := range CurrentSystemPlanets {
 
 		// not enuff data yet (i.e. signals only detected, no Scan event happened), skip it
-		if p.shortName == "" {
+		if p.bodyName == "" {
 			continue
 		}
 
@@ -243,65 +249,61 @@ func (h *handler) refreshPlanets() {
 			continue
 		}
 
-		ringRad := " - "
-		ringsNum := " -"
+		t.Cell(idx, &fwt.Cell{Text: p.bodyName, Left: true})
+
+		ptype, pcolor := CB(p.class)
+		t.Cell(idx, &fwt.Cell{Text: ptype, FgColor: pcolor, Left: true})
+
+		if p.discovered {
+			t.Cell(idx, &fwt.Cell{Text: "y", Bold: true, FgColor: "yellow"})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
+		}
+
+		if p.mapped {
+			t.Cell(idx, &fwt.Cell{Text: "y", Bold: true, FgColor: "yellow"})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
+		}
+
+		t.Cell(idx, &fwt.Cell{Text: formatE(p.massEm)})
+		t.Cell(idx, &fwt.Cell{Text: formatE(p.radiusEm)})
+		t.Cell(idx, &fwt.Cell{Text: formatE(p.gravityG)})
+		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.temperatureK)})
+
+		ringRad := "-"
+		ringsNum := "-"
 		if p.rings > 0 {
 			ringRad = fmt.Sprintf("%3.0f", p.ringRad/LIGHT_SECOND)
-			if p.ringRad >= MIN_RING_OUT_RAD {
-				ringRad = `<span color="white">` + ringRad + `</span>`
-			}
-			ringsNum = fmt.Sprintf("%2d", p.rings)
+			ringsNum = fmt.Sprintf("%d", p.rings)
 		}
+		t.Cell(idx, &fwt.Cell{Text: ringsNum})
+		t.Cell(idx, &fwt.Cell{Text: ringRad})
 
-		discovered := no
-		if p.discovered {
-			discovered = dyes
-		}
-
-		mapped := no
-		if p.mapped {
-			mapped = yes
-		}
-
-		terraformable := no
 		if p.terraformable {
-			terraformable = yes
+			t.Cell(idx, &fwt.Cell{Text: "y"})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: "n"})
 		}
 
-		landable := no
 		if p.landable {
-			landable = yes
+			t.Cell(idx, &fwt.Cell{Text: "y"})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: "n"})
 		}
 
-		text += fmt.Sprintf(" ~%-8.8s %s %s %s  %s  %s   %s  %s  %s %s  %s  %s  %s",
-			p.shortName,
-			CB(p.class, -5),
-			discovered,
-			mapped,
-			formatE(p.massEm),
-			formatE(p.radiusEm),
-			formatE(p.gravityG),
-			formatLargeNum(p.temperatureK),
-			ringsNum,
-			ringRad,
-			landable,
-			terraformable,
-			calcSignals(p.signals),
-		)
-
-		text += "\n"
+		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
 		idx++
 
 	}
-
-	slog.Debug(9, "PLANET SCAN TEXT:\n%s\n", text)
-
+	tt := t.Text()
+	slog.Debug(0, "PLANET: %s", tt)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_PLANETS,
-			Text:           text,
+			Text:           tt,
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       fmt.Sprintf("[%d]", idx),

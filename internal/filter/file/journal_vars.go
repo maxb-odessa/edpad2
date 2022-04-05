@@ -14,7 +14,7 @@ type starData struct {
 	luminosity   string
 	massSol      float64
 	radiusSol    float64
-	temperatureK string
+	temperatureK float64
 	rings        int
 	ringRad      float64
 }
@@ -28,7 +28,7 @@ type bodySignals struct {
 }
 
 type planetData struct {
-	shortName     string
+	bodyName      string
 	discovered    bool
 	mapped        bool
 	class         string

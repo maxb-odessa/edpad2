@@ -22,9 +22,9 @@ func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 
 	text := fmt.Sprintf(`<i>%s</i> (%s) >> <span color="white">%d</span> >> (%s) <i>%s</i>`,
 		CurrentSystemName,
-		CB(CurrentMainStarClass),
+		"?", //CB(CurrentMainStarClass),
 		ev.RemainingJumpsInRoute,
-		CB(ev.StarClass),
+		"?", //CB(ev.StarClass),
 		ev.Name)
 
 	h.connector.ToRouterCh <- &router.Message{

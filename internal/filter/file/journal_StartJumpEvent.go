@@ -24,8 +24,9 @@ func (h *handler) evStartJump(ev *StartJumpEvent) {
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &localDisplay.Text{
-			ViewPort:       localDisplay.VP_SYSTEM,
-			Text:           `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
+			ViewPort: localDisplay.VP_SYSTEM,
+			Text:     "TODO",
+			// TODO Text:           `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       "",

@@ -1,12 +1,16 @@
 package fwt
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Fixed Width Table
 
 type cellData struct {
 	Text      string
 	Left      bool
+	NoFormat  bool
 	FgColor   string
 	BgColor   string
 	Italic    bool
@@ -90,6 +94,12 @@ func (t *Table) Text() string {
 				c = row[idx]
 			}
 
+			// formating of this cell is disabled
+			if c.NoFormat {
+				text += t.Delimiter + c.Text
+				continue
+			}
+
 			// cut cell text to match header len
 			cellSize := len(t.headers[idx].Text)
 			cellText := c.Text
@@ -124,6 +134,10 @@ func (t *Table) Text() string {
 }
 
 func pangofyText(c cellData, text string) string {
+
+	strings.ReplaceAll(text, `<`, `&lt;`)
+	strings.ReplaceAll(text, `>`, `&gt;`)
+	strings.ReplaceAll(text, `&`, `&amp;`)
 
 	if c.FgColor != "" || c.BgColor != "" {
 		clr := ""
