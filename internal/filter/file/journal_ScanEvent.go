@@ -2,6 +2,7 @@ package file
 
 import (
 	"edpad2/internal/local/display"
+	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"edpad2/pkg/fwt"
 
@@ -97,6 +98,16 @@ func formatE(val float64) string {
 }
 
 func (h *handler) parseStar(ev *ScanEvent) {
+
+	switch ev.StarType[0:1] {
+	case "N", "D", "H":
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalSound,
+			Data: &sound.Track{
+				Id: sound.ALARM,
+			},
+		}
+	}
 
 	sd := new(starData)
 

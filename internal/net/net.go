@@ -3,6 +3,7 @@ package net
 import (
 	"context"
 	"edpad2/internal/local/display"
+	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"fmt"
 	"io"
@@ -91,6 +92,13 @@ func (h *handler) Run() error {
 			Text:       fmt.Sprintf("\n%s: connected!", h.endpoint),
 			UpdateText: true,
 			AppendText: true,
+		},
+	}
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalSound,
+		Data: &sound.Track{
+			Id: sound.WARN,
 		},
 	}
 

@@ -18,6 +18,7 @@ install:
 	cp -f res/edpad2.css ${SHAREDIR}/edpad2.css
 	sed -i "s=@SHAREDIR@=${SHAREDIR}=g" ${SHAREDIR}/edpad2.css
 	cp -f res/edpad2.ui ${SHAREDIR}
+	cp -f res/*.wav ${SHAREDIR}
 	cp -f res/edpad2.png ${SHAREDIR}/edpad2.png
 	mkdir -p ${CONFDIR}
 	cp -r etc/edpad2.conf ${CONFDIR}/edpad2.conf

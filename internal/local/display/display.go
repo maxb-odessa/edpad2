@@ -47,8 +47,11 @@ type viewPort struct {
 }
 
 type handler struct {
-	endpoint    router.Endpoint
-	connector   *router.Connector
+	// router data
+	endpoint  router.Endpoint
+	connector *router.Connector
+
+	// priv data
 	resourceDir string
 	gtkBuilder  *gtk.Builder
 	viewPorts   map[int]*viewPort
@@ -173,9 +176,13 @@ func (h *handler) init() (err error) {
 	// inits done, show the window
 	top.ShowAll()
 
-	if ok := sconf.BoolDef("local display", "maximize window", false); ok {
+	// maximize if configured
+	if ok := sconf.BoolDef("local display", "maximized", false); ok {
 		top.Maximize()
 	}
+
+	// hide widow decorations if configured
+	top.SetDecorated(sconf.BoolDef("local display", "decorated", false))
 
 	go gtk.Main()
 
