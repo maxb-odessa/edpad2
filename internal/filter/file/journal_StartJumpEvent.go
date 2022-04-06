@@ -21,12 +21,17 @@ func (h *handler) evStartJump(ev *StartJumpEvent) {
 		return
 	}
 
+	sname, scolor := CB(ev.StarClass)
+
+	text := `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem +
+		` <span fgcolor="` + scolor + `">(` + sname + `)</span>` +
+		`</span></i>`
+
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &localDisplay.Text{
-			ViewPort: localDisplay.VP_SYSTEM,
-			Text:     "TODO",
-			// TODO Text:           `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem + " (" + CB(ev.StarClass) + ")" + `</span></i>`,
+			ViewPort:       localDisplay.VP_SYSTEM,
+			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       "",

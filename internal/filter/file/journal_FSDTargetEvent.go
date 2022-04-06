@@ -20,22 +20,24 @@ func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 
 	NextJumpSystem = ev.Name
 
-	text := fmt.Sprintf(`<i>%s</i> (%s) >> <span color="white">%d</span> >> (%s) <i>%s</i>`,
-		CurrentSystemName,
-		"?", //CB(CurrentMainStarClass),
+	csname, cscolor := CB(CurrentMainStarClass)
+	jtname, jtcolor := CB(ev.StarClass)
+
+	currsys := `<i>` + CurrentSystemName + `</i> <span fgcolor="` + cscolor + `">` + `(` + csname + `)</span>`
+	tgtsys := `<span fgcolor="` + jtcolor + `">` + `(` + jtname + `)</span>` + `<i>` + NextJumpSystem + `</i>`
+
+	text := fmt.Sprintf(`%s &gt;&gt; <b><span color="white">%d</span></b> &gt;&gt; %s`,
+		currsys,
 		ev.RemainingJumpsInRoute,
-		"?", //CB(ev.StarClass),
-		ev.Name)
+		tgtsys)
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &localDisplay.Text{
-			ViewPort:       localDisplay.VP_ROUTE,
-			Text:           text,
-			AppendText:     false,
-			UpdateText:     true,
-			Subtitle:       "",
-			UpdateSubtitle: false,
+			ViewPort:   localDisplay.VP_ROUTE,
+			Text:       text,
+			AppendText: false,
+			UpdateText: true,
 		},
 	}
 
