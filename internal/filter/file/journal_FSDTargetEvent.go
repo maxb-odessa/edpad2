@@ -24,8 +24,8 @@ func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 	csclass, cscolor := CB(CurrentMainStarClass)
 	jtclass, jtcolor := CB(ev.StarClass)
 
-	currsys := `<i>` + CurrentSystemName + `</i> <span fgcolor="` + cscolor + `">` + `(` + csclass + `)</span>`
-	tgtsys := `<span fgcolor="` + jtcolor + `">` + `(` + jtclass + `)</span>` + `<i>` + NextJumpSystem + `</i>`
+	currsys := `<i>` + CurrentSystemName + ` </i><span fgcolor="` + cscolor + `">` + `(` + csclass + `)</span>`
+	tgtsys := `<span fgcolor="` + jtcolor + `">` + `(` + jtclass + `)</span>` + ` <i>` + NextJumpSystem + `</i>`
 
 	text := fmt.Sprintf(`%s &gt;&gt; <b><span color="white">%d</span></b> &gt;&gt; %s`,
 		currsys,

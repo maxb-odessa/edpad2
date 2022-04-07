@@ -11,7 +11,7 @@ all: build
 build:
 	go build ./cmd/edpad2
 
-install:
+install: build
 	go env -w GOBIN=${GOBIN}
 	go install ./cmd/edpad2
 	mkdir -p ${SHAREDIR}

@@ -101,11 +101,11 @@ func (t *Table) Text() string {
 			}
 
 			// cut cell text to match header len
-			cellSize := len(t.headers[idx].Text)
+			cellSize := len([]rune(t.headers[idx].Text))
 			cellText := c.Text
-			if len(c.Text) > cellSize {
+			if len([]rune(c.Text)) > cellSize {
 				if c.Left {
-					cellText = cellText[len(cellText)-cellSize:]
+					cellText = cellText[(len([]rune(cellText)))-cellSize:]
 				} else {
 					cellText = cellText[0:cellSize]
 				}

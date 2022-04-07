@@ -133,7 +133,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		Default:   "-",
 	}
 
-	t.Header(&fwt.Header{Text: "*", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "  Class   ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Dist(ls)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Disc", FgColor: "gray", Underline: true, Italic: true})
@@ -148,7 +148,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	for _, s := range CurrentSystemStars {
 
 		if s.isMain {
-			t.Cell(idx, &fwt.Cell{Text: "*", FgColor: "white", Bold: true})
+			t.Cell(idx, &fwt.Cell{Text: display.STAR4FILLED, FgColor: "white", Bold: true})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: ""})
 		}
@@ -158,9 +158,9 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distance)})
 
 		if s.discovered {
-			t.Cell(idx, &fwt.Cell{Text: "yes", FgColor: "yellow"})
+			t.Cell(idx, &fwt.Cell{Text: display.CIRCLEDY, FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "no", FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: display.CIRCLEDN, FgColor: "gray"})
 		}
 
 		ringRad := "-"
@@ -180,11 +180,13 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	}
 
+	text := t.Text()
+	slog.Debug(0, "STAR:\n%s", text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_SYSTEM,
-			Text:           t.Text(),
+			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       fmt.Sprintf("[%d]", idx),
@@ -268,13 +270,13 @@ func (h *handler) refreshPlanets() {
 		if p.discovered {
 			t.Cell(idx, &fwt.Cell{Text: "y", Bold: true, FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: "-", FgColor: "gray"})
 		}
 
 		if p.mapped {
 			t.Cell(idx, &fwt.Cell{Text: "y", Bold: true, FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: "-", FgColor: "gray"})
 		}
 
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.massEm)})
@@ -294,13 +296,13 @@ func (h *handler) refreshPlanets() {
 		if p.terraformable {
 			t.Cell(idx, &fwt.Cell{Text: "y"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "n"})
+			t.Cell(idx, &fwt.Cell{Text: "-"})
 		}
 
 		if p.landable {
 			t.Cell(idx, &fwt.Cell{Text: "y"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "n"})
+			t.Cell(idx, &fwt.Cell{Text: "-"})
 		}
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
