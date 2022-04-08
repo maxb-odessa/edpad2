@@ -14,20 +14,20 @@ import (
 
 type soundObj struct {
 	confName string
-	samples  *beep.Resampler
+	buffer   *beep.Buffer
 }
 
 var soundMap = map[int]*soundObj{
-	ALARM: {confName: "file alarm", samples: nil},
-	BEEP:  {confName: "file beep", samples: nil},
-	CLICK: {confName: "file click", samples: nil},
-	DROP:  {confName: "file drop", samples: nil},
-	NOTE:  {confName: "file note", samples: nil},
-	TING:  {confName: "file ting", samples: nil},
-	TONE:  {confName: "file tone", samples: nil},
-	TWIT:  {confName: "file twit", samples: nil},
-	WARN:  {confName: "file warn", samples: nil},
-	WARP:  {confName: "file warp", samples: nil},
+	ALARM: {confName: "file alarm"},
+	BEEP:  {confName: "file beep"},
+	CLICK: {confName: "file click"},
+	DROP:  {confName: "file drop"},
+	NOTE:  {confName: "file note"},
+	TING:  {confName: "file ting"},
+	TONE:  {confName: "file tone"},
+	TWIT:  {confName: "file twit"},
+	WARN:  {confName: "file warn"},
+	WARP:  {confName: "file warp"},
 }
 
 var playSampleRate beep.SampleRate = 44100
@@ -35,25 +35,29 @@ var playSampleRate beep.SampleRate = 44100
 func (h *handler) init() error {
 
 	// init speaker with local samplerate
-	speaker.Init(playSampleRate, playSampleRate.N(time.Second/5))
+	speaker.Init(playSampleRate, playSampleRate.N(time.Second/10))
 
 	// load all sounds
 	for _, so := range soundMap {
 
 		fname, err := sconf.Str("local sound", so.confName)
 		if err != nil {
-			return err
+			// it's ok, this sound is nto configured
+			continue
 		}
 
 		fh, err := os.Open(os.ExpandEnv(fname))
 		if err != nil {
-			return err
+			slog.Warn("%s: error: %s", h.endpoint, err)
+			continue
 		}
 
 		if streamer, format, err := wav.Decode(fh); err != nil {
 			return err
 		} else {
-			so.samples = beep.Resample(5, format.SampleRate, playSampleRate, streamer)
+			so.buffer = beep.NewBuffer(format)
+			so.buffer.Append(streamer)
+			streamer.Close()
 			slog.Debug(1, "%s: loaded '%s' from '%s'", h.endpoint, so.confName, fname)
 		}
 
@@ -64,30 +68,32 @@ func (h *handler) init() error {
 
 func (h *handler) play(s *Track) {
 
+	//	speaker.Lock()
+	//	defer speaker.Unlock()
+
 	so, ok := soundMap[s.Id]
 	if !ok {
 		slog.Err("%s: sound id %d not defined", h.endpoint, s.Id)
 		return
 	}
 
+	if so.buffer == nil {
+		slog.Err("%s: sound id %d not loaded", h.endpoint, s.Id)
+		return
+	}
+
 	// TODO: start/stop
 
-	go func() {
+	// repeat: <0, 0, 1 = repeat one time, > 1 = repeat N times
+	rTimes := s.Repeat
+	if rTimes < 2 {
+		rTimes = 1
+	}
 
-		// repeat: <0, 0, 1 = repeat one time, > 1 = repeat N times
-		rTimes := s.Repeat
-		if rTimes < 2 {
-			rTimes = 1
-		}
+	track := so.buffer.Streamer(0, so.buffer.Len())
+	for i := 0; i < rTimes; i++ {
+		slog.Debug(9, "%s PLAYING %s", h.endpoint, so.confName)
+		speaker.Play(track)
+	}
 
-		done := make(chan bool)
-
-		for i := 0; i < rTimes; i++ {
-			speaker.Play(beep.Seq(so.samples, beep.Callback(func() {
-				done <- true
-			})))
-			<-done
-		}
-
-	}()
 }

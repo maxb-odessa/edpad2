@@ -68,7 +68,7 @@ func (h *handler) run() {
 		case d := <-h.connector.FromRouterCh:
 			slog.Debug(9, "local sound got msg! %+v", d)
 			snd := d.Data.(*Track)
-			h.play(snd)
+			go h.play(snd)
 
 		} //select...
 

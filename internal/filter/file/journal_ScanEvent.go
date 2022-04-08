@@ -158,9 +158,9 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distance)})
 
 		if s.discovered {
-			t.Cell(idx, &fwt.Cell{Text: display.CIRCLEDY, FgColor: "yellow"})
+			t.Cell(idx, &fwt.Cell{Text: "Y", FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: display.CIRCLEDN, FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
 		}
 
 		ringRad := "-"
