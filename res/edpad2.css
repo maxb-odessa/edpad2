@@ -62,22 +62,26 @@ image {
 }
 
 #system_tv {
+    font-family: "go mono";
     font-size: 30px;
     background: alpha (#000000, 0.30);
 }
 
 #planets_tv {
     font-size: 26px;
+    font-family: "go mono";
     background: alpha (#000000, 0.30);
 }
 
 #signals_tv {
     font-size: 26px;
+    font-family: "go mono";
     background: alpha (#000000, 0.30);
 }
 
 #notes_tv {
     font-size: 26px;
+    font-family: "go mono";
     background: alpha (#000000, 0.30);
 }
 

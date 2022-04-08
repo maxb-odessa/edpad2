@@ -180,8 +180,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	}
 
-	text := t.Text()
-	slog.Debug(0, "STAR:\n%s", text)
+	text := "\n" + t.Text()
+	slog.Debug(5, "STAR:%s", text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -310,13 +310,14 @@ func (h *handler) refreshPlanets() {
 		idx++
 
 	}
-	tt := t.Text()
-	slog.Debug(0, "PLANET: %s", tt)
+
+	text := "\n" + t.Text()
+	slog.Debug(5, "PLANET:%s", text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_PLANETS,
-			Text:           tt,
+			Text:           text,
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       fmt.Sprintf("[%d]", idx),
@@ -389,18 +390,20 @@ func remarkablePlanet(pd *planetData) bool {
 		return true
 	}
 
-	// terraformable
-	if pd.terraformable {
-		return true
-	}
+	// i don't need this atm
+	/*
+		if pd.terraformable {
+			return true
+		}
+	*/
 
-	// heliums ar nice
+	// heliums are nice
 	if pd.class[0:6] == "Helium" {
 		return true
 	}
 
 	// possible interesting signals
-	if pd.signals.biological+pd.signals.human+pd.signals.guardian+pd.signals.other > 0 {
+	if pd.signals.biological > 0 {
 		return true
 	}
 
@@ -410,6 +413,18 @@ func remarkablePlanet(pd *planetData) bool {
 			return true
 		}
 	*/
+
+	if pd.signals.human > 0 {
+		return true
+	}
+
+	if pd.signals.guardian > 0 {
+		return true
+	}
+
+	if pd.signals.other > 0 {
+		return true
+	}
 
 	// class
 	switch pd.class {
