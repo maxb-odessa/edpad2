@@ -3,6 +3,7 @@ package file
 import (
 	"edpad2/internal/local/display"
 	localDisplay "edpad2/internal/local/display"
+	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"fmt"
 	"time"
@@ -119,12 +120,24 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 
 	alertText := ""
 	if ev.FuelLevel < 12.0 {
+
 		alertText = `<span color="yellow">`
+
 		if ev.FuelLevel < 6.0 {
 			alertText = `<span color="red">`
 		}
+
 		alertText += "Alert! Low fuel level (%.1f tons)"
 		alertText += `</span>`
+
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalSound,
+			Data: &sound.Track{
+				Id:     sound.DROP,
+				Repeat: 3,
+			},
+		}
+
 	}
 
 	h.connector.ToRouterCh <- &router.Message{
@@ -156,7 +169,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_SIGNALS,
-			Text:           "",
+			Text:           "\n",
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       "",
@@ -168,7 +181,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_NOTES,
-			Text:           "",
+			Text:           "\n",
 			AppendText:     false,
 			UpdateText:     true,
 			Subtitle:       "",
@@ -176,6 +189,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		},
 	}
 
+	/* NO! don't clean up INFO pane!
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
@@ -187,6 +201,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 			UpdateSubtitle: false,
 		},
 	}
+	*/
 
 	CurrentMainStarName = ev.Body
 	CurrentSystemName = ev.StarSystem

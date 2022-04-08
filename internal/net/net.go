@@ -98,7 +98,7 @@ func (h *handler) Run() error {
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalSound,
 		Data: &sound.Track{
-			Id: sound.WARN,
+			Id: sound.CLICK,
 		},
 	}
 

@@ -41,47 +41,51 @@ image {
 
 #stack_switcher button {
     margin: 5px;
+    /*
     box-shadow: 7px 5px 3px #505050;
-    border-radius: 10px;
     border-style: solid;
     border-color: #000000;
-    background: #9090c0;
+    */
+    border-style: none;
+    border-radius: 10px;
+    background: #7070a0;
     font-weight: bold;
     opacity: 0.7;
 }
 
 
 #stack_switcher label {
-    font-size: 28px;
+    font-family: "free mono";
+    font-size: 27px;
     color: #000000;
 }
 
 #stack_switcher button:checked {
-    background: #d0d0ff;
+    background: #a0a0dd;
     opacity: 0.9;
 }
 
 #system_tv {
-    font-family: "go mono";
+    font-family: "free mono";
     font-size: 30px;
     background: alpha (#000000, 0.30);
 }
 
 #planets_tv {
     font-size: 26px;
-    font-family: "go mono";
+    font-family: "free mono";
     background: alpha (#000000, 0.30);
 }
 
 #signals_tv {
     font-size: 26px;
-    font-family: "go mono";
+    font-family: "free mono";
     background: alpha (#000000, 0.30);
 }
 
 #notes_tv {
     font-size: 26px;
-    font-family: "go mono";
+    font-family: "free mono";
     background: alpha (#000000, 0.30);
 }
 

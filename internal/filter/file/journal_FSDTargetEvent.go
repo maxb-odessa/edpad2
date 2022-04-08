@@ -1,6 +1,7 @@
 package file
 
 import (
+	"edpad2/internal/local/display"
 	localDisplay "edpad2/internal/local/display"
 	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
@@ -27,9 +28,11 @@ func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 	currsys := `<i>` + CurrentSystemName + ` </i><span fgcolor="` + cscolor + `">` + `(` + csclass + `)</span>`
 	tgtsys := `<span fgcolor="` + jtcolor + `">` + `(` + jtclass + `)</span>` + ` <i>` + NextJumpSystem + `</i>`
 
-	text := fmt.Sprintf(`%s &gt;&gt; <b><span color="white">%d</span></b> &gt;&gt; %s`,
+	text := fmt.Sprintf(`%s%s<span color="white">%d</span>%s%s`,
 		currsys,
+		`<span color="gray">`+display.HEAVYDASHEDRIGHTARROW+`</span>`,
 		ev.RemainingJumpsInRoute,
+		`<span color="gray">`+display.HEAVYDASHEDRIGHTARROW+`</span>`,
 		tgtsys)
 
 	h.connector.ToRouterCh <- &router.Message{
@@ -47,7 +50,7 @@ func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 		h.connector.ToRouterCh <- &router.Message{
 			Dst: router.LocalSound,
 			Data: &sound.Track{
-				Id: sound.WARN,
+				Id: sound.ALARM,
 			},
 		}
 	}

@@ -70,12 +70,24 @@ func (h *handler) play(s *Track) {
 		return
 	}
 
-	// TODO: play in go, play N times, start/stop
+	// TODO: start/stop
 
-	//		done := make(chan bool)
-	speaker.Play(beep.Seq(so.samples, beep.Callback(func() {
-		//			done <- true
-	})))
+	go func() {
 
-	//		<-done
+		// repeat: <0, 0, 1 = repeat one time, > 1 = repeat N times
+		rTimes := s.Repeat
+		if rTimes < 2 {
+			rTimes = 1
+		}
+
+		done := make(chan bool)
+
+		for i := 0; i < rTimes; i++ {
+			speaker.Play(beep.Seq(so.samples, beep.Callback(func() {
+				done <- true
+			})))
+			<-done
+		}
+
+	}()
 }

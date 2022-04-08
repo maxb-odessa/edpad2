@@ -104,7 +104,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		h.connector.ToRouterCh <- &router.Message{
 			Dst: router.LocalSound,
 			Data: &sound.Track{
-				Id: sound.ALARM,
+				Id: sound.WARP,
 			},
 		}
 	}

@@ -60,12 +60,12 @@ func (h *handler) evFSSSignalDiscovered(ev *FSSSignalDiscoveredEvent) {
 			Text:           text,
 			AppendText:     true,
 			UpdateText:     true,
-			Subtitle:       fmt.Sprintf("[%d]", len(CurrentSystemSignals)),
+			Subtitle:       `[!]`,
 			UpdateSubtitle: true,
 		},
 	}
 
-	slog.Info("signal ev: %s\n%+v", text, ev)
+	slog.Debug(5, "SIGNAL: %s\n%+v", text, ev)
 
 	return
 }

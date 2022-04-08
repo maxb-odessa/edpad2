@@ -8,6 +8,9 @@ const (
 
 	CIRCLEDN = "\u24DD"
 	CIRCLEDY = "\u24E8"
+
+	DASHEDRIGHTARROW      = "\u279F"
+	HEAVYDASHEDRIGHTARROW = "\u27A0"
 )
 
 func CIRCLEDNUM(num int) string {
