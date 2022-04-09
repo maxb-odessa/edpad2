@@ -127,7 +127,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 			alertText = `<span color="red">`
 		}
 
-		alertText += "Alert! Low fuel level (%.1f tons)"
+		alertText += fmt.Sprintf("Alert! Low fuel level (%.2f tons)", ev.FuelLevel)
 		alertText += `</span>`
 
 		h.connector.ToRouterCh <- &router.Message{
@@ -189,19 +189,15 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		},
 	}
 
-	/* NO! don't clean up INFO pane!
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
-			ViewPort:       display.VP_INFO,
-			Text:           alertText,
-			AppendText:     false,
-			UpdateText:     true,
-			Subtitle:       "",
-			UpdateSubtitle: false,
+			ViewPort:   display.VP_INFO,
+			Text:       alertText,
+			AppendText: false,
+			UpdateText: true,
 		},
 	}
-	*/
 
 	CurrentMainStarName = ev.Body
 	CurrentSystemName = ev.StarSystem

@@ -148,7 +148,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	for _, s := range CurrentSystemStars {
 
 		if s.isMain {
-			t.Cell(idx, &fwt.Cell{Text: display.STAR4FILLED, FgColor: "white", Bold: true})
+			t.Cell(idx, &fwt.Cell{Text: "*", FgColor: "white", Bold: true})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: ""})
 		}

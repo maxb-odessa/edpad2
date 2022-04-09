@@ -21,6 +21,7 @@ image {
 #route_tv {
     font-size: 26px;
     font-weight: bold;
+    font-family: "free mono";
     background: alpha (#000000, 0.30);
 }
 
@@ -32,6 +33,7 @@ image {
 #info_tv {
     background: alpha (#000000, 0.30);
     font-size: 24px;
+    font-family: "free mono";
     font-weight: bold;
 }
 
@@ -40,11 +42,12 @@ image {
 }
 
 #stack_switcher button {
-    margin: 5px;
+    margin: 3px;
     /*
-    box-shadow: 7px 5px 3px #505050;
     border-style: solid;
+    border-width: 3px 0px 0px 2px;
     border-color: #000000;
+    box-shadow: 7px 5px 3px #909090;
     */
     border-style: none;
     border-radius: 10px;
@@ -55,8 +58,8 @@ image {
 
 
 #stack_switcher label {
-    font-family: "free mono";
-    font-size: 27px;
+    font-family: "go mono";
+    font-size: 25px;
     color: #000000;
 }
 
@@ -66,26 +69,26 @@ image {
 }
 
 #system_tv {
-    font-family: "free mono";
+    font-family: "noto sans mono";
     font-size: 30px;
     background: alpha (#000000, 0.30);
 }
 
 #planets_tv {
     font-size: 26px;
-    font-family: "free mono";
+    font-family: "noto sans mono";
     background: alpha (#000000, 0.30);
 }
 
 #signals_tv {
     font-size: 26px;
-    font-family: "free mono";
+    font-family: "noto sans mono";
     background: alpha (#000000, 0.30);
 }
 
 #notes_tv {
     font-size: 26px;
-    font-family: "free mono";
+    font-family: "noto sans mono";
     background: alpha (#000000, 0.30);
 }
 
@@ -93,7 +96,7 @@ image {
 #planets_tv text,
 #signals_tv text,
 #notes_tv text {
-    color: #cccccc;
+    color: #e0e0e0;
 }
 
 #keypad {
