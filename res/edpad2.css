@@ -21,7 +21,7 @@ image {
 #route_tv {
     font-size: 26px;
     font-weight: bold;
-    font-family: "free mono";
+    font-family: "go mono";
     background: alpha (#000000, 0.30);
 }
 
@@ -33,7 +33,7 @@ image {
 #info_tv {
     background: alpha (#000000, 0.30);
     font-size: 24px;
-    font-family: "free mono";
+    font-family: "go mono";
     font-weight: bold;
 }
 
@@ -96,7 +96,7 @@ image {
 #planets_tv text,
 #signals_tv text,
 #notes_tv text {
-    color: #e0e0e0;
+    color: #c0c0c0;
 }
 
 #keypad {
