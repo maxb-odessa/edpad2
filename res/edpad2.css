@@ -100,8 +100,8 @@ image {
 }
 
 #keypad {
-    border-style: none;
-    background: alpha (#000000, 0.30);
+    border-style: solid,
+    background: alpha (#000000, 0.0);
 }
 
 #keypad button {
@@ -111,7 +111,6 @@ image {
     color: #aaaaaa;
     font-weight: bold;
     font-size: 20px;
-    background: alpha (#505090, 0.30);
 }
 
 #numbox button {
@@ -122,6 +121,10 @@ image {
     background: alpha (#ffff00, 0.2);
 }
 
+#numbox button:active {
+    background: alpha (#ffff00, 0.6);
+}
+
 #navbox button#up,
 #navbox button#down,
 #navbox button#left,
@@ -130,9 +133,22 @@ image {
     background: alpha (#ffffff, 0.3);
 }
 
+#navbox button#up:active,
+#navbox button#down:active,
+#navbox button#left:active,
+#navbox button#right:active {
+    margin: 5px;
+    background: alpha (#ffffff, 0.6);
+}
+
+
 #navbox button#ok {
     margin: 10px;
     background: alpha (#9090ff, 0.3);
+}
+
+#navbox button#ok:active {
+    background: alpha (#9090ff, 0.6);
 }
 
 
@@ -142,12 +158,25 @@ image {
     background: alpha (#ffffff, 0.15);
 }
 
+#navbox button#prev:active,
+#navbox button#next:active {
+    background: alpha (#ffffff, 0.6);
+}
 
 #buttonsbox button#esc {
     background: alpha (#ff0000, 0.3);
+}
+
+#buttonsbox button#esc:active {
+    background: alpha (#ff0000, 0.6);
 }
 
 #buttonsbox button {
     margin: 5px;
     background: alpha (#ffffff, 0.15);
 }
+
+#buttonsbox button:active {
+    background: alpha (#ffffff, 0.6);
+}
+
