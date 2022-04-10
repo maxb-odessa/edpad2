@@ -119,48 +119,53 @@ image {
     margin-left: 5px;
     margin-right: 5px;
     background: alpha (#ffff00, 0.2);
+    font-family: "free mono";
+    font-size: 35px;
 }
 
 #numbox button:active {
     background: alpha (#ffff00, 0.6);
 }
 
-#navbox button#up,
-#navbox button#down,
-#navbox button#left,
-#navbox button#right {
+#navbox button#w,
+#navbox button#s,
+#navbox button#a,
+#navbox button#d {
     margin: 5px;
+    font-size: 30px;
     background: alpha (#ffffff, 0.3);
 }
 
-#navbox button#up:active,
-#navbox button#down:active,
-#navbox button#left:active,
-#navbox button#right:active {
+#navbox button#v:active,
+#navbox button#s:active,
+#navbox button#a:active,
+#navbox button#d:active {
     margin: 5px;
     background: alpha (#ffffff, 0.6);
 }
 
 
-#navbox button#ok {
+#navbox button#space {
     margin: 10px;
-    background: alpha (#9090ff, 0.3);
+    font-size: 30px;
+    background: alpha (#ff90ff, 0.2);
 }
 
-#navbox button#ok:active {
-    background: alpha (#9090ff, 0.6);
+#navbox button#space:active {
+    background: alpha (#ff90ff, 0.6);
 }
 
 
-#navbox button#prev,
-#navbox button#next {
+#navbox button#e,
+#navbox button#q {
     margin: 10px;
-    background: alpha (#ffffff, 0.15);
+    font-size: 30px;
+    background: alpha (#90ffff, 0.15);
 }
 
-#navbox button#prev:active,
-#navbox button#next:active {
-    background: alpha (#ffffff, 0.6);
+#navbox button#e:active,
+#navbox button#q:active {
+    background: alpha (#90ffff, 0.6);
 }
 
 #buttonsbox button#esc {
