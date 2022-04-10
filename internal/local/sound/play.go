@@ -35,14 +35,14 @@ var playSampleRate beep.SampleRate = 44100
 func (h *handler) init() error {
 
 	// init speaker with local samplerate
-	speaker.Init(playSampleRate, playSampleRate.N(time.Second/10))
+	speaker.Init(playSampleRate, playSampleRate.N(time.Second/5))
 
 	// load all sounds
 	for _, so := range soundMap {
 
 		fname, err := sconf.Str("local sound", so.confName)
 		if err != nil {
-			// it's ok, this sound is nto configured
+			// it's ok, this sound is not configured
 			continue
 		}
 
@@ -90,9 +90,9 @@ func (h *handler) play(s *Track) {
 		rTimes = 1
 	}
 
-	track := so.buffer.Streamer(0, so.buffer.Len())
 	for i := 0; i < rTimes; i++ {
 		slog.Debug(9, "%s PLAYING %s", h.endpoint, so.confName)
+		track := so.buffer.Streamer(0, so.buffer.Len())
 		speaker.Play(track)
 	}
 

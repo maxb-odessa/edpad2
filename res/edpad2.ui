@@ -2,24 +2,12 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkTextBuffer" id="info_tb">
-    <property name="text" translatable="yes"></property>
-  </object>
-  <object class="GtkTextBuffer" id="planets_tb">
-    <property name="text" translatable="yes"></property>
-  </object>
-  <object class="GtkTextBuffer" id="route_tb">
-    <property name="text" translatable="yes"></property>
-  </object>
-  <object class="GtkTextBuffer" id="signals_tb">
-    <property name="text" translatable="yes"></property>
-  </object>
-  <object class="GtkTextBuffer" id="notes_tb">
-    <property name="text" translatable="yes"></property>
-  </object>
-  <object class="GtkTextBuffer" id="system_tb">
-    <property name="text" translatable="yes"></property>
-  </object>
+  <object class="GtkTextBuffer" id="info_tb"/>
+  <object class="GtkTextBuffer" id="notes_tb"/>
+  <object class="GtkTextBuffer" id="planets_tb"/>
+  <object class="GtkTextBuffer" id="route_tb"/>
+  <object class="GtkTextBuffer" id="signals_tb"/>
+  <object class="GtkTextBuffer" id="system_tb"/>
   <object class="GtkWindow" id="top">
     <property name="name">top</property>
     <property name="width-request">1200</property>
@@ -60,7 +48,6 @@
                 <property name="name">stack</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="transition-type">none</property>
                 <signal name="button-press-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <signal name="touch-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <child>
@@ -263,7 +250,7 @@
     <property name="hexpand">False</property>
     <property name="vexpand">True</property>
     <property name="relative-to">stack_switcher</property>
-    <property name="position">bottom</property>
+    <property name="position">right</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -271,17 +258,21 @@
         <property name="orientation">vertical</property>
         <property name="spacing">16</property>
         <child>
-          <object class="GtkBox">
+          <object class="GtkBox" id="numbox">
+            <property name="name">numbox</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="spacing">8</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="1">
                 <property name="label" translatable="yes">1</property>
+                <property name="name">1</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -290,11 +281,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="2">
                 <property name="label" translatable="yes">2</property>
+                <property name="name">2</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -303,11 +297,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="3">
                 <property name="label" translatable="yes">3</property>
+                <property name="name">3</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -316,11 +313,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="4">
                 <property name="label" translatable="yes">4</property>
+                <property name="name">4</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -337,17 +337,21 @@
         </child>
         <child>
           <!-- n-columns=5 n-rows=3 -->
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="navbox">
+            <property name="name">navbox</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="up">
                 <property name="label" translatable="yes">^</property>
+                <property name="name">up</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -355,11 +359,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="down">
                 <property name="label" translatable="yes">&gt;</property>
+                <property name="name">down</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">3</property>
@@ -367,11 +374,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="ok">
                 <property name="label" translatable="yes">OK</property>
+                <property name="name">ok</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -379,11 +389,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="left">
                 <property name="label" translatable="yes">&lt;</property>
+                <property name="name">left</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -391,11 +404,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="right">
                 <property name="label" translatable="yes">\/</property>
+                <property name="name">right</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -403,11 +419,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="next">
                 <property name="label" translatable="yes">&gt;&gt;</property>
+                <property name="name">next</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">3</property>
@@ -415,11 +434,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="prev">
                 <property name="label" translatable="yes">&lt;&lt;</property>
+                <property name="name">prev</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -459,7 +481,8 @@
         </child>
         <child>
           <!-- n-columns=3 n-rows=3 -->
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="buttonsbox">
+            <property name="name">buttonsbox</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="row-spacing">8</property>
@@ -467,11 +490,14 @@
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="esc">
                 <property name="label" translatable="yes">ESC</property>
+                <property name="name">esc</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -480,10 +506,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b1</property>
+                <property name="name">b1</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -492,10 +521,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b2</property>
+                <property name="name">b2</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -504,10 +536,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b8</property>
+                <property name="name">b8</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -516,10 +551,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b7</property>
+                <property name="name">b7</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -528,10 +566,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b6</property>
+                <property name="name">b6</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -540,10 +581,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b4</property>
+                <property name="name">b4</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -552,10 +596,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b5</property>
+                <property name="name">b5</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">2</property>
@@ -564,10 +611,13 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">b3</property>
+                <property name="name">b3</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+                <signal name="released" handler="onRelease" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">0</property>

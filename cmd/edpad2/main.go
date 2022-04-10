@@ -55,7 +55,7 @@ func main() {
 	// no special error check, router.Register() will take care of them
 	router.Register(network.Connect(router.NetFile))
 	//router.Register(network.Connect(router.NetJoystick))
-	//router.Register(network.Connect(router.NetKeyboard))
+	router.Register(network.Connect(router.NetKeyboard))
 	//router.Register(network.Connect(router.NetSound))
 	router.Register(filterFile.Connect(router.FilterFile))
 	router.Register(localDisplay.Connect(router.LocalDisplay))
@@ -86,7 +86,7 @@ func main() {
 	// unregister all endpoints
 	router.Unregister(router.NetFile)
 	//router.Unregister(router.NetJoystick)
-	//router.Unregister(router.NetKeyboard)
+	router.Unregister(router.NetKeyboard)
 	//router.Unregister(router.NetSound)
 	router.Unregister(router.FilterFile)
 	router.Unregister(router.LocalDisplay)
