@@ -100,7 +100,7 @@ image {
 }
 
 #keypad {
-    border-style: solid,
+    border-style: solid;
     background: alpha (#000000, 0.0);
 }
 
