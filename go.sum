@@ -3,6 +3,8 @@ cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
+github.com/bendahl/uinput v1.5.1 h1:zDa916qAqvph+LkLtMdomIoRYruLpBjEqC8hrmJLyXU=
+github.com/bendahl/uinput v1.5.1/go.mod h1:Np7w3DINc9wB83p12fTAM3DPPhFnAKP0WTXRqCQJ6Z8=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
@@ -70,6 +72,8 @@ github.com/lucasb-eyer/go-colorful v1.0.2/go.mod h1:0MS4r+7BZKSJ5mw4/S5MPN+qHFF1
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/maxb-odessa/gamenode v0.0.1 h1:S+qDco/R7CZwUgZtSn59yH39s7d15+JVZHBsp3V8Kzw=
 github.com/maxb-odessa/gamenode v0.0.1/go.mod h1:yHoT5C/A9e34kbv04DKuA/b7imbnQ78Ws0hNr6ugNwA=
+github.com/maxb-odessa/gamenode v0.0.2 h1:8HU82NCDyngGBIHuWo01+ECe2/jdAaNWEUT79q+8PN0=
+github.com/maxb-odessa/gamenode v0.0.2/go.mod h1:vaDLhwxvi+miNCefciXvQf8G0g4sBO1es/iXGGphEBg=
 github.com/maxb-odessa/sconf v0.0.1/go.mod h1:9YtVGmd04i0zuET91rbGRbjKWfJ2xplF1Po0Y2O7Bm0=
 github.com/maxb-odessa/sconf v0.0.2 h1:0LYwMXYRHtCxHipsG7t9NBSf09zZXC4zK6gPlnOgSro=
 github.com/maxb-odessa/sconf v0.0.2/go.mod h1:9YtVGmd04i0zuET91rbGRbjKWfJ2xplF1Po0Y2O7Bm0=
