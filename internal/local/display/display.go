@@ -213,16 +213,15 @@ func (h *handler) run() {
 			//}
 
 			// display data from file filter
-			glib.IdleAdd(func() bool { return h.printText(d.Data.(*Text)) })
+			dd := d
+			glib.IdleAdd(func() bool { h.printText(dd.Data.(*Text)); return false })
 
 		} //select
 
 	} //for
 }
 
-func (h *handler) printText(t *Text) (ret bool) {
-
-	ret = false
+func (h *handler) printText(t *Text) {
 
 	vp, ok := h.viewPorts[t.ViewPort]
 	if !ok {
@@ -257,6 +256,4 @@ func (h *handler) printText(t *Text) (ret bool) {
 	   vp.view.AddChildAtAnchor(img, ch)
 	   img.Show()
 	*/
-
-	return
 }
