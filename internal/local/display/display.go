@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"runtime"
 
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/glib"
@@ -80,7 +79,7 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 
 func (h *handler) init() (err error) {
 
-	runtime.LockOSThread()
+	// runtime.LockOSThread()
 
 	h.resourceDir = os.ExpandEnv(sconf.StrDef("local display", "resource dir", "$HOME/.local/share/edpad2"))
 	slog.Debug(9, "endpoint '%s': resource dir is '%s'", h.endpoint, h.resourceDir)
