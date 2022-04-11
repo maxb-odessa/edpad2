@@ -3,12 +3,12 @@ package file
 import "time"
 
 type SupercruiseEntryEvent struct {
-	Multicrew     bool      `json:"Multicrew,omitempty"`
-	StarSystem    string    `json:"StarSystem,omitempty"`
-	SystemAddress int       `json:"SystemAddress,omitempty"`
-	Taxi          bool      `json:"Taxi,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	Multicrew     bool      `mapstructure:"Multicrew,omitempty"`
+	StarSystem    string    `mapstructure:"StarSystem,omitempty"`
+	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
+	Taxi          bool      `mapstructure:"Taxi,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evSupercruiseEntry(ev *SupercruiseEntryEvent) {

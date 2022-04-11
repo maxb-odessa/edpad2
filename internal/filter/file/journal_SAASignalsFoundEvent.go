@@ -3,16 +3,16 @@ package file
 import "time"
 
 type SAASignalsFoundEvent struct {
-	BodyID   int    `json:"BodyID,omitempty"`
-	BodyName string `json:"BodyName,omitempty"`
+	BodyID   int    `mapstructure:"BodyID,omitempty"`
+	BodyName string `mapstructure:"BodyName,omitempty"`
 	Signals  []struct {
-		Count         int    `json:"Count,omitempty"`
-		Type          string `json:"Type,omitempty"`
-		TypeLocalised string `json:"Type_Localised,omitempty"`
-	} `json:"Signals,omitempty"`
-	SystemAddress int       `json:"SystemAddress,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+		Count         int    `mapstructure:"Count,omitempty"`
+		Type          string `mapstructure:"Type,omitempty"`
+		TypeLocalised string `mapstructure:"Type_Localised,omitempty"`
+	} `mapstructure:"Signals,omitempty"`
+	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 /*

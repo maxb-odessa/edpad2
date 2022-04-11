@@ -3,21 +3,21 @@ package file
 import "time"
 
 type DisembarkEvent struct {
-	Body          string    `json:"Body,omitempty"`
-	BodyID        int       `json:"BodyID,omitempty"`
-	ID            int       `json:"ID,omitempty"`
-	MarketID      int       `json:"MarketID,omitempty"`
-	Multicrew     bool      `json:"Multicrew,omitempty"`
-	OnPlanet      bool      `json:"OnPlanet,omitempty"`
-	OnStation     bool      `json:"OnStation,omitempty"`
-	Srv           bool      `json:"SRV,omitempty"`
-	StarSystem    string    `json:"StarSystem,omitempty"`
-	StationName   string    `json:"StationName,omitempty"`
-	StationType   string    `json:"StationType,omitempty"`
-	SystemAddress int       `json:"SystemAddress,omitempty"`
-	Taxi          bool      `json:"Taxi,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	Body          string    `mapstructure:"Body,omitempty"`
+	BodyID        int       `mapstructure:"BodyID,omitempty"`
+	ID            int       `mapstructure:"ID,omitempty"`
+	MarketID      int       `mapstructure:"MarketID,omitempty"`
+	Multicrew     bool      `mapstructure:"Multicrew,omitempty"`
+	OnPlanet      bool      `mapstructure:"OnPlanet,omitempty"`
+	OnStation     bool      `mapstructure:"OnStation,omitempty"`
+	Srv           bool      `mapstructure:"SRV,omitempty"`
+	StarSystem    string    `mapstructure:"StarSystem,omitempty"`
+	StationName   string    `mapstructure:"StationName,omitempty"`
+	StationType   string    `mapstructure:"StationType,omitempty"`
+	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
+	Taxi          bool      `mapstructure:"Taxi,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evDisembark(ev *DisembarkEvent) {

@@ -3,10 +3,10 @@ package file
 import "time"
 
 type RefuelPartialEvent struct {
-	Amount    float64   `json:"Amount,omitempty"`
-	Cost      int       `json:"Cost,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Amount    float64   `mapstructure:"Amount,omitempty"`
+	Cost      int       `mapstructure:"Cost,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evRefuelPartial(ev *RefuelPartialEvent) {

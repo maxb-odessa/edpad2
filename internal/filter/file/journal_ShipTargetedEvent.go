@@ -3,21 +3,21 @@ package file
 import "time"
 
 type ShipTargetedEvent struct {
-	Bounty             int       `json:"Bounty,omitempty"`
-	Faction            string    `json:"Faction,omitempty"`
-	HullHealth         float64   `json:"HullHealth,omitempty"`
-	LegalStatus        string    `json:"LegalStatus,omitempty"`
-	PilotName          string    `json:"PilotName,omitempty"`
-	PilotNameLocalised string    `json:"PilotName_Localised,omitempty"`
-	PilotRank          string    `json:"PilotRank,omitempty"`
-	ScanStage          int       `json:"ScanStage,omitempty"`
-	ShieldHealth       float64   `json:"ShieldHealth,omitempty"`
-	Ship               string    `json:"Ship,omitempty"`
-	ShipLocalised      string    `json:"Ship_Localised,omitempty"`
-	SquadronID         string    `json:"SquadronID,omitempty"`
-	TargetLocked       bool      `json:"TargetLocked,omitempty"`
-	Event              string    `json:"event,omitempty"`
-	Timestamp          time.Time `json:"timestamp,omitempty"`
+	Bounty             int       `mapstructure:"Bounty,omitempty"`
+	Faction            string    `mapstructure:"Faction,omitempty"`
+	HullHealth         float64   `mapstructure:"HullHealth,omitempty"`
+	LegalStatus        string    `mapstructure:"LegalStatus,omitempty"`
+	PilotName          string    `mapstructure:"PilotName,omitempty"`
+	PilotNameLocalised string    `mapstructure:"PilotName_Localised,omitempty"`
+	PilotRank          string    `mapstructure:"PilotRank,omitempty"`
+	ScanStage          int       `mapstructure:"ScanStage,omitempty"`
+	ShieldHealth       float64   `mapstructure:"ShieldHealth,omitempty"`
+	Ship               string    `mapstructure:"Ship,omitempty"`
+	ShipLocalised      string    `mapstructure:"Ship_Localised,omitempty"`
+	SquadronID         string    `mapstructure:"SquadronID,omitempty"`
+	TargetLocked       bool      `mapstructure:"TargetLocked,omitempty"`
+	Event              string    `mapstructure:"event,omitempty"`
+	Timestamp          time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evShipTargeted(ev *ShipTargetedEvent) {

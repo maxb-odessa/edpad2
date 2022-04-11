@@ -3,11 +3,11 @@ package file
 import "time"
 
 type DatalinkVoucherEvent struct {
-	PayeeFaction  string    `json:"PayeeFaction,omitempty"`
-	Reward        int       `json:"Reward,omitempty"`
-	VictimFaction string    `json:"VictimFaction,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	PayeeFaction  string    `mapstructure:"PayeeFaction,omitempty"`
+	Reward        int       `mapstructure:"Reward,omitempty"`
+	VictimFaction string    `mapstructure:"VictimFaction,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evDatalinkVoucher(ev *DatalinkVoucherEvent) {

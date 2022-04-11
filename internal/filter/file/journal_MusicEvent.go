@@ -3,9 +3,9 @@ package file
 import "time"
 
 type MusicEvent struct {
-	MusicTrack string    `json:"MusicTrack,omitempty"`
-	Event      string    `json:"event,omitempty"`
-	Timestamp  time.Time `json:"timestamp,omitempty"`
+	MusicTrack string    `mapstructure:"MusicTrack,omitempty"`
+	Event      string    `mapstructure:"event,omitempty"`
+	Timestamp  time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMusic(ev *MusicEvent) {

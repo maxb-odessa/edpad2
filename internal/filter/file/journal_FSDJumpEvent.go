@@ -10,74 +10,74 @@ import (
 )
 
 type FSDJumpEvent struct {
-	Body      string `json:"Body,omitempty"`
-	BodyID    int    `json:"BodyID,omitempty"`
-	BodyType  string `json:"BodyType,omitempty"`
-	BoostUsed int    `json:"BoostUsed,omitempty"`
+	Body      string `mapstructure:"Body,omitempty"`
+	BodyID    int    `mapstructure:"BodyID,omitempty"`
+	BodyType  string `mapstructure:"BodyType,omitempty"`
+	BoostUsed int    `mapstructure:"BoostUsed,omitempty"`
 	Conflicts []struct {
 		Faction1 struct {
-			Name    string `json:"Name,omitempty"`
-			Stake   string `json:"Stake,omitempty"`
-			WonDays int    `json:"WonDays,omitempty"`
-		} `json:"Faction1,omitempty"`
+			Name    string `mapstructure:"Name,omitempty"`
+			Stake   string `mapstructure:"Stake,omitempty"`
+			WonDays int    `mapstructure:"WonDays,omitempty"`
+		} `mapstructure:"Faction1,omitempty"`
 		Faction2 struct {
-			Name    string `json:"Name,omitempty"`
-			Stake   string `json:"Stake,omitempty"`
-			WonDays int    `json:"WonDays,omitempty"`
-		} `json:"Faction2,omitempty"`
-		Status  string `json:"Status,omitempty"`
-		WarType string `json:"WarType,omitempty"`
-	} `json:"Conflicts,omitempty"`
+			Name    string `mapstructure:"Name,omitempty"`
+			Stake   string `mapstructure:"Stake,omitempty"`
+			WonDays int    `mapstructure:"WonDays,omitempty"`
+		} `mapstructure:"Faction2,omitempty"`
+		Status  string `mapstructure:"Status,omitempty"`
+		WarType string `mapstructure:"WarType,omitempty"`
+	} `mapstructure:"Conflicts,omitempty"`
 	Factions []struct {
 		ActiveStates []struct {
-			State string `json:"State,omitempty"`
-		} `json:"ActiveStates,omitempty"`
-		Allegiance         string  `json:"Allegiance,omitempty"`
-		FactionState       string  `json:"FactionState,omitempty"`
-		Government         string  `json:"Government,omitempty"`
-		HappiestSystem     bool    `json:"HappiestSystem,omitempty"`
-		Happiness          string  `json:"Happiness,omitempty"`
-		HappinessLocalised string  `json:"Happiness_Localised,omitempty"`
-		HomeSystem         bool    `json:"HomeSystem,omitempty"`
-		Influence          float64 `json:"Influence,omitempty"`
-		MyReputation       float64 `json:"MyReputation,omitempty"`
-		Name               string  `json:"Name,omitempty"`
+			State string `mapstructure:"State,omitempty"`
+		} `mapstructure:"ActiveStates,omitempty"`
+		Allegiance         string  `mapstructure:"Allegiance,omitempty"`
+		FactionState       string  `mapstructure:"FactionState,omitempty"`
+		Government         string  `mapstructure:"Government,omitempty"`
+		HappiestSystem     bool    `mapstructure:"HappiestSystem,omitempty"`
+		Happiness          string  `mapstructure:"Happiness,omitempty"`
+		HappinessLocalised string  `mapstructure:"Happiness_Localised,omitempty"`
+		HomeSystem         bool    `mapstructure:"HomeSystem,omitempty"`
+		Influence          float64 `mapstructure:"Influence,omitempty"`
+		MyReputation       float64 `mapstructure:"MyReputation,omitempty"`
+		Name               string  `mapstructure:"Name,omitempty"`
 		PendingStates      []struct {
-			State string `json:"State,omitempty"`
-			Trend int    `json:"Trend,omitempty"`
-		} `json:"PendingStates,omitempty"`
+			State string `mapstructure:"State,omitempty"`
+			Trend int    `mapstructure:"Trend,omitempty"`
+		} `mapstructure:"PendingStates,omitempty"`
 		RecoveringStates []struct {
-			State string `json:"State,omitempty"`
-			Trend int    `json:"Trend,omitempty"`
-		} `json:"RecoveringStates,omitempty"`
-		SquadronFaction bool `json:"SquadronFaction,omitempty"`
-	} `json:"Factions,omitempty"`
-	FuelLevel              float64   `json:"FuelLevel,omitempty"`
-	FuelUsed               float64   `json:"FuelUsed,omitempty"`
-	JumpDist               float64   `json:"JumpDist,omitempty"`
-	Multicrew              bool      `json:"Multicrew,omitempty"`
-	Population             int       `json:"Population,omitempty"`
-	PowerplayState         string    `json:"PowerplayState,omitempty"`
-	Powers                 []string  `json:"Powers,omitempty"`
-	StarPos                []float64 `json:"StarPos,omitempty"`
-	StarSystem             string    `json:"StarSystem,omitempty"`
-	SystemAddress          int       `json:"SystemAddress,omitempty"`
-	SystemAllegiance       string    `json:"SystemAllegiance,omitempty"`
-	SystemEconomy          string    `json:"SystemEconomy,omitempty"`
-	SystemEconomyLocalised string    `json:"SystemEconomy_Localised,omitempty"`
+			State string `mapstructure:"State,omitempty"`
+			Trend int    `mapstructure:"Trend,omitempty"`
+		} `mapstructure:"RecoveringStates,omitempty"`
+		SquadronFaction bool `mapstructure:"SquadronFaction,omitempty"`
+	} `mapstructure:"Factions,omitempty"`
+	FuelLevel              float64   `mapstructure:"FuelLevel,omitempty"`
+	FuelUsed               float64   `mapstructure:"FuelUsed,omitempty"`
+	JumpDist               float64   `mapstructure:"JumpDist,omitempty"`
+	Multicrew              bool      `mapstructure:"Multicrew,omitempty"`
+	Population             int       `mapstructure:"Population,omitempty"`
+	PowerplayState         string    `mapstructure:"PowerplayState,omitempty"`
+	Powers                 []string  `mapstructure:"Powers,omitempty"`
+	StarPos                []float64 `mapstructure:"StarPos,omitempty"`
+	StarSystem             string    `mapstructure:"StarSystem,omitempty"`
+	SystemAddress          int       `mapstructure:"SystemAddress,omitempty"`
+	SystemAllegiance       string    `mapstructure:"SystemAllegiance,omitempty"`
+	SystemEconomy          string    `mapstructure:"SystemEconomy,omitempty"`
+	SystemEconomyLocalised string    `mapstructure:"SystemEconomy_Localised,omitempty"`
 	SystemFaction          *struct {
-		FactionState string `json:"FactionState,omitempty"`
-		Name         string `json:"Name,omitempty"`
-	} `json:"SystemFaction,omitempty"`
-	SystemGovernment             string    `json:"SystemGovernment,omitempty"`
-	SystemGovernmentLocalised    string    `json:"SystemGovernment_Localised,omitempty"`
-	SystemSecondEconomy          string    `json:"SystemSecondEconomy,omitempty"`
-	SystemSecondEconomyLocalised string    `json:"SystemSecondEconomy_Localised,omitempty"`
-	SystemSecurity               string    `json:"SystemSecurity,omitempty"`
-	SystemSecurityLocalised      string    `json:"SystemSecurity_Localised,omitempty"`
-	Taxi                         bool      `json:"Taxi,omitempty"`
-	Event                        string    `json:"event,omitempty"`
-	Timestamp                    time.Time `json:"timestamp,omitempty"`
+		FactionState string `mapstructure:"FactionState,omitempty"`
+		Name         string `mapstructure:"Name,omitempty"`
+	} `mapstructure:"SystemFaction,omitempty"`
+	SystemGovernment             string    `mapstructure:"SystemGovernment,omitempty"`
+	SystemGovernmentLocalised    string    `mapstructure:"SystemGovernment_Localised,omitempty"`
+	SystemSecondEconomy          string    `mapstructure:"SystemSecondEconomy,omitempty"`
+	SystemSecondEconomyLocalised string    `mapstructure:"SystemSecondEconomy_Localised,omitempty"`
+	SystemSecurity               string    `mapstructure:"SystemSecurity,omitempty"`
+	SystemSecurityLocalised      string    `mapstructure:"SystemSecurity_Localised,omitempty"`
+	Taxi                         bool      `mapstructure:"Taxi,omitempty"`
+	Event                        string    `mapstructure:"event,omitempty"`
+	Timestamp                    time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFSDJump(ev *FSDJumpEvent) {

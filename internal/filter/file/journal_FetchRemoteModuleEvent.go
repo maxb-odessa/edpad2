@@ -3,16 +3,16 @@ package file
 import "time"
 
 type FetchRemoteModuleEvent struct {
-	ServerID            int       `json:"ServerId,omitempty"`
-	Ship                string    `json:"Ship,omitempty"`
-	ShipID              int       `json:"ShipID,omitempty"`
-	StorageSlot         int       `json:"StorageSlot,omitempty"`
-	StoredItem          string    `json:"StoredItem,omitempty"`
-	StoredItemLocalised string    `json:"StoredItem_Localised,omitempty"`
-	TransferCost        int       `json:"TransferCost,omitempty"`
-	TransferTime        int       `json:"TransferTime,omitempty"`
-	Event               string    `json:"event,omitempty"`
-	Timestamp           time.Time `json:"timestamp,omitempty"`
+	ServerID            int       `mapstructure:"ServerId,omitempty"`
+	Ship                string    `mapstructure:"Ship,omitempty"`
+	ShipID              int       `mapstructure:"ShipID,omitempty"`
+	StorageSlot         int       `mapstructure:"StorageSlot,omitempty"`
+	StoredItem          string    `mapstructure:"StoredItem,omitempty"`
+	StoredItemLocalised string    `mapstructure:"StoredItem_Localised,omitempty"`
+	TransferCost        int       `mapstructure:"TransferCost,omitempty"`
+	TransferTime        int       `mapstructure:"TransferTime,omitempty"`
+	Event               string    `mapstructure:"event,omitempty"`
+	Timestamp           time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFetchRemoteModule(ev *FetchRemoteModuleEvent) {

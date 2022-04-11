@@ -3,10 +3,10 @@ package file
 import "time"
 
 type FriendsEvent struct {
-	Name      string    `json:"Name,omitempty"`
-	Status    string    `json:"Status,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Name      string    `mapstructure:"Name,omitempty"`
+	Status    string    `mapstructure:"Status,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFriends(ev *FriendsEvent) {

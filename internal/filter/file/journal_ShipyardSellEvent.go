@@ -3,13 +3,13 @@ package file
 import "time"
 
 type ShipyardSellEvent struct {
-	MarketID          int       `json:"MarketID,omitempty"`
-	SellShipID        int       `json:"SellShipID,omitempty"`
-	ShipPrice         int       `json:"ShipPrice,omitempty"`
-	ShipType          string    `json:"ShipType,omitempty"`
-	ShipTypeLocalised string    `json:"ShipType_Localised,omitempty"`
-	Event             string    `json:"event,omitempty"`
-	Timestamp         time.Time `json:"timestamp,omitempty"`
+	MarketID          int       `mapstructure:"MarketID,omitempty"`
+	SellShipID        int       `mapstructure:"SellShipID,omitempty"`
+	ShipPrice         int       `mapstructure:"ShipPrice,omitempty"`
+	ShipType          string    `mapstructure:"ShipType,omitempty"`
+	ShipTypeLocalised string    `mapstructure:"ShipType_Localised,omitempty"`
+	Event             string    `mapstructure:"event,omitempty"`
+	Timestamp         time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evShipyardSell(ev *ShipyardSellEvent) {

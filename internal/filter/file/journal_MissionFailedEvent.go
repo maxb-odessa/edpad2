@@ -3,10 +3,10 @@ package file
 import "time"
 
 type MissionFailedEvent struct {
-	MissionID int       `json:"MissionID,omitempty"`
-	Name      string    `json:"Name,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	MissionID int       `mapstructure:"MissionID,omitempty"`
+	Name      string    `mapstructure:"Name,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMissionFailed(ev *MissionFailedEvent) {

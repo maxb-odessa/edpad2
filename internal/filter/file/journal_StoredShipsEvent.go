@@ -3,32 +3,32 @@ package file
 import "time"
 
 type StoredShipsEvent struct {
-	MarketID  int `json:"MarketID,omitempty"`
+	MarketID  int `mapstructure:"MarketID,omitempty"`
 	ShipsHere []struct {
-		Hot               bool   `json:"Hot,omitempty"`
-		Name              string `json:"Name,omitempty"`
-		ShipID            int    `json:"ShipID,omitempty"`
-		ShipType          string `json:"ShipType,omitempty"`
-		ShipTypeLocalised string `json:"ShipType_Localised,omitempty"`
-		Value             int    `json:"Value,omitempty"`
-	} `json:"ShipsHere,omitempty"`
+		Hot               bool   `mapstructure:"Hot,omitempty"`
+		Name              string `mapstructure:"Name,omitempty"`
+		ShipID            int    `mapstructure:"ShipID,omitempty"`
+		ShipType          string `mapstructure:"ShipType,omitempty"`
+		ShipTypeLocalised string `mapstructure:"ShipType_Localised,omitempty"`
+		Value             int    `mapstructure:"Value,omitempty"`
+	} `mapstructure:"ShipsHere,omitempty"`
 	ShipsRemote []struct {
-		Hot               bool   `json:"Hot,omitempty"`
-		InTransit         bool   `json:"InTransit,omitempty"`
-		Name              string `json:"Name,omitempty"`
-		ShipID            int    `json:"ShipID,omitempty"`
-		ShipMarketID      int    `json:"ShipMarketID,omitempty"`
-		ShipType          string `json:"ShipType,omitempty"`
-		ShipTypeLocalised string `json:"ShipType_Localised,omitempty"`
-		StarSystem        string `json:"StarSystem,omitempty"`
-		TransferPrice     int    `json:"TransferPrice,omitempty"`
-		TransferTime      int    `json:"TransferTime,omitempty"`
-		Value             int    `json:"Value,omitempty"`
-	} `json:"ShipsRemote,omitempty"`
-	StarSystem  string    `json:"StarSystem,omitempty"`
-	StationName string    `json:"StationName,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+		Hot               bool   `mapstructure:"Hot,omitempty"`
+		InTransit         bool   `mapstructure:"InTransit,omitempty"`
+		Name              string `mapstructure:"Name,omitempty"`
+		ShipID            int    `mapstructure:"ShipID,omitempty"`
+		ShipMarketID      int    `mapstructure:"ShipMarketID,omitempty"`
+		ShipType          string `mapstructure:"ShipType,omitempty"`
+		ShipTypeLocalised string `mapstructure:"ShipType_Localised,omitempty"`
+		StarSystem        string `mapstructure:"StarSystem,omitempty"`
+		TransferPrice     int    `mapstructure:"TransferPrice,omitempty"`
+		TransferTime      int    `mapstructure:"TransferTime,omitempty"`
+		Value             int    `mapstructure:"Value,omitempty"`
+	} `mapstructure:"ShipsRemote,omitempty"`
+	StarSystem  string    `mapstructure:"StarSystem,omitempty"`
+	StationName string    `mapstructure:"StationName,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evStoredShips(ev *StoredShipsEvent) {

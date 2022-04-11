@@ -3,12 +3,12 @@ package file
 import "time"
 
 type DockingDeniedEvent struct {
-	MarketID    int       `json:"MarketID,omitempty"`
-	Reason      string    `json:"Reason,omitempty"`
-	StationName string    `json:"StationName,omitempty"`
-	StationType string    `json:"StationType,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+	MarketID    int       `mapstructure:"MarketID,omitempty"`
+	Reason      string    `mapstructure:"Reason,omitempty"`
+	StationName string    `mapstructure:"StationName,omitempty"`
+	StationType string    `mapstructure:"StationType,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evDockingDenied(ev *DockingDeniedEvent) {

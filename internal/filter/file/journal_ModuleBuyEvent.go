@@ -3,20 +3,20 @@ package file
 import "time"
 
 type ModuleBuyEvent struct {
-	BuyItem             string    `json:"BuyItem,omitempty"`
-	BuyItemLocalised    string    `json:"BuyItem_Localised,omitempty"`
-	BuyPrice            int       `json:"BuyPrice,omitempty"`
-	MarketID            int       `json:"MarketID,omitempty"`
-	SellItem            string    `json:"SellItem,omitempty"`
-	SellItemLocalised   string    `json:"SellItem_Localised,omitempty"`
-	SellPrice           int       `json:"SellPrice,omitempty"`
-	Ship                string    `json:"Ship,omitempty"`
-	ShipID              int       `json:"ShipID,omitempty"`
-	Slot                string    `json:"Slot,omitempty"`
-	StoredItem          string    `json:"StoredItem,omitempty"`
-	StoredItemLocalised string    `json:"StoredItem_Localised,omitempty"`
-	Event               string    `json:"event,omitempty"`
-	Timestamp           time.Time `json:"timestamp,omitempty"`
+	BuyItem             string    `mapstructure:"BuyItem,omitempty"`
+	BuyItemLocalised    string    `mapstructure:"BuyItem_Localised,omitempty"`
+	BuyPrice            int       `mapstructure:"BuyPrice,omitempty"`
+	MarketID            int       `mapstructure:"MarketID,omitempty"`
+	SellItem            string    `mapstructure:"SellItem,omitempty"`
+	SellItemLocalised   string    `mapstructure:"SellItem_Localised,omitempty"`
+	SellPrice           int       `mapstructure:"SellPrice,omitempty"`
+	Ship                string    `mapstructure:"Ship,omitempty"`
+	ShipID              int       `mapstructure:"ShipID,omitempty"`
+	Slot                string    `mapstructure:"Slot,omitempty"`
+	StoredItem          string    `mapstructure:"StoredItem,omitempty"`
+	StoredItemLocalised string    `mapstructure:"StoredItem_Localised,omitempty"`
+	Event               string    `mapstructure:"event,omitempty"`
+	Timestamp           time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evModuleBuy(ev *ModuleBuyEvent) {

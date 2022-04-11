@@ -14,68 +14,68 @@ import (
 )
 
 type ScanEvent struct {
-	AbsoluteMagnitude     float64 `json:"AbsoluteMagnitude,omitempty"`
-	AgeMy                 int     `json:"Age_MY,omitempty"`
-	Atmosphere            string  `json:"Atmosphere,omitempty"`
+	AbsoluteMagnitude     float64 `mapstructure:"AbsoluteMagnitude,omitempty"`
+	AgeMy                 int     `mapstructure:"Age_MY,omitempty"`
+	Atmosphere            string  `mapstructure:"Atmosphere,omitempty"`
 	AtmosphereComposition []struct {
-		Name    string  `json:"Name,omitempty"`
-		Percent float64 `json:"Percent,omitempty"`
-	} `json:"AtmosphereComposition,omitempty"`
-	AtmosphereType string  `json:"AtmosphereType,omitempty"`
-	AxialTilt      float64 `json:"AxialTilt,omitempty"`
-	BodyID         int     `json:"BodyID,omitempty"`
-	BodyName       string  `json:"BodyName,omitempty"`
+		Name    string  `mapstructure:"Name,omitempty"`
+		Percent float64 `mapstructure:"Percent,omitempty"`
+	} `mapstructure:"AtmosphereComposition,omitempty"`
+	AtmosphereType string  `mapstructure:"AtmosphereType,omitempty"`
+	AxialTilt      float64 `mapstructure:"AxialTilt,omitempty"`
+	BodyID         int     `mapstructure:"BodyID,omitempty"`
+	BodyName       string  `mapstructure:"BodyName,omitempty"`
 	Composition    *struct {
-		Ice   float64 `json:"Ice,omitempty"`
-		Metal float64 `json:"Metal,omitempty"`
-		Rock  float64 `json:"Rock,omitempty"`
-	} `json:"Composition,omitempty"`
-	DistanceFromArrivalLs float64 `json:"DistanceFromArrivalLS,omitempty"`
-	Eccentricity          float64 `json:"Eccentricity,omitempty"`
-	Landable              bool    `json:"Landable,omitempty"`
-	Luminosity            string  `json:"Luminosity,omitempty"`
-	MassEm                float64 `json:"MassEM,omitempty"`
+		Ice   float64 `mapstructure:"Ice,omitempty"`
+		Metal float64 `mapstructure:"Metal,omitempty"`
+		Rock  float64 `mapstructure:"Rock,omitempty"`
+	} `mapstructure:"Composition,omitempty"`
+	DistanceFromArrivalLs float64 `mapstructure:"DistanceFromArrivalLS,omitempty"`
+	Eccentricity          float64 `mapstructure:"Eccentricity,omitempty"`
+	Landable              bool    `mapstructure:"Landable,omitempty"`
+	Luminosity            string  `mapstructure:"Luminosity,omitempty"`
+	MassEm                float64 `mapstructure:"MassEM,omitempty"`
 	Materials             []struct {
-		Name    string  `json:"Name,omitempty"`
-		Percent float64 `json:"Percent,omitempty"`
-	} `json:"Materials,omitempty"`
-	OrbitalInclination float64 `json:"OrbitalInclination,omitempty"`
-	OrbitalPeriod      float64 `json:"OrbitalPeriod,omitempty"`
+		Name    string  `mapstructure:"Name,omitempty"`
+		Percent float64 `mapstructure:"Percent,omitempty"`
+	} `mapstructure:"Materials,omitempty"`
+	OrbitalInclination float64 `mapstructure:"OrbitalInclination,omitempty"`
+	OrbitalPeriod      float64 `mapstructure:"OrbitalPeriod,omitempty"`
 	Parents            []struct {
-		Null   int `json:"Null,omitempty"`
-		Planet int `json:"Planet,omitempty"`
-		Ring   int `json:"Ring,omitempty"`
-		Star   int `json:"Star,omitempty"`
-	} `json:"Parents,omitempty"`
-	Periapsis    float64 `json:"Periapsis,omitempty"`
-	PlanetClass  string  `json:"PlanetClass,omitempty"`
-	Radius       float64 `json:"Radius,omitempty"`
-	ReserveLevel string  `json:"ReserveLevel,omitempty"`
+		Null   int `mapstructure:"Null,omitempty"`
+		Planet int `mapstructure:"Planet,omitempty"`
+		Ring   int `mapstructure:"Ring,omitempty"`
+		Star   int `mapstructure:"Star,omitempty"`
+	} `mapstructure:"Parents,omitempty"`
+	Periapsis    float64 `mapstructure:"Periapsis,omitempty"`
+	PlanetClass  string  `mapstructure:"PlanetClass,omitempty"`
+	Radius       float64 `mapstructure:"Radius,omitempty"`
+	ReserveLevel string  `mapstructure:"ReserveLevel,omitempty"`
 	Rings        []struct {
-		InnerRad  json.Number `json:"InnerRad,omitempty"`
-		MassMt    json.Number `json:"MassMT,omitempty"`
-		Name      string      `json:"Name,omitempty"`
-		OuterRad  float64     `json:"OuterRad,omitempty"`
-		RingClass string      `json:"RingClass,omitempty"`
-	} `json:"Rings,omitempty"`
-	RotationPeriod     float64   `json:"RotationPeriod,omitempty"`
-	ScanType           string    `json:"ScanType,omitempty"`
-	SemiMajorAxis      float64   `json:"SemiMajorAxis,omitempty"`
-	StarSystem         string    `json:"StarSystem,omitempty"`
-	StarType           string    `json:"StarType,omitempty"`
-	StellarMass        float64   `json:"StellarMass,omitempty"`
-	Subclass           int       `json:"Subclass,omitempty"`
-	SurfaceGravity     float64   `json:"SurfaceGravity,omitempty"`
-	SurfacePressure    float64   `json:"SurfacePressure,omitempty"`
-	SurfaceTemperature float64   `json:"SurfaceTemperature,omitempty"`
-	SystemAddress      int       `json:"SystemAddress,omitempty"`
-	TerraformState     string    `json:"TerraformState,omitempty"`
-	TidalLock          bool      `json:"TidalLock,omitempty"`
-	Volcanism          string    `json:"Volcanism,omitempty"`
-	WasDiscovered      bool      `json:"WasDiscovered,omitempty"`
-	WasMapped          bool      `json:"WasMapped,omitempty"`
-	Event              string    `json:"event,omitempty"`
-	Timestamp          time.Time `json:"timestamp,omitempty"`
+		InnerRad  json.Number `mapstructure:"InnerRad,omitempty"`
+		MassMt    json.Number `mapstructure:"MassMT,omitempty"`
+		Name      string      `mapstructure:"Name,omitempty"`
+		OuterRad  float64     `mapstructure:"OuterRad,omitempty"`
+		RingClass string      `mapstructure:"RingClass,omitempty"`
+	} `mapstructure:"Rings,omitempty"`
+	RotationPeriod     float64   `mapstructure:"RotationPeriod,omitempty"`
+	ScanType           string    `mapstructure:"ScanType,omitempty"`
+	SemiMajorAxis      float64   `mapstructure:"SemiMajorAxis,omitempty"`
+	StarSystem         string    `mapstructure:"StarSystem,omitempty"`
+	StarType           string    `mapstructure:"StarType,omitempty"`
+	StellarMass        float64   `mapstructure:"StellarMass,omitempty"`
+	Subclass           int       `mapstructure:"Subclass,omitempty"`
+	SurfaceGravity     float64   `mapstructure:"SurfaceGravity,omitempty"`
+	SurfacePressure    float64   `mapstructure:"SurfacePressure,omitempty"`
+	SurfaceTemperature float64   `mapstructure:"SurfaceTemperature,omitempty"`
+	SystemAddress      int       `mapstructure:"SystemAddress,omitempty"`
+	TerraformState     string    `mapstructure:"TerraformState,omitempty"`
+	TidalLock          bool      `mapstructure:"TidalLock,omitempty"`
+	Volcanism          string    `mapstructure:"Volcanism,omitempty"`
+	WasDiscovered      bool      `mapstructure:"WasDiscovered,omitempty"`
+	WasMapped          bool      `mapstructure:"WasMapped,omitempty"`
+	Event              string    `mapstructure:"event,omitempty"`
+	Timestamp          time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evScan(ev *ScanEvent) {

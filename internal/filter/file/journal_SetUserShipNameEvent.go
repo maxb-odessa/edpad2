@@ -3,12 +3,12 @@ package file
 import "time"
 
 type SetUserShipNameEvent struct {
-	Ship         string    `json:"Ship,omitempty"`
-	ShipID       int       `json:"ShipID,omitempty"`
-	UserShipID   string    `json:"UserShipId,omitempty"`
-	UserShipName string    `json:"UserShipName,omitempty"`
-	Event        string    `json:"event,omitempty"`
-	Timestamp    time.Time `json:"timestamp,omitempty"`
+	Ship         string    `mapstructure:"Ship,omitempty"`
+	ShipID       int       `mapstructure:"ShipID,omitempty"`
+	UserShipID   string    `mapstructure:"UserShipId,omitempty"`
+	UserShipName string    `mapstructure:"UserShipName,omitempty"`
+	Event        string    `mapstructure:"event,omitempty"`
+	Timestamp    time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evSetUserShipName(ev *SetUserShipNameEvent) {

@@ -4,27 +4,27 @@ import "time"
 
 type CommunityGoalEvent struct {
 	CurrentGoals []struct {
-		Bonus                int       `json:"Bonus,omitempty"`
-		Cgid                 int       `json:"CGID,omitempty"`
-		CurrentTotal         int       `json:"CurrentTotal,omitempty"`
-		Expiry               time.Time `json:"Expiry,omitempty"`
-		IsComplete           bool      `json:"IsComplete,omitempty"`
-		MarketName           string    `json:"MarketName,omitempty"`
-		NumContributors      int       `json:"NumContributors,omitempty"`
-		PlayerContribution   int       `json:"PlayerContribution,omitempty"`
-		PlayerInTopRank      bool      `json:"PlayerInTopRank,omitempty"`
-		PlayerPercentileBand int       `json:"PlayerPercentileBand,omitempty"`
-		SystemName           string    `json:"SystemName,omitempty"`
-		TierReached          string    `json:"TierReached,omitempty"`
-		Title                string    `json:"Title,omitempty"`
-		TopRankSize          int       `json:"TopRankSize,omitempty"`
+		Bonus                int       `mapstructure:"Bonus,omitempty"`
+		Cgid                 int       `mapstructure:"CGID,omitempty"`
+		CurrentTotal         int       `mapstructure:"CurrentTotal,omitempty"`
+		Expiry               time.Time `mapstructure:"Expiry,omitempty"`
+		IsComplete           bool      `mapstructure:"IsComplete,omitempty"`
+		MarketName           string    `mapstructure:"MarketName,omitempty"`
+		NumContributors      int       `mapstructure:"NumContributors,omitempty"`
+		PlayerContribution   int       `mapstructure:"PlayerContribution,omitempty"`
+		PlayerInTopRank      bool      `mapstructure:"PlayerInTopRank,omitempty"`
+		PlayerPercentileBand int       `mapstructure:"PlayerPercentileBand,omitempty"`
+		SystemName           string    `mapstructure:"SystemName,omitempty"`
+		TierReached          string    `mapstructure:"TierReached,omitempty"`
+		Title                string    `mapstructure:"Title,omitempty"`
+		TopRankSize          int       `mapstructure:"TopRankSize,omitempty"`
 		TopTier              struct {
-			Bonus string `json:"Bonus,omitempty"`
-			Name  string `json:"Name,omitempty"`
-		} `json:"TopTier,omitempty"`
-	} `json:"CurrentGoals,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+			Bonus string `mapstructure:"Bonus,omitempty"`
+			Name  string `mapstructure:"Name,omitempty"`
+		} `mapstructure:"TopTier,omitempty"`
+	} `mapstructure:"CurrentGoals,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evCommunityGoal(ev *CommunityGoalEvent) {

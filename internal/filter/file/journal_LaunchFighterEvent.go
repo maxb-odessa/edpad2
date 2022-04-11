@@ -3,11 +3,11 @@ package file
 import "time"
 
 type LaunchFighterEvent struct {
-	ID               int       `json:"ID,omitempty"`
-	Loadout          string    `json:"Loadout,omitempty"`
-	PlayerControlled bool      `json:"PlayerControlled,omitempty"`
-	Event            string    `json:"event,omitempty"`
-	Timestamp        time.Time `json:"timestamp,omitempty"`
+	ID               int       `mapstructure:"ID,omitempty"`
+	Loadout          string    `mapstructure:"Loadout,omitempty"`
+	PlayerControlled bool      `mapstructure:"PlayerControlled,omitempty"`
+	Event            string    `mapstructure:"event,omitempty"`
+	Timestamp        time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evLaunchFighter(ev *LaunchFighterEvent) {

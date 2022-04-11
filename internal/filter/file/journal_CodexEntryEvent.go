@@ -7,25 +7,25 @@ import (
 )
 
 type CodexEntryEvent struct {
-	Category                    string    `json:"Category,omitempty"`
-	CategoryLocalised           string    `json:"Category_Localised,omitempty"`
-	EntryID                     int       `json:"EntryID,omitempty"`
-	IsNewEntry                  bool      `json:"IsNewEntry,omitempty"`
-	Latitude                    float64   `json:"Latitude,omitempty"`
-	Longitude                   float64   `json:"Longitude,omitempty"`
-	Name                        string    `json:"Name,omitempty"`
-	NameLocalised               string    `json:"Name_Localised,omitempty"`
-	NearestDestination          string    `json:"NearestDestination,omitempty"`
-	NearestDestinationLocalised string    `json:"NearestDestination_Localised,omitempty"`
-	Region                      string    `json:"Region,omitempty"`
-	RegionLocalised             string    `json:"Region_Localised,omitempty"`
-	SubCategory                 string    `json:"SubCategory,omitempty"`
-	SubCategoryLocalised        string    `json:"SubCategory_Localised,omitempty"`
-	System                      string    `json:"System,omitempty"`
-	SystemAddress               int       `json:"SystemAddress,omitempty"`
-	VoucherAmount               int       `json:"VoucherAmount,omitempty"`
-	Event                       string    `json:"event,omitempty"`
-	Timestamp                   time.Time `json:"timestamp,omitempty"`
+	Category                    string    `mapstructure:"Category,omitempty"`
+	CategoryLocalised           string    `mapstructure:"Category_Localised,omitempty"`
+	EntryID                     int       `mapstructure:"EntryID,omitempty"`
+	IsNewEntry                  bool      `mapstructure:"IsNewEntry,omitempty"`
+	Latitude                    float64   `mapstructure:"Latitude,omitempty"`
+	Longitude                   float64   `mapstructure:"Longitude,omitempty"`
+	Name                        string    `mapstructure:"Name,omitempty"`
+	NameLocalised               string    `mapstructure:"Name_Localised,omitempty"`
+	NearestDestination          string    `mapstructure:"NearestDestination,omitempty"`
+	NearestDestinationLocalised string    `mapstructure:"NearestDestination_Localised,omitempty"`
+	Region                      string    `mapstructure:"Region,omitempty"`
+	RegionLocalised             string    `mapstructure:"Region_Localised,omitempty"`
+	SubCategory                 string    `mapstructure:"SubCategory,omitempty"`
+	SubCategoryLocalised        string    `mapstructure:"SubCategory_Localised,omitempty"`
+	System                      string    `mapstructure:"System,omitempty"`
+	SystemAddress               int       `mapstructure:"SystemAddress,omitempty"`
+	VoucherAmount               int       `mapstructure:"VoucherAmount,omitempty"`
+	Event                       string    `mapstructure:"event,omitempty"`
+	Timestamp                   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evCodexEntry(ev *CodexEntryEvent) {
@@ -35,7 +35,8 @@ func (h *handler) evCodexEntry(ev *CodexEntryEvent) {
 		isNew = " (NEW)"
 	}
 
-	text := "Codex" + isNew + ":" + ev.CategoryLocalised + ", " + ev.SubCategoryLocalised + "\n --> " + ev.NameLocalised + "\n"
+	text := "Codex" + isNew + ":" + ev.CategoryLocalised + ", " + ev.SubCategoryLocalised + "\n" + ` \__ ` +
+		ev.NameLocalised + ", " + ev.RegionLocalised + "\n"
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
@@ -45,9 +46,8 @@ func (h *handler) evCodexEntry(ev *CodexEntryEvent) {
 			AppendText:     true,
 			UpdateText:     true,
 			Subtitle:       "[!]",
-			UpdateSubtitle: false,
+			UpdateSubtitle: true,
 		},
 	}
 
-	return
 }

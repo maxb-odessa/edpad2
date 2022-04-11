@@ -3,32 +3,32 @@ package file
 import "time"
 
 type MissionAcceptedEvent struct {
-	Commodity           string    `json:"Commodity,omitempty"`
-	CommodityLocalised  string    `json:"Commodity_Localised,omitempty"`
-	Count               int       `json:"Count,omitempty"`
-	DestinationStation  string    `json:"DestinationStation,omitempty"`
-	DestinationSystem   string    `json:"DestinationSystem,omitempty"`
-	Donation            string    `json:"Donation,omitempty"`
-	Expiry              time.Time `json:"Expiry,omitempty"`
-	Faction             string    `json:"Faction,omitempty"`
-	Influence           string    `json:"Influence,omitempty"`
-	LocalisedName       string    `json:"LocalisedName,omitempty"`
-	MissionID           int       `json:"MissionID,omitempty"`
-	Name                string    `json:"Name,omitempty"`
-	PassengerCount      int       `json:"PassengerCount,omitempty"`
-	PassengerType       string    `json:"PassengerType,omitempty"`
-	PassengerViPs       bool      `json:"PassengerVIPs,omitempty"`
-	PassengerWanted     bool      `json:"PassengerWanted,omitempty"`
-	Reputation          string    `json:"Reputation,omitempty"`
-	Reward              int       `json:"Reward,omitempty"`
-	Target              string    `json:"Target,omitempty"`
-	TargetFaction       string    `json:"TargetFaction,omitempty"`
-	TargetType          string    `json:"TargetType,omitempty"`
-	TargetTypeLocalised string    `json:"TargetType_Localised,omitempty"`
-	TargetLocalised     string    `json:"Target_Localised,omitempty"`
-	Wing                bool      `json:"Wing,omitempty"`
-	Event               string    `json:"event,omitempty"`
-	Timestamp           time.Time `json:"timestamp,omitempty"`
+	Commodity           string    `mapstructure:"Commodity,omitempty"`
+	CommodityLocalised  string    `mapstructure:"Commodity_Localised,omitempty"`
+	Count               int       `mapstructure:"Count,omitempty"`
+	DestinationStation  string    `mapstructure:"DestinationStation,omitempty"`
+	DestinationSystem   string    `mapstructure:"DestinationSystem,omitempty"`
+	Donation            string    `mapstructure:"Donation,omitempty"`
+	Expiry              time.Time `mapstructure:"Expiry,omitempty"`
+	Faction             string    `mapstructure:"Faction,omitempty"`
+	Influence           string    `mapstructure:"Influence,omitempty"`
+	LocalisedName       string    `mapstructure:"LocalisedName,omitempty"`
+	MissionID           int       `mapstructure:"MissionID,omitempty"`
+	Name                string    `mapstructure:"Name,omitempty"`
+	PassengerCount      int       `mapstructure:"PassengerCount,omitempty"`
+	PassengerType       string    `mapstructure:"PassengerType,omitempty"`
+	PassengerViPs       bool      `mapstructure:"PassengerVIPs,omitempty"`
+	PassengerWanted     bool      `mapstructure:"PassengerWanted,omitempty"`
+	Reputation          string    `mapstructure:"Reputation,omitempty"`
+	Reward              int       `mapstructure:"Reward,omitempty"`
+	Target              string    `mapstructure:"Target,omitempty"`
+	TargetFaction       string    `mapstructure:"TargetFaction,omitempty"`
+	TargetType          string    `mapstructure:"TargetType,omitempty"`
+	TargetTypeLocalised string    `mapstructure:"TargetType_Localised,omitempty"`
+	TargetLocalised     string    `mapstructure:"Target_Localised,omitempty"`
+	Wing                bool      `mapstructure:"Wing,omitempty"`
+	Event               string    `mapstructure:"event,omitempty"`
+	Timestamp           time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMissionAccepted(ev *MissionAcceptedEvent) {

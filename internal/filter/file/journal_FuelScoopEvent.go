@@ -7,10 +7,10 @@ import (
 )
 
 type FuelScoopEvent struct {
-	Scooped   float64   `json:"Scooped,omitempty"`
-	Total     float64   `json:"Total,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Scooped   float64   `mapstructure:"Scooped,omitempty"`
+	Total     float64   `mapstructure:"Total,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFuelScoop(ev *FuelScoopEvent) {

@@ -3,11 +3,11 @@ package file
 import "time"
 
 type HullDamageEvent struct {
-	Fighter     bool      `json:"Fighter,omitempty"`
-	Health      float64   `json:"Health,omitempty"`
-	PlayerPilot bool      `json:"PlayerPilot,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+	Fighter     bool      `mapstructure:"Fighter,omitempty"`
+	Health      float64   `mapstructure:"Health,omitempty"`
+	PlayerPilot bool      `mapstructure:"PlayerPilot,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evHullDamage(ev *HullDamageEvent) {

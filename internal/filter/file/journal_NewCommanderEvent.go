@@ -3,11 +3,11 @@ package file
 import "time"
 
 type NewCommanderEvent struct {
-	Fid       string    `json:"FID,omitempty"`
-	Name      string    `json:"Name,omitempty"`
-	Package   string    `json:"Package,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Fid       string    `mapstructure:"FID,omitempty"`
+	Name      string    `mapstructure:"Name,omitempty"`
+	Package   string    `mapstructure:"Package,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evNewCommander(ev *NewCommanderEvent) {

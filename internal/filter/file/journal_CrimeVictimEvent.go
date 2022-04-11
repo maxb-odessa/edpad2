@@ -3,12 +3,12 @@ package file
 import "time"
 
 type CrimeVictimEvent struct {
-	Bounty    int       `json:"Bounty,omitempty"`
-	CrimeType string    `json:"CrimeType,omitempty"`
-	Fine      int       `json:"Fine,omitempty"`
-	Offender  string    `json:"Offender,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Bounty    int       `mapstructure:"Bounty,omitempty"`
+	CrimeType string    `mapstructure:"CrimeType,omitempty"`
+	Fine      int       `mapstructure:"Fine,omitempty"`
+	Offender  string    `mapstructure:"Offender,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evCrimeVictim(ev *CrimeVictimEvent) {

@@ -3,14 +3,14 @@ package file
 import "time"
 
 type ShipyardSwapEvent struct {
-	MarketID          int       `json:"MarketID,omitempty"`
-	ShipID            int       `json:"ShipID,omitempty"`
-	ShipType          string    `json:"ShipType,omitempty"`
-	ShipTypeLocalised string    `json:"ShipType_Localised,omitempty"`
-	StoreOldShip      string    `json:"StoreOldShip,omitempty"`
-	StoreShipID       int       `json:"StoreShipID,omitempty"`
-	Event             string    `json:"event,omitempty"`
-	Timestamp         time.Time `json:"timestamp,omitempty"`
+	MarketID          int       `mapstructure:"MarketID,omitempty"`
+	ShipID            int       `mapstructure:"ShipID,omitempty"`
+	ShipType          string    `mapstructure:"ShipType,omitempty"`
+	ShipTypeLocalised string    `mapstructure:"ShipType_Localised,omitempty"`
+	StoreOldShip      string    `mapstructure:"StoreOldShip,omitempty"`
+	StoreShipID       int       `mapstructure:"StoreShipID,omitempty"`
+	Event             string    `mapstructure:"event,omitempty"`
+	Timestamp         time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evShipyardSwap(ev *ShipyardSwapEvent) {

@@ -3,19 +3,19 @@ package file
 import "time"
 
 type LoadoutEquipModuleEvent struct {
-	Class               int           `json:"Class,omitempty"`
-	LoadoutID           int           `json:"LoadoutID,omitempty"`
-	LoadoutName         string        `json:"LoadoutName,omitempty"`
-	ModuleName          string        `json:"ModuleName,omitempty"`
-	ModuleNameLocalised string        `json:"ModuleName_Localised,omitempty"`
-	SlotName            string        `json:"SlotName,omitempty"`
-	SuitID              int           `json:"SuitID,omitempty"`
-	SuitModuleID        int           `json:"SuitModuleID,omitempty"`
-	SuitName            string        `json:"SuitName,omitempty"`
-	SuitNameLocalised   string        `json:"SuitName_Localised,omitempty"`
-	WeaponMods          []interface{} `json:"WeaponMods,omitempty"`
-	Event               string        `json:"event,omitempty"`
-	Timestamp           time.Time     `json:"timestamp,omitempty"`
+	Class               int           `mapstructure:"Class,omitempty"`
+	LoadoutID           int           `mapstructure:"LoadoutID,omitempty"`
+	LoadoutName         string        `mapstructure:"LoadoutName,omitempty"`
+	ModuleName          string        `mapstructure:"ModuleName,omitempty"`
+	ModuleNameLocalised string        `mapstructure:"ModuleName_Localised,omitempty"`
+	SlotName            string        `mapstructure:"SlotName,omitempty"`
+	SuitID              int           `mapstructure:"SuitID,omitempty"`
+	SuitModuleID        int           `mapstructure:"SuitModuleID,omitempty"`
+	SuitName            string        `mapstructure:"SuitName,omitempty"`
+	SuitNameLocalised   string        `mapstructure:"SuitName_Localised,omitempty"`
+	WeaponMods          []interface{} `mapstructure:"WeaponMods,omitempty"`
+	Event               string        `mapstructure:"event,omitempty"`
+	Timestamp           time.Time     `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evLoadoutEquipModule(ev *LoadoutEquipModuleEvent) {

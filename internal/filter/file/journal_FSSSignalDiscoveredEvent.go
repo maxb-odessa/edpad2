@@ -10,20 +10,20 @@ import (
 )
 
 type FSSSignalDiscoveredEvent struct {
-	IsStation                bool      `json:"IsStation,omitempty"`
-	SignalName               string    `json:"SignalName,omitempty"`
-	SignalNameLocalised      string    `json:"SignalName_Localised,omitempty"`
-	SpawningFaction          string    `json:"SpawningFaction,omitempty"`
-	SpawningFactionLocalised string    `json:"SpawningFaction_Localised,omitempty"`
-	SpawningState            string    `json:"SpawningState,omitempty"`
-	SpawningStateLocalised   string    `json:"SpawningState_Localised,omitempty"`
-	SystemAddress            int       `json:"SystemAddress,omitempty"`
-	ThreatLevel              int       `json:"ThreatLevel,omitempty"`
-	TimeRemaining            float64   `json:"TimeRemaining,omitempty"`
-	UssType                  string    `json:"USSType,omitempty"`
-	USSTypeLocalised         string    `json:"USSType_Localised,omitempty"`
-	Event                    string    `json:"event,omitempty"`
-	Timestamp                time.Time `json:"timestamp,omitempty"`
+	IsStation                bool      `mapstructure:"IsStation,omitempty"`
+	SignalName               string    `mapstructure:"SignalName,omitempty"`
+	SignalNameLocalised      string    `mapstructure:"SignalName_Localised,omitempty"`
+	SpawningFaction          string    `mapstructure:"SpawningFaction,omitempty"`
+	SpawningFactionLocalised string    `mapstructure:"SpawningFaction_Localised,omitempty"`
+	SpawningState            string    `mapstructure:"SpawningState,omitempty"`
+	SpawningStateLocalised   string    `mapstructure:"SpawningState_Localised,omitempty"`
+	SystemAddress            int       `mapstructure:"SystemAddress,omitempty"`
+	ThreatLevel              int       `mapstructure:"ThreatLevel,omitempty"`
+	TimeRemaining            float64   `mapstructure:"TimeRemaining,omitempty"`
+	UssType                  string    `mapstructure:"USSType,omitempty"`
+	USSTypeLocalised         string    `mapstructure:"USSType_Localised,omitempty"`
+	Event                    string    `mapstructure:"event,omitempty"`
+	Timestamp                time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFSSSignalDiscovered(ev *FSSSignalDiscoveredEvent) {

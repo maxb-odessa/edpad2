@@ -3,16 +3,16 @@ package file
 import "time"
 
 type RedeemVoucherEvent struct {
-	Amount           int     `json:"Amount,omitempty"`
-	BrokerPercentage float64 `json:"BrokerPercentage,omitempty"`
-	Faction          string  `json:"Faction,omitempty"`
+	Amount           int     `mapstructure:"Amount,omitempty"`
+	BrokerPercentage float64 `mapstructure:"BrokerPercentage,omitempty"`
+	Faction          string  `mapstructure:"Faction,omitempty"`
 	Factions         []struct {
-		Amount  int    `json:"Amount,omitempty"`
-		Faction string `json:"Faction,omitempty"`
-	} `json:"Factions,omitempty"`
-	Type      string    `json:"Type,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+		Amount  int    `mapstructure:"Amount,omitempty"`
+		Faction string `mapstructure:"Faction,omitempty"`
+	} `mapstructure:"Factions,omitempty"`
+	Type      string    `mapstructure:"Type,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evRedeemVoucher(ev *RedeemVoucherEvent) {

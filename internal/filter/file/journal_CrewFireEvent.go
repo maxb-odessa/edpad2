@@ -3,10 +3,10 @@ package file
 import "time"
 
 type CrewFireEvent struct {
-	CrewID    int       `json:"CrewID,omitempty"`
-	Name      string    `json:"Name,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	CrewID    int       `mapstructure:"CrewID,omitempty"`
+	Name      string    `mapstructure:"Name,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evCrewFire(ev *CrewFireEvent) {

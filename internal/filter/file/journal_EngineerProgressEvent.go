@@ -3,19 +3,19 @@ package file
 import "time"
 
 type EngineerProgressEvent struct {
-	Engineer   string `json:"Engineer,omitempty"`
-	EngineerID int    `json:"EngineerID,omitempty"`
+	Engineer   string `mapstructure:"Engineer,omitempty"`
+	EngineerID int    `mapstructure:"EngineerID,omitempty"`
 	Engineers  []struct {
-		Engineer     string `json:"Engineer,omitempty"`
-		EngineerID   int    `json:"EngineerID,omitempty"`
-		Progress     string `json:"Progress,omitempty"`
-		Rank         int    `json:"Rank,omitempty"`
-		RankProgress int    `json:"RankProgress,omitempty"`
-	} `json:"Engineers,omitempty"`
-	Progress  string    `json:"Progress,omitempty"`
-	Rank      int       `json:"Rank,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+		Engineer     string `mapstructure:"Engineer,omitempty"`
+		EngineerID   int    `mapstructure:"EngineerID,omitempty"`
+		Progress     string `mapstructure:"Progress,omitempty"`
+		Rank         int    `mapstructure:"Rank,omitempty"`
+		RankProgress int    `mapstructure:"RankProgress,omitempty"`
+	} `mapstructure:"Engineers,omitempty"`
+	Progress  string    `mapstructure:"Progress,omitempty"`
+	Rank      int       `mapstructure:"Rank,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evEngineerProgress(ev *EngineerProgressEvent) {

@@ -3,21 +3,21 @@ package file
 import "time"
 
 type TouchdownEvent struct {
-	Body                        string    `json:"Body,omitempty"`
-	BodyID                      int       `json:"BodyID,omitempty"`
-	Latitude                    float64   `json:"Latitude,omitempty"`
-	Longitude                   float64   `json:"Longitude,omitempty"`
-	Multicrew                   bool      `json:"Multicrew,omitempty"`
-	NearestDestination          string    `json:"NearestDestination,omitempty"`
-	NearestDestinationLocalised string    `json:"NearestDestination_Localised,omitempty"`
-	OnPlanet                    bool      `json:"OnPlanet,omitempty"`
-	OnStation                   bool      `json:"OnStation,omitempty"`
-	PlayerControlled            bool      `json:"PlayerControlled,omitempty"`
-	StarSystem                  string    `json:"StarSystem,omitempty"`
-	SystemAddress               int       `json:"SystemAddress,omitempty"`
-	Taxi                        bool      `json:"Taxi,omitempty"`
-	Event                       string    `json:"event,omitempty"`
-	Timestamp                   time.Time `json:"timestamp,omitempty"`
+	Body                        string    `mapstructure:"Body,omitempty"`
+	BodyID                      int       `mapstructure:"BodyID,omitempty"`
+	Latitude                    float64   `mapstructure:"Latitude,omitempty"`
+	Longitude                   float64   `mapstructure:"Longitude,omitempty"`
+	Multicrew                   bool      `mapstructure:"Multicrew,omitempty"`
+	NearestDestination          string    `mapstructure:"NearestDestination,omitempty"`
+	NearestDestinationLocalised string    `mapstructure:"NearestDestination_Localised,omitempty"`
+	OnPlanet                    bool      `mapstructure:"OnPlanet,omitempty"`
+	OnStation                   bool      `mapstructure:"OnStation,omitempty"`
+	PlayerControlled            bool      `mapstructure:"PlayerControlled,omitempty"`
+	StarSystem                  string    `mapstructure:"StarSystem,omitempty"`
+	SystemAddress               int       `mapstructure:"SystemAddress,omitempty"`
+	Taxi                        bool      `mapstructure:"Taxi,omitempty"`
+	Event                       string    `mapstructure:"event,omitempty"`
+	Timestamp                   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evTouchdown(ev *TouchdownEvent) {

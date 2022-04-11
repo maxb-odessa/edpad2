@@ -7,12 +7,12 @@ import (
 )
 
 type StartJumpEvent struct {
-	JumpType      string    `json:"JumpType,omitempty"`
-	StarClass     string    `json:"StarClass,omitempty"`
-	StarSystem    string    `json:"StarSystem,omitempty"`
-	SystemAddress int       `json:"SystemAddress,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	JumpType      string    `mapstructure:"JumpType,omitempty"`
+	StarClass     string    `mapstructure:"StarClass,omitempty"`
+	StarSystem    string    `mapstructure:"StarSystem,omitempty"`
+	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evStartJump(ev *StartJumpEvent) {

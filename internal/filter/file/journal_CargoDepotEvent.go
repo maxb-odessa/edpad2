@@ -3,19 +3,19 @@ package file
 import "time"
 
 type CargoDepotEvent struct {
-	CargoType           string    `json:"CargoType,omitempty"`
-	CargoTypeLocalised  string    `json:"CargoType_Localised,omitempty"`
-	Count               int       `json:"Count,omitempty"`
-	EndMarketID         int       `json:"EndMarketID,omitempty"`
-	ItemsCollected      int       `json:"ItemsCollected,omitempty"`
-	ItemsDelivered      int       `json:"ItemsDelivered,omitempty"`
-	MissionID           int       `json:"MissionID,omitempty"`
-	Progress            float64   `json:"Progress,omitempty"`
-	StartMarketID       int       `json:"StartMarketID,omitempty"`
-	TotalItemsToDeliver int       `json:"TotalItemsToDeliver,omitempty"`
-	UpdateType          string    `json:"UpdateType,omitempty"`
-	Event               string    `json:"event,omitempty"`
-	Timestamp           time.Time `json:"timestamp,omitempty"`
+	CargoType           string    `mapstructure:"CargoType,omitempty"`
+	CargoTypeLocalised  string    `mapstructure:"CargoType_Localised,omitempty"`
+	Count               int       `mapstructure:"Count,omitempty"`
+	EndMarketID         int       `mapstructure:"EndMarketID,omitempty"`
+	ItemsCollected      int       `mapstructure:"ItemsCollected,omitempty"`
+	ItemsDelivered      int       `mapstructure:"ItemsDelivered,omitempty"`
+	MissionID           int       `mapstructure:"MissionID,omitempty"`
+	Progress            float64   `mapstructure:"Progress,omitempty"`
+	StartMarketID       int       `mapstructure:"StartMarketID,omitempty"`
+	TotalItemsToDeliver int       `mapstructure:"TotalItemsToDeliver,omitempty"`
+	UpdateType          string    `mapstructure:"UpdateType,omitempty"`
+	Event               string    `mapstructure:"event,omitempty"`
+	Timestamp           time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evCargoDepot(ev *CargoDepotEvent) {

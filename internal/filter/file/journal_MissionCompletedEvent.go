@@ -3,52 +3,52 @@ package file
 import "time"
 
 type MissionCompletedEvent struct {
-	Commodity       string `json:"Commodity,omitempty"`
+	Commodity       string `mapstructure:"Commodity,omitempty"`
 	CommodityReward []struct {
-		Count         int    `json:"Count,omitempty"`
-		Name          string `json:"Name,omitempty"`
-		NameLocalised string `json:"Name_Localised,omitempty"`
-	} `json:"CommodityReward,omitempty"`
-	CommodityLocalised string `json:"Commodity_Localised,omitempty"`
-	Count              int    `json:"Count,omitempty"`
-	DestinationStation string `json:"DestinationStation,omitempty"`
-	DestinationSystem  string `json:"DestinationSystem,omitempty"`
-	Donated            int    `json:"Donated,omitempty"`
-	Donation           string `json:"Donation,omitempty"`
-	Faction            string `json:"Faction,omitempty"`
+		Count         int    `mapstructure:"Count,omitempty"`
+		Name          string `mapstructure:"Name,omitempty"`
+		NameLocalised string `mapstructure:"Name_Localised,omitempty"`
+	} `mapstructure:"CommodityReward,omitempty"`
+	CommodityLocalised string `mapstructure:"Commodity_Localised,omitempty"`
+	Count              int    `mapstructure:"Count,omitempty"`
+	DestinationStation string `mapstructure:"DestinationStation,omitempty"`
+	DestinationSystem  string `mapstructure:"DestinationSystem,omitempty"`
+	Donated            int    `mapstructure:"Donated,omitempty"`
+	Donation           string `mapstructure:"Donation,omitempty"`
+	Faction            string `mapstructure:"Faction,omitempty"`
 	FactionEffects     []struct {
 		Effects []struct {
-			Effect          string `json:"Effect,omitempty"`
-			EffectLocalised string `json:"Effect_Localised,omitempty"`
-			Trend           string `json:"Trend,omitempty"`
-		} `json:"Effects,omitempty"`
-		Faction   string `json:"Faction,omitempty"`
+			Effect          string `mapstructure:"Effect,omitempty"`
+			EffectLocalised string `mapstructure:"Effect_Localised,omitempty"`
+			Trend           string `mapstructure:"Trend,omitempty"`
+		} `mapstructure:"Effects,omitempty"`
+		Faction   string `mapstructure:"Faction,omitempty"`
 		Influence []struct {
-			Influence     string `json:"Influence,omitempty"`
-			SystemAddress int    `json:"SystemAddress,omitempty"`
-			Trend         string `json:"Trend,omitempty"`
-		} `json:"Influence,omitempty"`
-		Reputation      string `json:"Reputation,omitempty"`
-		ReputationTrend string `json:"ReputationTrend,omitempty"`
-	} `json:"FactionEffects,omitempty"`
+			Influence     string `mapstructure:"Influence,omitempty"`
+			SystemAddress int    `mapstructure:"SystemAddress,omitempty"`
+			Trend         string `mapstructure:"Trend,omitempty"`
+		} `mapstructure:"Influence,omitempty"`
+		Reputation      string `mapstructure:"Reputation,omitempty"`
+		ReputationTrend string `mapstructure:"ReputationTrend,omitempty"`
+	} `mapstructure:"FactionEffects,omitempty"`
 	MaterialsReward []struct {
-		Category          string `json:"Category,omitempty"`
-		CategoryLocalised string `json:"Category_Localised,omitempty"`
-		Count             int    `json:"Count,omitempty"`
-		Name              string `json:"Name,omitempty"`
-		NameLocalised     string `json:"Name_Localised,omitempty"`
-	} `json:"MaterialsReward,omitempty"`
-	MissionID            int       `json:"MissionID,omitempty"`
-	Name                 string    `json:"Name,omitempty"`
-	NewDestinationSystem string    `json:"NewDestinationSystem,omitempty"`
-	Reward               int       `json:"Reward,omitempty"`
-	Target               string    `json:"Target,omitempty"`
-	TargetFaction        string    `json:"TargetFaction,omitempty"`
-	TargetType           string    `json:"TargetType,omitempty"`
-	TargetTypeLocalised  string    `json:"TargetType_Localised,omitempty"`
-	TargetLocalised      string    `json:"Target_Localised,omitempty"`
-	Event                string    `json:"event,omitempty"`
-	Timestamp            time.Time `json:"timestamp,omitempty"`
+		Category          string `mapstructure:"Category,omitempty"`
+		CategoryLocalised string `mapstructure:"Category_Localised,omitempty"`
+		Count             int    `mapstructure:"Count,omitempty"`
+		Name              string `mapstructure:"Name,omitempty"`
+		NameLocalised     string `mapstructure:"Name_Localised,omitempty"`
+	} `mapstructure:"MaterialsReward,omitempty"`
+	MissionID            int       `mapstructure:"MissionID,omitempty"`
+	Name                 string    `mapstructure:"Name,omitempty"`
+	NewDestinationSystem string    `mapstructure:"NewDestinationSystem,omitempty"`
+	Reward               int       `mapstructure:"Reward,omitempty"`
+	Target               string    `mapstructure:"Target,omitempty"`
+	TargetFaction        string    `mapstructure:"TargetFaction,omitempty"`
+	TargetType           string    `mapstructure:"TargetType,omitempty"`
+	TargetTypeLocalised  string    `mapstructure:"TargetType_Localised,omitempty"`
+	TargetLocalised      string    `mapstructure:"Target_Localised,omitempty"`
+	Event                string    `mapstructure:"event,omitempty"`
+	Timestamp            time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMissionCompleted(ev *MissionCompletedEvent) {

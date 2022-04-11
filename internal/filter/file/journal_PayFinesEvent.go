@@ -3,12 +3,12 @@ package file
 import "time"
 
 type PayFinesEvent struct {
-	AllFines  bool      `json:"AllFines,omitempty"`
-	Amount    int       `json:"Amount,omitempty"`
-	Faction   string    `json:"Faction,omitempty"`
-	ShipID    int       `json:"ShipID,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	AllFines  bool      `mapstructure:"AllFines,omitempty"`
+	Amount    int       `mapstructure:"Amount,omitempty"`
+	Faction   string    `mapstructure:"Faction,omitempty"`
+	ShipID    int       `mapstructure:"ShipID,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evPayFines(ev *PayFinesEvent) {

@@ -3,15 +3,15 @@ package file
 import "time"
 
 type EngineerContributionEvent struct {
-	Commodity          string    `json:"Commodity,omitempty"`
-	CommodityLocalised string    `json:"Commodity_Localised,omitempty"`
-	Engineer           string    `json:"Engineer,omitempty"`
-	EngineerID         int       `json:"EngineerID,omitempty"`
-	Quantity           int       `json:"Quantity,omitempty"`
-	TotalQuantity      int       `json:"TotalQuantity,omitempty"`
-	Type               string    `json:"Type,omitempty"`
-	Event              string    `json:"event,omitempty"`
-	Timestamp          time.Time `json:"timestamp,omitempty"`
+	Commodity          string    `mapstructure:"Commodity,omitempty"`
+	CommodityLocalised string    `mapstructure:"Commodity_Localised,omitempty"`
+	Engineer           string    `mapstructure:"Engineer,omitempty"`
+	EngineerID         int       `mapstructure:"EngineerID,omitempty"`
+	Quantity           int       `mapstructure:"Quantity,omitempty"`
+	TotalQuantity      int       `mapstructure:"TotalQuantity,omitempty"`
+	Type               string    `mapstructure:"Type,omitempty"`
+	Event              string    `mapstructure:"event,omitempty"`
+	Timestamp          time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evEngineerContribution(ev *EngineerContributionEvent) {

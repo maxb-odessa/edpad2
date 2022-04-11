@@ -3,15 +3,15 @@ package file
 import "time"
 
 type ScanOrganicEvent struct {
-	Body             int       `json:"Body,omitempty"`
-	Genus            string    `json:"Genus,omitempty"`
-	GenusLocalised   string    `json:"Genus_Localised,omitempty"`
-	ScanType         string    `json:"ScanType,omitempty"`
-	Species          string    `json:"Species,omitempty"`
-	SpeciesLocalised string    `json:"Species_Localised,omitempty"`
-	SystemAddress    int       `json:"SystemAddress,omitempty"`
-	Event            string    `json:"event,omitempty"`
-	Timestamp        time.Time `json:"timestamp,omitempty"`
+	Body             int       `mapstructure:"Body,omitempty"`
+	Genus            string    `mapstructure:"Genus,omitempty"`
+	GenusLocalised   string    `mapstructure:"Genus_Localised,omitempty"`
+	ScanType         string    `mapstructure:"ScanType,omitempty"`
+	Species          string    `mapstructure:"Species,omitempty"`
+	SpeciesLocalised string    `mapstructure:"Species_Localised,omitempty"`
+	SystemAddress    int       `mapstructure:"SystemAddress,omitempty"`
+	Event            string    `mapstructure:"event,omitempty"`
+	Timestamp        time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evScanOrganic(ev *ScanOrganicEvent) {

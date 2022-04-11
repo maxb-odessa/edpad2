@@ -3,18 +3,18 @@ package file
 import "time"
 
 type BountyEvent struct {
-	Reward  int `json:"Reward,omitempty"`
+	Reward  int `mapstructure:"Reward,omitempty"`
 	Rewards []struct {
-		Faction string `json:"Faction,omitempty"`
-		Reward  int    `json:"Reward,omitempty"`
-	} `json:"Rewards,omitempty"`
-	Target                 string    `json:"Target,omitempty"`
-	TargetLocalised        string    `json:"Target_Localised,omitempty"`
-	TotalReward            int       `json:"TotalReward,omitempty"`
-	VictimFaction          string    `json:"VictimFaction,omitempty"`
-	VictimFactionLocalised string    `json:"VictimFaction_Localised,omitempty"`
-	Event                  string    `json:"event,omitempty"`
-	Timestamp              time.Time `json:"timestamp,omitempty"`
+		Faction string `mapstructure:"Faction,omitempty"`
+		Reward  int    `mapstructure:"Reward,omitempty"`
+	} `mapstructure:"Rewards,omitempty"`
+	Target                 string    `mapstructure:"Target,omitempty"`
+	TargetLocalised        string    `mapstructure:"Target_Localised,omitempty"`
+	TotalReward            int       `mapstructure:"TotalReward,omitempty"`
+	VictimFaction          string    `mapstructure:"VictimFaction,omitempty"`
+	VictimFactionLocalised string    `mapstructure:"VictimFaction_Localised,omitempty"`
+	Event                  string    `mapstructure:"event,omitempty"`
+	Timestamp              time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evBounty(ev *BountyEvent) {

@@ -3,13 +3,13 @@ package file
 import "time"
 
 type RenameSuitLoadoutEvent struct {
-	LoadoutID         int       `json:"LoadoutID,omitempty"`
-	LoadoutName       string    `json:"LoadoutName,omitempty"`
-	SuitID            int       `json:"SuitID,omitempty"`
-	SuitName          string    `json:"SuitName,omitempty"`
-	SuitNameLocalised string    `json:"SuitName_Localised,omitempty"`
-	Event             string    `json:"event,omitempty"`
-	Timestamp         time.Time `json:"timestamp,omitempty"`
+	LoadoutID         int       `mapstructure:"LoadoutID,omitempty"`
+	LoadoutName       string    `mapstructure:"LoadoutName,omitempty"`
+	SuitID            int       `mapstructure:"SuitID,omitempty"`
+	SuitName          string    `mapstructure:"SuitName,omitempty"`
+	SuitNameLocalised string    `mapstructure:"SuitName_Localised,omitempty"`
+	Event             string    `mapstructure:"event,omitempty"`
+	Timestamp         time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evRenameSuitLoadout(ev *RenameSuitLoadoutEvent) {

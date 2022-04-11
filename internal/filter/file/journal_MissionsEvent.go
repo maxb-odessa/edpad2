@@ -4,20 +4,20 @@ import "time"
 
 type MissionsEvent struct {
 	Active []struct {
-		Expires          int    `json:"Expires,omitempty"`
-		MissionID        int    `json:"MissionID,omitempty"`
-		Name             string `json:"Name,omitempty"`
-		PassengerMission bool   `json:"PassengerMission,omitempty"`
-	} `json:"Active,omitempty"`
-	Complete []interface{} `json:"Complete,omitempty"`
+		Expires          int    `mapstructure:"Expires,omitempty"`
+		MissionID        int    `mapstructure:"MissionID,omitempty"`
+		Name             string `mapstructure:"Name,omitempty"`
+		PassengerMission bool   `mapstructure:"PassengerMission,omitempty"`
+	} `mapstructure:"Active,omitempty"`
+	Complete []interface{} `mapstructure:"Complete,omitempty"`
 	Failed   []struct {
-		Expires          int    `json:"Expires,omitempty"`
-		MissionID        int    `json:"MissionID,omitempty"`
-		Name             string `json:"Name,omitempty"`
-		PassengerMission bool   `json:"PassengerMission,omitempty"`
-	} `json:"Failed,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+		Expires          int    `mapstructure:"Expires,omitempty"`
+		MissionID        int    `mapstructure:"MissionID,omitempty"`
+		Name             string `mapstructure:"Name,omitempty"`
+		PassengerMission bool   `mapstructure:"PassengerMission,omitempty"`
+	} `mapstructure:"Failed,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMissions(ev *MissionsEvent) {

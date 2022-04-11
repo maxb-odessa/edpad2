@@ -3,13 +3,13 @@ package file
 import "time"
 
 type FileheaderEvent struct {
-	Odyssey     bool      `json:"Odyssey,omitempty"`
-	Build       string    `json:"build,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Gameversion string    `json:"gameversion,omitempty"`
-	Language    string    `json:"language,omitempty"`
-	Part        int       `json:"part,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+	Odyssey     bool      `mapstructure:"Odyssey,omitempty"`
+	Build       string    `mapstructure:"build,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Gameversion string    `mapstructure:"gameversion,omitempty"`
+	Language    string    `mapstructure:"language,omitempty"`
+	Part        int       `mapstructure:"part,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFileheader(ev *FileheaderEvent) {

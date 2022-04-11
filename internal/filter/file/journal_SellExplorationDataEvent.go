@@ -3,13 +3,13 @@ package file
 import "time"
 
 type SellExplorationDataEvent struct {
-	BaseValue     int           `json:"BaseValue,omitempty"`
-	Bonus         int           `json:"Bonus,omitempty"`
-	Discovered    []interface{} `json:"Discovered,omitempty"`
-	Systems       []string      `json:"Systems,omitempty"`
-	TotalEarnings int           `json:"TotalEarnings,omitempty"`
-	Event         string        `json:"event,omitempty"`
-	Timestamp     time.Time     `json:"timestamp,omitempty"`
+	BaseValue     int           `mapstructure:"BaseValue,omitempty"`
+	Bonus         int           `mapstructure:"Bonus,omitempty"`
+	Discovered    []interface{} `mapstructure:"Discovered,omitempty"`
+	Systems       []string      `mapstructure:"Systems,omitempty"`
+	TotalEarnings int           `mapstructure:"TotalEarnings,omitempty"`
+	Event         string        `mapstructure:"event,omitempty"`
+	Timestamp     time.Time     `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evSellExplorationData(ev *SellExplorationDataEvent) {

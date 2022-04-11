@@ -4,25 +4,25 @@ import "time"
 
 type StoredModulesEvent struct {
 	Items []struct {
-		BuyPrice              int     `json:"BuyPrice,omitempty"`
-		EngineerModifications string  `json:"EngineerModifications,omitempty"`
-		Hot                   bool    `json:"Hot,omitempty"`
-		InTransit             bool    `json:"InTransit,omitempty"`
-		Level                 int     `json:"Level,omitempty"`
-		MarketID              int     `json:"MarketID,omitempty"`
-		Name                  string  `json:"Name,omitempty"`
-		NameLocalised         string  `json:"Name_Localised,omitempty"`
-		Quality               float64 `json:"Quality,omitempty"`
-		StarSystem            string  `json:"StarSystem,omitempty"`
-		StorageSlot           int     `json:"StorageSlot,omitempty"`
-		TransferCost          int     `json:"TransferCost,omitempty"`
-		TransferTime          int     `json:"TransferTime,omitempty"`
-	} `json:"Items,omitempty"`
-	MarketID    int       `json:"MarketID,omitempty"`
-	StarSystem  string    `json:"StarSystem,omitempty"`
-	StationName string    `json:"StationName,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+		BuyPrice              int     `mapstructure:"BuyPrice,omitempty"`
+		EngineerModifications string  `mapstructure:"EngineerModifications,omitempty"`
+		Hot                   bool    `mapstructure:"Hot,omitempty"`
+		InTransit             bool    `mapstructure:"InTransit,omitempty"`
+		Level                 int     `mapstructure:"Level,omitempty"`
+		MarketID              int     `mapstructure:"MarketID,omitempty"`
+		Name                  string  `mapstructure:"Name,omitempty"`
+		NameLocalised         string  `mapstructure:"Name_Localised,omitempty"`
+		Quality               float64 `mapstructure:"Quality,omitempty"`
+		StarSystem            string  `mapstructure:"StarSystem,omitempty"`
+		StorageSlot           int     `mapstructure:"StorageSlot,omitempty"`
+		TransferCost          int     `mapstructure:"TransferCost,omitempty"`
+		TransferTime          int     `mapstructure:"TransferTime,omitempty"`
+	} `mapstructure:"Items,omitempty"`
+	MarketID    int       `mapstructure:"MarketID,omitempty"`
+	StarSystem  string    `mapstructure:"StarSystem,omitempty"`
+	StationName string    `mapstructure:"StationName,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evStoredModules(ev *StoredModulesEvent) {

@@ -3,11 +3,11 @@ package file
 import "time"
 
 type NpcCrewPaidWageEvent struct {
-	Amount      int       `json:"Amount,omitempty"`
-	NpcCrewID   int       `json:"NpcCrewId,omitempty"`
-	NpcCrewName string    `json:"NpcCrewName,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+	Amount      int       `mapstructure:"Amount,omitempty"`
+	NpcCrewID   int       `mapstructure:"NpcCrewId,omitempty"`
+	NpcCrewName string    `mapstructure:"NpcCrewName,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evNpcCrewPaidWage(ev *NpcCrewPaidWageEvent) {

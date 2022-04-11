@@ -8,13 +8,13 @@ import (
 )
 
 type FSSDiscoveryScanEvent struct {
-	BodyCount     int       `json:"BodyCount,omitempty"`
-	NonBodyCount  int       `json:"NonBodyCount,omitempty"`
-	Progress      float64   `json:"Progress,omitempty"`
-	SystemAddress int       `json:"SystemAddress,omitempty"`
-	SystemName    string    `json:"SystemName,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	BodyCount     int       `mapstructure:"BodyCount,omitempty"`
+	NonBodyCount  int       `mapstructure:"NonBodyCount,omitempty"`
+	Progress      float64   `mapstructure:"Progress,omitempty"`
+	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
+	SystemName    string    `mapstructure:"SystemName,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFSSDiscoveryScan(ev *FSSDiscoveryScanEvent) {

@@ -3,11 +3,11 @@ package file
 import "time"
 
 type USSDropEvent struct {
-	UssThreat        int       `json:"USSThreat,omitempty"`
-	UssType          string    `json:"USSType,omitempty"`
-	USSTypeLocalised string    `json:"USSType_Localised,omitempty"`
-	Event            string    `json:"event,omitempty"`
-	Timestamp        time.Time `json:"timestamp,omitempty"`
+	UssThreat        int       `mapstructure:"USSThreat,omitempty"`
+	UssType          string    `mapstructure:"USSType,omitempty"`
+	USSTypeLocalised string    `mapstructure:"USSType_Localised,omitempty"`
+	Event            string    `mapstructure:"event,omitempty"`
+	Timestamp        time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evUSSDrop(ev *USSDropEvent) {

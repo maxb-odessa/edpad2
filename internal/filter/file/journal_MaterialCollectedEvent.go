@@ -8,12 +8,12 @@ import (
 )
 
 type MaterialCollectedEvent struct {
-	Category      string    `json:"Category,omitempty"`
-	Count         int       `json:"Count,omitempty"`
-	Name          string    `json:"Name,omitempty"`
-	NameLocalised string    `json:"Name_Localised,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	Category      string    `mapstructure:"Category,omitempty"`
+	Count         int       `mapstructure:"Count,omitempty"`
+	Name          string    `mapstructure:"Name,omitempty"`
+	NameLocalised string    `mapstructure:"Name_Localised,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMaterialCollected(ev *MaterialCollectedEvent) {

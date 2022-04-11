@@ -10,12 +10,12 @@ import (
 )
 
 type FSDTargetEvent struct {
-	Name                  string    `json:"Name,omitempty"`
-	RemainingJumpsInRoute int       `json:"RemainingJumpsInRoute,omitempty"`
-	StarClass             string    `json:"StarClass,omitempty"`
-	SystemAddress         int       `json:"SystemAddress,omitempty"`
-	Event                 string    `json:"event,omitempty"`
-	Timestamp             time.Time `json:"timestamp,omitempty"`
+	Name                  string    `mapstructure:"Name,omitempty"`
+	RemainingJumpsInRoute int       `mapstructure:"RemainingJumpsInRoute,omitempty"`
+	StarClass             string    `mapstructure:"StarClass,omitempty"`
+	SystemAddress         int       `mapstructure:"SystemAddress,omitempty"`
+	Event                 string    `mapstructure:"event,omitempty"`
+	Timestamp             time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFSDTarget(ev *FSDTargetEvent) {

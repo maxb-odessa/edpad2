@@ -7,10 +7,10 @@ import (
 )
 
 type ReservoirReplenishedEvent struct {
-	FuelMain      float64   `json:"FuelMain,omitempty"`
-	FuelReservoir float64   `json:"FuelReservoir,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	FuelMain      float64   `mapstructure:"FuelMain,omitempty"`
+	FuelReservoir float64   `mapstructure:"FuelReservoir,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evReservoirReplenished(ev *ReservoirReplenishedEvent) {

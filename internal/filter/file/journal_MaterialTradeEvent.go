@@ -3,22 +3,22 @@ package file
 import "time"
 
 type MaterialTradeEvent struct {
-	MarketID int `json:"MarketID,omitempty"`
+	MarketID int `mapstructure:"MarketID,omitempty"`
 	Paid     struct {
-		Category          string `json:"Category,omitempty"`
-		Material          string `json:"Material,omitempty"`
-		MaterialLocalised string `json:"Material_Localised,omitempty"`
-		Quantity          int    `json:"Quantity,omitempty"`
-	} `json:"Paid,omitempty"`
+		Category          string `mapstructure:"Category,omitempty"`
+		Material          string `mapstructure:"Material,omitempty"`
+		MaterialLocalised string `mapstructure:"Material_Localised,omitempty"`
+		Quantity          int    `mapstructure:"Quantity,omitempty"`
+	} `mapstructure:"Paid,omitempty"`
 	Received struct {
-		Category          string `json:"Category,omitempty"`
-		Material          string `json:"Material,omitempty"`
-		MaterialLocalised string `json:"Material_Localised,omitempty"`
-		Quantity          int    `json:"Quantity,omitempty"`
-	} `json:"Received,omitempty"`
-	TraderType string    `json:"TraderType,omitempty"`
-	Event      string    `json:"event,omitempty"`
-	Timestamp  time.Time `json:"timestamp,omitempty"`
+		Category          string `mapstructure:"Category,omitempty"`
+		Material          string `mapstructure:"Material,omitempty"`
+		MaterialLocalised string `mapstructure:"Material_Localised,omitempty"`
+		Quantity          int    `mapstructure:"Quantity,omitempty"`
+	} `mapstructure:"Received,omitempty"`
+	TraderType string    `mapstructure:"TraderType,omitempty"`
+	Event      string    `mapstructure:"event,omitempty"`
+	Timestamp  time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMaterialTrade(ev *MaterialTradeEvent) {

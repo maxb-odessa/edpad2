@@ -3,10 +3,10 @@ package file
 import "time"
 
 type EscapeInterdictionEvent struct {
-	Interdictor string    `json:"Interdictor,omitempty"`
-	IsPlayer    bool      `json:"IsPlayer,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+	Interdictor string    `mapstructure:"Interdictor,omitempty"`
+	IsPlayer    bool      `mapstructure:"IsPlayer,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evEscapeInterdiction(ev *EscapeInterdictionEvent) {

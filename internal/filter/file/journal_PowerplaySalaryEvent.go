@@ -3,10 +3,10 @@ package file
 import "time"
 
 type PowerplaySalaryEvent struct {
-	Amount    int       `json:"Amount,omitempty"`
-	Power     string    `json:"Power,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Amount    int       `mapstructure:"Amount,omitempty"`
+	Power     string    `mapstructure:"Power,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evPowerplaySalary(ev *PowerplaySalaryEvent) {

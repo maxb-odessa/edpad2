@@ -3,11 +3,11 @@ package file
 import "time"
 
 type FSSAllBodiesFoundEvent struct {
-	Count         int       `json:"Count,omitempty"`
-	SystemAddress int       `json:"SystemAddress,omitempty"`
-	SystemName    string    `json:"SystemName,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	Count         int       `mapstructure:"Count,omitempty"`
+	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
+	SystemName    string    `mapstructure:"SystemName,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evFSSAllBodiesFound(ev *FSSAllBodiesFoundEvent) {

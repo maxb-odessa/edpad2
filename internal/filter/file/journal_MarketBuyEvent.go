@@ -3,14 +3,14 @@ package file
 import "time"
 
 type MarketBuyEvent struct {
-	BuyPrice      int       `json:"BuyPrice,omitempty"`
-	Count         int       `json:"Count,omitempty"`
-	MarketID      int       `json:"MarketID,omitempty"`
-	TotalCost     int       `json:"TotalCost,omitempty"`
-	Type          string    `json:"Type,omitempty"`
-	TypeLocalised string    `json:"Type_Localised,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	BuyPrice      int       `mapstructure:"BuyPrice,omitempty"`
+	Count         int       `mapstructure:"Count,omitempty"`
+	MarketID      int       `mapstructure:"MarketID,omitempty"`
+	TotalCost     int       `mapstructure:"TotalCost,omitempty"`
+	Type          string    `mapstructure:"Type,omitempty"`
+	TypeLocalised string    `mapstructure:"Type_Localised,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMarketBuy(ev *MarketBuyEvent) {

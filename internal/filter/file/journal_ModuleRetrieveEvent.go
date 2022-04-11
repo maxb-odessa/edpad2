@@ -3,20 +3,20 @@ package file
 import "time"
 
 type ModuleRetrieveEvent struct {
-	EngineerModifications  string    `json:"EngineerModifications,omitempty"`
-	Hot                    bool      `json:"Hot,omitempty"`
-	Level                  int       `json:"Level,omitempty"`
-	MarketID               int       `json:"MarketID,omitempty"`
-	Quality                float64   `json:"Quality,omitempty"`
-	RetrievedItem          string    `json:"RetrievedItem,omitempty"`
-	RetrievedItemLocalised string    `json:"RetrievedItem_Localised,omitempty"`
-	Ship                   string    `json:"Ship,omitempty"`
-	ShipID                 int       `json:"ShipID,omitempty"`
-	Slot                   string    `json:"Slot,omitempty"`
-	SwapOutItem            string    `json:"SwapOutItem,omitempty"`
-	SwapOutItemLocalised   string    `json:"SwapOutItem_Localised,omitempty"`
-	Event                  string    `json:"event,omitempty"`
-	Timestamp              time.Time `json:"timestamp,omitempty"`
+	EngineerModifications  string    `mapstructure:"EngineerModifications,omitempty"`
+	Hot                    bool      `mapstructure:"Hot,omitempty"`
+	Level                  int       `mapstructure:"Level,omitempty"`
+	MarketID               int       `mapstructure:"MarketID,omitempty"`
+	Quality                float64   `mapstructure:"Quality,omitempty"`
+	RetrievedItem          string    `mapstructure:"RetrievedItem,omitempty"`
+	RetrievedItemLocalised string    `mapstructure:"RetrievedItem_Localised,omitempty"`
+	Ship                   string    `mapstructure:"Ship,omitempty"`
+	ShipID                 int       `mapstructure:"ShipID,omitempty"`
+	Slot                   string    `mapstructure:"Slot,omitempty"`
+	SwapOutItem            string    `mapstructure:"SwapOutItem,omitempty"`
+	SwapOutItemLocalised   string    `mapstructure:"SwapOutItem_Localised,omitempty"`
+	Event                  string    `mapstructure:"event,omitempty"`
+	Timestamp              time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evModuleRetrieve(ev *ModuleRetrieveEvent) {

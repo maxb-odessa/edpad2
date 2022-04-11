@@ -3,26 +3,26 @@ package file
 import "time"
 
 type LoadGameEvent struct {
-	Commander     string    `json:"Commander,omitempty"`
-	Credits       int       `json:"Credits,omitempty"`
-	Fid           string    `json:"FID,omitempty"`
-	FuelCapacity  float64   `json:"FuelCapacity,omitempty"`
-	FuelLevel     float64   `json:"FuelLevel,omitempty"`
-	GameMode      string    `json:"GameMode,omitempty"`
-	Horizons      bool      `json:"Horizons,omitempty"`
-	Loan          int       `json:"Loan,omitempty"`
-	Odyssey       bool      `json:"Odyssey,omitempty"`
-	Ship          string    `json:"Ship,omitempty"`
-	ShipID        int       `json:"ShipID,omitempty"`
-	ShipIdent     string    `json:"ShipIdent,omitempty"`
-	ShipName      string    `json:"ShipName,omitempty"`
-	ShipLocalised string    `json:"Ship_Localised,omitempty"`
-	StartLanded   bool      `json:"StartLanded,omitempty"`
-	Build         string    `json:"build,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Gameversion   string    `json:"gameversion,omitempty"`
-	Language      string    `json:"language,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+	Commander     string    `mapstructure:"Commander,omitempty"`
+	Credits       int       `mapstructure:"Credits,omitempty"`
+	Fid           string    `mapstructure:"FID,omitempty"`
+	FuelCapacity  float64   `mapstructure:"FuelCapacity,omitempty"`
+	FuelLevel     float64   `mapstructure:"FuelLevel,omitempty"`
+	GameMode      string    `mapstructure:"GameMode,omitempty"`
+	Horizons      bool      `mapstructure:"Horizons,omitempty"`
+	Loan          int       `mapstructure:"Loan,omitempty"`
+	Odyssey       bool      `mapstructure:"Odyssey,omitempty"`
+	Ship          string    `mapstructure:"Ship,omitempty"`
+	ShipID        int       `mapstructure:"ShipID,omitempty"`
+	ShipIdent     string    `mapstructure:"ShipIdent,omitempty"`
+	ShipName      string    `mapstructure:"ShipName,omitempty"`
+	ShipLocalised string    `mapstructure:"Ship_Localised,omitempty"`
+	StartLanded   bool      `mapstructure:"StartLanded,omitempty"`
+	Build         string    `mapstructure:"build,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Gameversion   string    `mapstructure:"gameversion,omitempty"`
+	Language      string    `mapstructure:"language,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evLoadGame(ev *LoadGameEvent) {

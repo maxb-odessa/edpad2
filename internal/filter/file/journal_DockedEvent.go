@@ -3,33 +3,33 @@ package file
 import "time"
 
 type DockedEvent struct {
-	ActiveFine        bool    `json:"ActiveFine,omitempty"`
-	DistFromStarLs    float64 `json:"DistFromStarLS,omitempty"`
-	MarketID          int     `json:"MarketID,omitempty"`
-	Multicrew         bool    `json:"Multicrew,omitempty"`
-	StarSystem        string  `json:"StarSystem,omitempty"`
-	StationAllegiance string  `json:"StationAllegiance,omitempty"`
+	ActiveFine        bool    `mapstructure:"ActiveFine,omitempty"`
+	DistFromStarLs    float64 `mapstructure:"DistFromStarLS,omitempty"`
+	MarketID          int     `mapstructure:"MarketID,omitempty"`
+	Multicrew         bool    `mapstructure:"Multicrew,omitempty"`
+	StarSystem        string  `mapstructure:"StarSystem,omitempty"`
+	StationAllegiance string  `mapstructure:"StationAllegiance,omitempty"`
 	StationEconomies  []struct {
-		Name          string  `json:"Name,omitempty"`
-		NameLocalised string  `json:"Name_Localised,omitempty"`
-		Proportion    float64 `json:"Proportion,omitempty"`
-	} `json:"StationEconomies,omitempty"`
-	StationEconomy          string `json:"StationEconomy,omitempty"`
-	StationEconomyLocalised string `json:"StationEconomy_Localised,omitempty"`
+		Name          string  `mapstructure:"Name,omitempty"`
+		NameLocalised string  `mapstructure:"Name_Localised,omitempty"`
+		Proportion    float64 `mapstructure:"Proportion,omitempty"`
+	} `mapstructure:"StationEconomies,omitempty"`
+	StationEconomy          string `mapstructure:"StationEconomy,omitempty"`
+	StationEconomyLocalised string `mapstructure:"StationEconomy_Localised,omitempty"`
 	StationFaction          struct {
-		FactionState string `json:"FactionState,omitempty"`
-		Name         string `json:"Name,omitempty"`
-	} `json:"StationFaction,omitempty"`
-	StationGovernment          string    `json:"StationGovernment,omitempty"`
-	StationGovernmentLocalised string    `json:"StationGovernment_Localised,omitempty"`
-	StationName                string    `json:"StationName,omitempty"`
-	StationServices            []string  `json:"StationServices,omitempty"`
-	StationType                string    `json:"StationType,omitempty"`
-	SystemAddress              int       `json:"SystemAddress,omitempty"`
-	Taxi                       bool      `json:"Taxi,omitempty"`
-	Wanted                     bool      `json:"Wanted,omitempty"`
-	Event                      string    `json:"event,omitempty"`
-	Timestamp                  time.Time `json:"timestamp,omitempty"`
+		FactionState string `mapstructure:"FactionState,omitempty"`
+		Name         string `mapstructure:"Name,omitempty"`
+	} `mapstructure:"StationFaction,omitempty"`
+	StationGovernment          string    `mapstructure:"StationGovernment,omitempty"`
+	StationGovernmentLocalised string    `mapstructure:"StationGovernment_Localised,omitempty"`
+	StationName                string    `mapstructure:"StationName,omitempty"`
+	StationServices            []string  `mapstructure:"StationServices,omitempty"`
+	StationType                string    `mapstructure:"StationType,omitempty"`
+	SystemAddress              int       `mapstructure:"SystemAddress,omitempty"`
+	Taxi                       bool      `mapstructure:"Taxi,omitempty"`
+	Wanted                     bool      `mapstructure:"Wanted,omitempty"`
+	Event                      string    `mapstructure:"event,omitempty"`
+	Timestamp                  time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evDocked(ev *DockedEvent) {

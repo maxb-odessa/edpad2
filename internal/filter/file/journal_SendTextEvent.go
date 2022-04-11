@@ -3,11 +3,11 @@ package file
 import "time"
 
 type SendTextEvent struct {
-	Message   string    `json:"Message,omitempty"`
-	Sent      bool      `json:"Sent,omitempty"`
-	To        string    `json:"To,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Message   string    `mapstructure:"Message,omitempty"`
+	Sent      bool      `mapstructure:"Sent,omitempty"`
+	To        string    `mapstructure:"To,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evSendText(ev *SendTextEvent) {

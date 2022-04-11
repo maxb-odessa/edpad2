@@ -3,13 +3,13 @@ package file
 import "time"
 
 type UndockedEvent struct {
-	MarketID    int       `json:"MarketID,omitempty"`
-	Multicrew   bool      `json:"Multicrew,omitempty"`
-	StationName string    `json:"StationName,omitempty"`
-	StationType string    `json:"StationType,omitempty"`
-	Taxi        bool      `json:"Taxi,omitempty"`
-	Event       string    `json:"event,omitempty"`
-	Timestamp   time.Time `json:"timestamp,omitempty"`
+	MarketID    int       `mapstructure:"MarketID,omitempty"`
+	Multicrew   bool      `mapstructure:"Multicrew,omitempty"`
+	StationName string    `mapstructure:"StationName,omitempty"`
+	StationType string    `mapstructure:"StationType,omitempty"`
+	Taxi        bool      `mapstructure:"Taxi,omitempty"`
+	Event       string    `mapstructure:"event,omitempty"`
+	Timestamp   time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evUndocked(ev *UndockedEvent) {

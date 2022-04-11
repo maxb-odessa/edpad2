@@ -3,13 +3,13 @@ package file
 import "time"
 
 type ReceiveTextEvent struct {
-	Channel          string    `json:"Channel,omitempty"`
-	From             string    `json:"From,omitempty"`
-	FromLocalised    string    `json:"From_Localised,omitempty"`
-	Message          string    `json:"Message,omitempty"`
-	MessageLocalised string    `json:"Message_Localised,omitempty"`
-	Event            string    `json:"event,omitempty"`
-	Timestamp        time.Time `json:"timestamp,omitempty"`
+	Channel          string    `mapstructure:"Channel,omitempty"`
+	From             string    `mapstructure:"From,omitempty"`
+	FromLocalised    string    `mapstructure:"From_Localised,omitempty"`
+	Message          string    `mapstructure:"Message,omitempty"`
+	MessageLocalised string    `mapstructure:"Message_Localised,omitempty"`
+	Event            string    `mapstructure:"event,omitempty"`
+	Timestamp        time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evReceiveText(ev *ReceiveTextEvent) {

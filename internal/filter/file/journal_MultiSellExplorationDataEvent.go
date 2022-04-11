@@ -3,15 +3,15 @@ package file
 import "time"
 
 type MultiSellExplorationDataEvent struct {
-	BaseValue  int `json:"BaseValue,omitempty"`
-	Bonus      int `json:"Bonus,omitempty"`
+	BaseValue  int `mapstructure:"BaseValue,omitempty"`
+	Bonus      int `mapstructure:"Bonus,omitempty"`
 	Discovered []struct {
-		NumBodies  int    `json:"NumBodies,omitempty"`
-		SystemName string `json:"SystemName,omitempty"`
-	} `json:"Discovered,omitempty"`
-	TotalEarnings int       `json:"TotalEarnings,omitempty"`
-	Event         string    `json:"event,omitempty"`
-	Timestamp     time.Time `json:"timestamp,omitempty"`
+		NumBodies  int    `mapstructure:"NumBodies,omitempty"`
+		SystemName string `mapstructure:"SystemName,omitempty"`
+	} `mapstructure:"Discovered,omitempty"`
+	TotalEarnings int       `mapstructure:"TotalEarnings,omitempty"`
+	Event         string    `mapstructure:"event,omitempty"`
+	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMultiSellExplorationData(ev *MultiSellExplorationDataEvent) {

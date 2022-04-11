@@ -3,11 +3,11 @@ package file
 import "time"
 
 type DiedEvent struct {
-	KillerName string    `json:"KillerName,omitempty"`
-	KillerRank string    `json:"KillerRank,omitempty"`
-	KillerShip string    `json:"KillerShip,omitempty"`
-	Event      string    `json:"event,omitempty"`
-	Timestamp  time.Time `json:"timestamp,omitempty"`
+	KillerName string    `mapstructure:"KillerName,omitempty"`
+	KillerRank string    `mapstructure:"KillerRank,omitempty"`
+	KillerShip string    `mapstructure:"KillerShip,omitempty"`
+	Event      string    `mapstructure:"event,omitempty"`
+	Timestamp  time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evDied(ev *DiedEvent) {

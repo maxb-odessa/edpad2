@@ -3,11 +3,11 @@ package file
 import "time"
 
 type RepairEvent struct {
-	Cost      int       `json:"Cost,omitempty"`
-	Item      string    `json:"Item,omitempty"`
-	Items     []string  `json:"Items,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Cost      int       `mapstructure:"Cost,omitempty"`
+	Item      string    `mapstructure:"Item,omitempty"`
+	Items     []string  `mapstructure:"Items,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evRepair(ev *RepairEvent) {

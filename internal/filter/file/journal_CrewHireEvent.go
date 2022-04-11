@@ -3,13 +3,13 @@ package file
 import "time"
 
 type CrewHireEvent struct {
-	CombatRank int       `json:"CombatRank,omitempty"`
-	Cost       int       `json:"Cost,omitempty"`
-	CrewID     int       `json:"CrewID,omitempty"`
-	Faction    string    `json:"Faction,omitempty"`
-	Name       string    `json:"Name,omitempty"`
-	Event      string    `json:"event,omitempty"`
-	Timestamp  time.Time `json:"timestamp,omitempty"`
+	CombatRank int       `mapstructure:"CombatRank,omitempty"`
+	Cost       int       `mapstructure:"Cost,omitempty"`
+	CrewID     int       `mapstructure:"CrewID,omitempty"`
+	Faction    string    `mapstructure:"Faction,omitempty"`
+	Name       string    `mapstructure:"Name,omitempty"`
+	Event      string    `mapstructure:"event,omitempty"`
+	Timestamp  time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evCrewHire(ev *CrewHireEvent) {

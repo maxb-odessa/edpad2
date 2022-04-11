@@ -3,14 +3,14 @@ package file
 import "time"
 
 type BuyWeaponEvent struct {
-	Class         int           `json:"Class,omitempty"`
-	Name          string        `json:"Name,omitempty"`
-	NameLocalised string        `json:"Name_Localised,omitempty"`
-	Price         int           `json:"Price,omitempty"`
-	SuitModuleID  int           `json:"SuitModuleID,omitempty"`
-	WeaponMods    []interface{} `json:"WeaponMods,omitempty"`
-	Event         string        `json:"event,omitempty"`
-	Timestamp     time.Time     `json:"timestamp,omitempty"`
+	Class         int           `mapstructure:"Class,omitempty"`
+	Name          string        `mapstructure:"Name,omitempty"`
+	NameLocalised string        `mapstructure:"Name_Localised,omitempty"`
+	Price         int           `mapstructure:"Price,omitempty"`
+	SuitModuleID  int           `mapstructure:"SuitModuleID,omitempty"`
+	WeaponMods    []interface{} `mapstructure:"WeaponMods,omitempty"`
+	Event         string        `mapstructure:"event,omitempty"`
+	Timestamp     time.Time     `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evBuyWeapon(ev *BuyWeaponEvent) {

@@ -4,21 +4,21 @@ import "time"
 
 type MaterialsEvent struct {
 	Encoded []struct {
-		Count         int    `json:"Count,omitempty"`
-		Name          string `json:"Name,omitempty"`
-		NameLocalised string `json:"Name_Localised,omitempty"`
-	} `json:"Encoded,omitempty"`
+		Count         int    `mapstructure:"Count,omitempty"`
+		Name          string `mapstructure:"Name,omitempty"`
+		NameLocalised string `mapstructure:"Name_Localised,omitempty"`
+	} `mapstructure:"Encoded,omitempty"`
 	Manufactured []struct {
-		Count         int    `json:"Count,omitempty"`
-		Name          string `json:"Name,omitempty"`
-		NameLocalised string `json:"Name_Localised,omitempty"`
-	} `json:"Manufactured,omitempty"`
+		Count         int    `mapstructure:"Count,omitempty"`
+		Name          string `mapstructure:"Name,omitempty"`
+		NameLocalised string `mapstructure:"Name_Localised,omitempty"`
+	} `mapstructure:"Manufactured,omitempty"`
 	Raw []struct {
-		Count int    `json:"Count,omitempty"`
-		Name  string `json:"Name,omitempty"`
-	} `json:"Raw,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+		Count int    `mapstructure:"Count,omitempty"`
+		Name  string `mapstructure:"Name,omitempty"`
+	} `mapstructure:"Raw,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evMaterials(ev *MaterialsEvent) {

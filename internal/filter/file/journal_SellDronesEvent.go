@@ -3,12 +3,12 @@ package file
 import "time"
 
 type SellDronesEvent struct {
-	Count     int       `json:"Count,omitempty"`
-	SellPrice int       `json:"SellPrice,omitempty"`
-	TotalSale int       `json:"TotalSale,omitempty"`
-	Type      string    `json:"Type,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+	Count     int       `mapstructure:"Count,omitempty"`
+	SellPrice int       `mapstructure:"SellPrice,omitempty"`
+	TotalSale int       `mapstructure:"TotalSale,omitempty"`
+	Type      string    `mapstructure:"Type,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evSellDrones(ev *SellDronesEvent) {

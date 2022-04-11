@@ -4,15 +4,15 @@ import "time"
 
 type TransferMicroResourcesEvent struct {
 	Transfers []struct {
-		Category       string `json:"Category,omitempty"`
-		Direction      string `json:"Direction,omitempty"`
-		LockerNewCount int    `json:"LockerNewCount,omitempty"`
-		LockerOldCount int    `json:"LockerOldCount,omitempty"`
-		Name           string `json:"Name,omitempty"`
-		NameLocalised  string `json:"Name_Localised,omitempty"`
-	} `json:"Transfers,omitempty"`
-	Event     string    `json:"event,omitempty"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
+		Category       string `mapstructure:"Category,omitempty"`
+		Direction      string `mapstructure:"Direction,omitempty"`
+		LockerNewCount int    `mapstructure:"LockerNewCount,omitempty"`
+		LockerOldCount int    `mapstructure:"LockerOldCount,omitempty"`
+		Name           string `mapstructure:"Name,omitempty"`
+		NameLocalised  string `mapstructure:"Name_Localised,omitempty"`
+	} `mapstructure:"Transfers,omitempty"`
+	Event     string    `mapstructure:"event,omitempty"`
+	Timestamp time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evTransferMicroResources(ev *TransferMicroResourcesEvent) {

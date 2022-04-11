@@ -3,49 +3,49 @@ package file
 import "time"
 
 type LoadoutEvent struct {
-	CargoCapacity int `json:"CargoCapacity,omitempty"`
+	CargoCapacity int `mapstructure:"CargoCapacity,omitempty"`
 	FuelCapacity  struct {
-		Main    float64 `json:"Main,omitempty"`
-		Reserve float64 `json:"Reserve,omitempty"`
-	} `json:"FuelCapacity,omitempty"`
-	HullHealth   float64 `json:"HullHealth,omitempty"`
-	HullValue    int     `json:"HullValue,omitempty"`
-	MaxJumpRange float64 `json:"MaxJumpRange,omitempty"`
+		Main    float64 `mapstructure:"Main,omitempty"`
+		Reserve float64 `mapstructure:"Reserve,omitempty"`
+	} `mapstructure:"FuelCapacity,omitempty"`
+	HullHealth   float64 `mapstructure:"HullHealth,omitempty"`
+	HullValue    int     `mapstructure:"HullValue,omitempty"`
+	MaxJumpRange float64 `mapstructure:"MaxJumpRange,omitempty"`
 	Modules      []struct {
-		AmmoInClip   int `json:"AmmoInClip,omitempty"`
-		AmmoInHopper int `json:"AmmoInHopper,omitempty"`
+		AmmoInClip   int `mapstructure:"AmmoInClip,omitempty"`
+		AmmoInHopper int `mapstructure:"AmmoInHopper,omitempty"`
 		Engineering  *struct {
-			BlueprintID                 int    `json:"BlueprintID,omitempty"`
-			BlueprintName               string `json:"BlueprintName,omitempty"`
-			Engineer                    string `json:"Engineer,omitempty"`
-			EngineerID                  int    `json:"EngineerID,omitempty"`
-			ExperimentalEffect          string `json:"ExperimentalEffect,omitempty"`
-			ExperimentalEffectLocalised string `json:"ExperimentalEffect_Localised,omitempty"`
-			Level                       int    `json:"Level,omitempty"`
+			BlueprintID                 int    `mapstructure:"BlueprintID,omitempty"`
+			BlueprintName               string `mapstructure:"BlueprintName,omitempty"`
+			Engineer                    string `mapstructure:"Engineer,omitempty"`
+			EngineerID                  int    `mapstructure:"EngineerID,omitempty"`
+			ExperimentalEffect          string `mapstructure:"ExperimentalEffect,omitempty"`
+			ExperimentalEffectLocalised string `mapstructure:"ExperimentalEffect_Localised,omitempty"`
+			Level                       int    `mapstructure:"Level,omitempty"`
 			Modifiers                   []struct {
-				Label         string  `json:"Label,omitempty"`
-				LessIsGood    int     `json:"LessIsGood,omitempty"`
-				OriginalValue float64 `json:"OriginalValue,omitempty"`
-				Value         float64 `json:"Value,omitempty"`
-			} `json:"Modifiers,omitempty"`
-			Quality float64 `json:"Quality,omitempty"`
-		} `json:"Engineering,omitempty"`
-		Health   float64 `json:"Health,omitempty"`
-		Item     string  `json:"Item,omitempty"`
-		On       bool    `json:"On,omitempty"`
-		Priority int     `json:"Priority,omitempty"`
-		Slot     string  `json:"Slot,omitempty"`
-		Value    int     `json:"Value,omitempty"`
-	} `json:"Modules,omitempty"`
-	ModulesValue int       `json:"ModulesValue,omitempty"`
-	Rebuy        int       `json:"Rebuy,omitempty"`
-	Ship         string    `json:"Ship,omitempty"`
-	ShipID       int       `json:"ShipID,omitempty"`
-	ShipIdent    string    `json:"ShipIdent,omitempty"`
-	ShipName     string    `json:"ShipName,omitempty"`
-	UnladenMass  float64   `json:"UnladenMass,omitempty"`
-	Event        string    `json:"event,omitempty"`
-	Timestamp    time.Time `json:"timestamp,omitempty"`
+				Label         string  `mapstructure:"Label,omitempty"`
+				LessIsGood    int     `mapstructure:"LessIsGood,omitempty"`
+				OriginalValue float64 `mapstructure:"OriginalValue,omitempty"`
+				Value         float64 `mapstructure:"Value,omitempty"`
+			} `mapstructure:"Modifiers,omitempty"`
+			Quality float64 `mapstructure:"Quality,omitempty"`
+		} `mapstructure:"Engineering,omitempty"`
+		Health   float64 `mapstructure:"Health,omitempty"`
+		Item     string  `mapstructure:"Item,omitempty"`
+		On       bool    `mapstructure:"On,omitempty"`
+		Priority int     `mapstructure:"Priority,omitempty"`
+		Slot     string  `mapstructure:"Slot,omitempty"`
+		Value    int     `mapstructure:"Value,omitempty"`
+	} `mapstructure:"Modules,omitempty"`
+	ModulesValue int       `mapstructure:"ModulesValue,omitempty"`
+	Rebuy        int       `mapstructure:"Rebuy,omitempty"`
+	Ship         string    `mapstructure:"Ship,omitempty"`
+	ShipID       int       `mapstructure:"ShipID,omitempty"`
+	ShipIdent    string    `mapstructure:"ShipIdent,omitempty"`
+	ShipName     string    `mapstructure:"ShipName,omitempty"`
+	UnladenMass  float64   `mapstructure:"UnladenMass,omitempty"`
+	Event        string    `mapstructure:"event,omitempty"`
+	Timestamp    time.Time `mapstructure:"timestamp,omitempty"`
 }
 
 func (h *handler) evLoadout(ev *LoadoutEvent) {
