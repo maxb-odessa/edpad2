@@ -90,10 +90,11 @@ func (h *handler) play(s *Track) {
 		rTimes = 1
 	}
 
-	for i := 0; i < rTimes; i++ {
-		slog.Debug(9, "%s PLAYING %s", h.endpoint, so.confName)
-		track := so.buffer.Streamer(0, so.buffer.Len())
-		speaker.Play(track)
-	}
+	// buggy
+	//	for i := 0; i < rTimes; i++ {
+	slog.Debug(9, "%s PLAYING %s", h.endpoint, so.confName)
+	track := so.buffer.Streamer(0, so.buffer.Len())
+	speaker.Play(track)
+	//	}
 
 }
