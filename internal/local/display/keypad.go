@@ -22,10 +22,16 @@ func (h *handler) keypad() error {
 		return fmt.Errorf("endpoint '%s': 'keypad' is not a *gtk.Popover obj", h.endpoint)
 	}
 
-	kp.Popdown()
+	//kp.Popdown()
+	kp.Hide()
 
 	toggleKeypad := func(s interface{}, e interface{}) {
-		kp.Popup()
+		if kp.GetVisible() {
+			kp.Hide()
+		} else {
+			//kp.Popup()
+			kp.Show()
+		}
 	}
 
 	onButtonDownFunc := func(s interface{}) {

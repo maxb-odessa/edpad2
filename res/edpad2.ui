@@ -255,6 +255,7 @@
     <property name="vexpand">True</property>
     <property name="relative-to">stack_switcher</property>
     <property name="position">right</property>
+    <property name="transitions-enabled">false</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
