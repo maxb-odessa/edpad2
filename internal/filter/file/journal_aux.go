@@ -85,7 +85,7 @@ func CB(body string) (name, color string) {
 
 	// rename stars like A_BlueWhiteSuperGiant or K_OrangeGiant
 	if fnmatch.Match("*Giant*", body, 0) {
-		name = string(body[0]) + "!"
+		name = string(body[0]) + "+"
 	}
 
 	// color stars
