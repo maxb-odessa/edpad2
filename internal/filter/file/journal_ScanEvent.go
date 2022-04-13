@@ -293,13 +293,13 @@ func (h *handler) refreshPlanets() {
 		t.Cell(idx, &fwt.Cell{Text: ringsNum})
 		t.Cell(idx, &fwt.Cell{Text: ringRad})
 
-		if p.terraformable {
+		if p.landable {
 			t.Cell(idx, &fwt.Cell{Text: "y"})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: "-"})
 		}
 
-		if p.landable {
+		if p.terraformable {
 			t.Cell(idx, &fwt.Cell{Text: "y"})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: "-"})
