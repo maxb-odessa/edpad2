@@ -47,11 +47,18 @@ func (h *handler) keypad() error {
 		}
 	}
 
+	onSwDrawFunc := func(s interface{}) {
+		if sw, ok := s.(*gtk.ScrolledWindow); ok {
+			h.gtkStack.ChildSetProperty(sw, "needs-attention", false)
+		}
+	}
+
 	signals := map[string]interface{}{
 		"toggle_keypad": toggleKeypad,
 		"onPress":       onButtonDownFunc,
 		"onRelease":     onButtonUpFunc,
 		"onToggle":      onButtonToggleFunc,
+		"on_sw_draw":    onSwDrawFunc,
 	}
 
 	h.gtkBuilder.ConnectSignals(signals)

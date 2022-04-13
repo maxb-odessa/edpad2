@@ -56,6 +56,13 @@ image {
     opacity: 0.7;
 }
 
+#stack_switcher button.needs-attention {
+    border-style: solid;
+    border-width: 3px 3px 3px 3px;
+    border-color: #FFFF00;
+    box-shadow: 7px 5px 3px #000000;
+}
+
 
 #stack_switcher label {
     font-family: "go mono";

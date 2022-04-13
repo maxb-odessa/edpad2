@@ -224,13 +224,14 @@ func (h *handler) printText(t *Text) {
 
 	vp, ok := h.viewPorts[t.ViewPort]
 	if !ok {
-		slog.Warn("endpoint '%s': undefind viewport %d", t.ViewPort)
+		slog.Warn("endpoint '%s': undefined viewport %d", t.ViewPort)
 		return
 	}
 
 	// update title
 	if vp.sw != nil && t.UpdateSubtitle {
 		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title+"\n"+t.Subtitle)
+		h.gtkStack.ChildSetProperty(vp.sw, "needs-attention", true)
 	}
 
 	// print the text
