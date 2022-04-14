@@ -311,18 +311,20 @@ func (h *handler) refreshPlanets() {
 
 	}
 
-	text := "\n" + t.Text()
-	slog.Debug(5, "PLANET:%s", text)
-	h.connector.ToRouterCh <- &router.Message{
-		Dst: router.LocalDisplay,
-		Data: &display.Text{
-			ViewPort:       display.VP_PLANETS,
-			Text:           text,
-			AppendText:     false,
-			UpdateText:     true,
-			Subtitle:       fmt.Sprintf("[%d]", idx),
-			UpdateSubtitle: true,
-		},
+	if idx > 0 {
+		text := "\n" + t.Text()
+		slog.Debug(5, "PLANET:%s", text)
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalDisplay,
+			Data: &display.Text{
+				ViewPort:       display.VP_PLANETS,
+				Text:           text,
+				AppendText:     false,
+				UpdateText:     true,
+				Subtitle:       fmt.Sprintf("[%d]", idx),
+				UpdateSubtitle: true,
+			},
+		}
 	}
 
 	return
