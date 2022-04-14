@@ -52,11 +52,17 @@ func (h *handler) keypad() error {
 			h.sendKeyEvent(name, false)
 		}
 	}
-
-	onSwDrawFunc := func(s interface{}) {
-		if sw, ok := s.(*gtk.ScrolledWindow); ok {
-			h.gtkStack.ChildSetProperty(sw, "needs-attention", false)
+	/*
+		onSwDrawFunc := func(s interface{}) {
+			if sw, ok := s.(*gtk.ScrolledWindow); ok {
+				h.gtkStack.ChildSetProperty(sw, "needs-attention", false)
+			}
 		}
+	*/
+	onStackChildVisible := func(s interface{}) {
+		st, _ := s.(*gtk.Stack)
+		sw, _ := st.GetVisibleChild()
+		st.ChildSetProperty(sw, "needs-attention", false)
 	}
 
 	signals := map[string]interface{}{
@@ -64,7 +70,8 @@ func (h *handler) keypad() error {
 		"onPress":       onButtonDownFunc,
 		"onRelease":     onButtonUpFunc,
 		"onToggle":      onButtonToggleFunc,
-		"on_sw_draw":    onSwDrawFunc,
+		//"on_sw_draw":    onSwDrawFunc,
+		"on_child_visible": onStackChildVisible,
 	}
 
 	h.gtkBuilder.ConnectSignals(signals)

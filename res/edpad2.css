@@ -108,7 +108,7 @@ image {
 
 #keypad {
     border-style: solid;
-    background: alpha (#000000, 0.0);
+    background: alpha (#000000, 20.0);
 }
 
 #keypad button {
@@ -125,7 +125,7 @@ image {
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
-    background: alpha (#ffff00, 0.2);
+    background: alpha (#cccc80, 0.2);
     font-family: "free mono";
     font-size: 35px;
 }
@@ -167,7 +167,7 @@ image {
 #navbox button#q {
     margin: 10px;
     font-size: 30px;
-    background: alpha (#90ffff, 0.15);
+    background: alpha (#90ffff, 0.20);
 }
 
 #navbox button#e:active,
@@ -176,7 +176,7 @@ image {
 }
 
 #buttonsbox button#esc {
-    background: alpha (#ff0000, 0.3);
+    background: alpha (#ff0000, 0.2);
 }
 
 #buttonsbox button#esc:active {
@@ -185,7 +185,7 @@ image {
 
 #buttonsbox button {
     margin: 5px;
-    background: alpha (#ffffff, 0.15);
+    background: alpha (#ffffff, 0.2);
 }
 
 #buttonsbox button:active {

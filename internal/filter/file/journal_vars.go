@@ -45,7 +45,7 @@ type planetData struct {
 }
 
 type signalData struct {
-	not_used_atm bool
+	dummy bool
 }
 
 var FuelLevel float64
