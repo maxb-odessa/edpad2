@@ -231,7 +231,8 @@ func (h *handler) printText(t *Text) {
 	// update title
 	if vp.sw != nil && t.UpdateSubtitle {
 		h.gtkStack.ChildSetProperty(vp.sw, "title", vp.title+"\n"+t.Subtitle)
-		if t.Subtitle != "" {
+		vpName := h.gtkStack.GetVisibleChildName()
+		if t.Subtitle != "" && vpName != vp.title {
 			h.gtkStack.ChildSetProperty(vp.sw, "needs-attention", true)
 		}
 	}

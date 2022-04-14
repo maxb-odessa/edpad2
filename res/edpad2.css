@@ -108,7 +108,7 @@ image {
 
 #keypad {
     border-style: solid;
-    background: alpha (#000000, 20.0);
+    background: alpha (#000000, 0.00);
 }
 
 #keypad button {
