@@ -120,7 +120,11 @@ func distribute(ep Endpoint, rch <-chan *Message) {
 		if dstEp, ok := endpoints[data.Dst]; ok {
 			data.Src = ep
 			slog.Debug(99, "distribute: writing: %+v", data)
-			dstEp.FromRouterCh <- data
+			select {
+			case dstEp.FromRouterCh <- data:
+			default:
+				slog.Warn("endpoint '%s' read chan is full, message dropped", data.Dst)
+			}
 		} else {
 			// impossible case (?)
 			slog.Err("distribute: endpoint %s is not registered (src = %s)", data.Dst, ep)
