@@ -36,22 +36,20 @@ func (h *handler) keypad() error {
 
 	onButtonDownFunc := func(s interface{}) {
 		if name, err := s.(*gtk.Button).GetName(); err == nil {
-			go h.sendKeyEvent(name, true)
+			h.sendKeyEvent(name, true)
 		}
 	}
 
 	onButtonUpFunc := func(s interface{}) {
 		if name, err := s.(*gtk.Button).GetName(); err == nil {
-			go h.sendKeyEvent(name, false)
+			h.sendKeyEvent(name, false)
 		}
 	}
 
 	onButtonToggleFunc := func(s interface{}) {
 		if name, err := s.(*gtk.ToggleButton).GetName(); err == nil {
-			go func() {
-				h.sendKeyEvent(name, true)
-				h.sendKeyEvent(name, false)
-			}()
+			h.sendKeyEvent(name, true)
+			h.sendKeyEvent(name, false)
 		}
 	}
 	/*
