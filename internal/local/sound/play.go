@@ -35,7 +35,7 @@ var playSampleRate beep.SampleRate = 44100
 func (h *handler) init() error {
 
 	// init speaker with local samplerate
-	speaker.Init(playSampleRate, playSampleRate.N(time.Second/5))
+	speaker.Init(playSampleRate, playSampleRate.N(time.Second/20))
 
 	// load all sounds
 	for _, so := range soundMap {
@@ -60,6 +60,8 @@ func (h *handler) init() error {
 			streamer.Close()
 			slog.Debug(1, "%s: loaded '%s' from '%s'", h.endpoint, so.confName, fname)
 		}
+
+		fh.Close()
 
 	}
 
@@ -90,11 +92,12 @@ func (h *handler) play(s *Track) {
 		rTimes = 1
 	}
 
-	// buggy
-	//	for i := 0; i < rTimes; i++ {
-	slog.Debug(9, "%s PLAYING %s", h.endpoint, so.confName)
-	track := so.buffer.Streamer(0, so.buffer.Len())
-	speaker.Play(track)
-	//	}
+	slog.Debug(9, "%s: PLAYING %s %d times", h.endpoint, so.confName, rTimes)
+	go func() {
+		for i := 0; i < rTimes; i++ {
+			trk := so.buffer.Streamer(0, so.buffer.Len())
+			speaker.Play(trk)
+		}
+	}()
 
 }
