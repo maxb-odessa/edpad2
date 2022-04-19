@@ -10,7 +10,7 @@ func TestText(t *testing.T) {
 	tbl := &Table{
 		Delimiter: " | ",
 		Default:   "?????",
-		Pango:     true,
+		Pango:     false,
 	}
 
 	tbl.Header(&Header{

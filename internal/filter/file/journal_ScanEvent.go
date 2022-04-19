@@ -5,11 +5,14 @@ import (
 	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"edpad2/pkg/fwt"
+	"strings"
 
 	"encoding/json"
 	"fmt"
 	"time"
 
+	"github.com/danwakefield/fnmatch"
+	"github.com/maxb-odessa/sconf"
 	"github.com/maxb-odessa/slog"
 )
 
@@ -378,60 +381,51 @@ func calcSignals(bs *bodySignals) string {
 func remarkablePlanet(pd *planetData) bool {
 
 	// landable + high G
-	if pd.landable && pd.gravityG >= 2.5 {
+	if pd.landable && pd.gravityG >= float64(sconf.Float32Def("ed journal", "min planet gravity", 1)) {
 		return true
 	}
 
 	// many rings
-	if pd.rings >= 5 {
+	if pd.rings >= int(sconf.Int32Def("ed journal", "min rings num", 3)) {
 		return true
 	}
 
 	// wide ring
-	if pd.ringRad > MIN_RING_OUT_RAD {
+	if pd.ringRad > float64(sconf.Float32Def("ed journal", "min outer ring radius", 25.0)) {
 		return true
 	}
 
-	// i don't need this atm
-	/*
-		if pd.terraformable {
-			return true
-		}
-	*/
-
-	// heliums are nice
-	if pd.class[0:6] == "Helium" {
+	if pd.terraformable && sconf.BoolDef("ed journal", "want terraformable", false) {
 		return true
 	}
 
 	// possible interesting signals
-	if pd.signals.biological > 0 {
+	if pd.signals.biological >= int(sconf.Int32Def("ed journal", "min bio signals", 1)) {
 		return true
 	}
 
-	// i don't need geo signals atm
-	/*
-		if pd.signals.geological > 0 {
-			return true
-		}
-	*/
-
-	if pd.signals.human > 0 {
+	if pd.signals.geological >= int(sconf.Int32Def("ed journal", "min geo signals", 1)) {
 		return true
 	}
 
-	if pd.signals.guardian > 0 {
+	if pd.signals.human >= int(sconf.Int32Def("ed journal", "min human signals", 1)) {
 		return true
 	}
 
-	if pd.signals.other > 0 {
+	if pd.signals.guardian >= int(sconf.Int32Def("ed journal", "min guardian signals", 1)) {
+		return true
+	}
+
+	if pd.signals.other >= int(sconf.Int32Def("ed journal", "min other signals", 1)) {
 		return true
 	}
 
 	// class
-	switch pd.class {
-	case "Earthlike body", "Water world", "Ammonia world":
-		return true
+	wantBodies := sconf.StrDef("ed journal", "want bodies", "Earth,Water,Ammonia,Helium")
+	for _, body := range strings.Split(wantBodies, ",") {
+		if fnmatch.Match(body, pd.class, 0) {
+			return true
+		}
 	}
 
 	return false
