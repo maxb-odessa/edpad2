@@ -6,6 +6,7 @@ var CurrentMainStarClass string
 var NextJumpSystem string
 
 type starData struct {
+	id           int
 	discovered   bool
 	isMain       bool
 	class        string
@@ -28,6 +29,8 @@ type bodySignals struct {
 }
 
 type planetData struct {
+	id            int
+	parentStarId  int
 	bodyName      string
 	discovered    bool
 	mapped        bool
@@ -42,6 +45,7 @@ type planetData struct {
 	landable      bool
 	terraformable bool
 	signals       *bodySignals
+	bios          []string
 }
 
 type signalData struct {

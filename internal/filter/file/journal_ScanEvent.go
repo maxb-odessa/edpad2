@@ -100,6 +100,21 @@ func formatE(val float64) string {
 	}
 }
 
+// calc if has wide ring
+func calcRings(ev *ScanEvent) (rNum int, wRad float64) {
+
+	for _, r := range ev.Rings {
+		if r.Name[len(r.Name)-5:] != " Ring" {
+			continue
+		}
+		rNum++
+		if wRad < r.OuterRad {
+			wRad = r.OuterRad
+		}
+	}
+
+	return
+}
 func (h *handler) parseStar(ev *ScanEvent) {
 
 	switch ev.StarType[0:1] {
@@ -113,6 +128,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	}
 
 	sd := new(starData)
+
+	sd.id = ev.BodyID
 
 	sd.discovered = ev.WasDiscovered
 	if ev.BodyName == CurrentMainStarName {
@@ -208,6 +225,8 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		pd = new(planetData)
 		pd.signals = new(bodySignals)
 		CurrentSystemPlanets[ev.BodyName] = pd
+		pd.id = ev.BodyID
+		pd.parentStarId = getParentStarId(ev)
 	}
 
 	pd.bodyName = ev.BodyName
@@ -224,6 +243,8 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		pd.terraformable = true
 	}
 	pd.rings, pd.ringRad = calcRings(ev)
+
+	pd.bios = noteBios(ev)
 
 	// show planets list
 	h.refreshPlanets()
@@ -261,7 +282,7 @@ func (h *handler) refreshPlanets() {
 			continue
 		}
 
-		if !remarkablePlanet(p) {
+		if !h.remarkablePlanet(p) {
 			continue
 		}
 
@@ -338,8 +359,8 @@ func calcSignals(bs *bodySignals) string {
 	sig := ""
 
 	if bs.biological > 0 {
-		if bs.biological > 6 {
-			sig += fmt.Sprintf(`<span color="#80ff80">%d</span>`, bs.biological)
+		if bs.biological >= 5 {
+			sig += fmt.Sprintf(`<span color="#90ff90">%d</span>`, bs.biological)
 		} else {
 			sig += fmt.Sprintf(`<span color="#50dd50">%d</span>`, bs.biological)
 		}
@@ -348,8 +369,8 @@ func calcSignals(bs *bodySignals) string {
 	}
 
 	if bs.geological > 0 {
-		if bs.geological > 6 {
-			sig += fmt.Sprintf(`<span color="#ffff80">%d</span>`, bs.geological)
+		if bs.geological >= 5 {
+			sig += fmt.Sprintf(`<span color="#ffff90">%d</span>`, bs.geological)
 		} else {
 			sig += fmt.Sprintf(`<span color="#dddd50">%d</span>`, bs.geological)
 		}
@@ -378,7 +399,7 @@ func calcSignals(bs *bodySignals) string {
 	return sig
 }
 
-func remarkablePlanet(pd *planetData) bool {
+func (h *handler) remarkablePlanet(pd *planetData) bool {
 
 	// landable + high G
 	if pd.landable && pd.gravityG >= float64(sconf.Float32Def("ed journal", "min planet gravity", 1)) {
@@ -421,9 +442,9 @@ func remarkablePlanet(pd *planetData) bool {
 	}
 
 	// class
-	wantBodies := sconf.StrDef("ed journal", "want bodies", "Earth,Water,Ammonia,Helium")
+	wantBodies := sconf.StrDef("ed journal", "want bodies", "Earth*,Water*,Ammonia*,Helium*")
 	for _, body := range strings.Split(wantBodies, ",") {
-		if fnmatch.Match(body, pd.class, 0) {
+		if fnmatch.Match(strings.TrimSpace(body), pd.class, 0) {
 			return true
 		}
 	}
@@ -431,18 +452,80 @@ func remarkablePlanet(pd *planetData) bool {
 	return false
 }
 
-// calc if has wide ring
-func calcRings(ev *ScanEvent) (rNum int, wRad float64) {
+// TODO: where to use? after planet parse and send to NOTES? as a popup in PLANETS? Where?
+func noteBios(ev *ScanEvent) []string {
 
-	for _, r := range ev.Rings {
-		if r.Name[len(r.Name)-5:] != " Ring" {
-			continue
+	var bios []string
+	//var starClass string
+	var starLum int
+	/*
+		// find parents star class
+		psid := getParentStarId(ev)
+		for _, cs := range CurrentSystemStars {
+			if cs.id == psid {
+				starClass = cs.class
+				starLum = luminToInt(cs.luminosity)
+				break
+			}
 		}
-		rNum++
-		if wRad < r.OuterRad {
-			wRad = r.OuterRad
+
+		// hmm... not scanned yet?
+		if starClass == "" {
+			return bios
+		}
+	*/
+	/* TODO map of plant names and their conditions, like
+	"aleoida spica" = {
+		temp[2] = {120, 160},
+		grav[2] = {01, 03},
+		atmo[] = {"ammonia", "thin neon", "nitro"}
+		geo[] = {"volcanic", "geysers"}
+		star[] = {"B, "O, "K", "F"}
+		starLum[] = {5, 3, 2}
+		body[] = {"hmc", "icy", "rocky"}
+	}
+	 use fnmatch() for strings matching
+	*/
+
+	slog.Debug(999, "%s", starLum)
+
+	return bios
+}
+
+func luminToInt(lum string) int {
+
+	if lum[0:4] == "VIII" {
+		return 8
+	} else if lum[0:3] == "VII" {
+		return 7
+	} else if lum[0:2] == "VI" {
+		return 6
+	} else if lum[0:2] == "IX" {
+		return 9
+	} else if lum[0:2] == "IV" {
+		return 4
+	} else if lum[0:1] == "V" {
+		return 5
+	} else if lum[0:3] == "III" {
+		return 3
+	} else if lum[0:2] == "II" {
+		return 2
+	} else if lum[0:1] == "I" {
+		return 1
+	}
+
+	return 0
+}
+
+func getParentStarId(ev *ScanEvent) int {
+
+	parent := 0
+
+	for _, p := range ev.Parents {
+		if p.Star > parent {
+			parent = p.Star
 		}
 	}
 
-	return
+	return parent
 }
