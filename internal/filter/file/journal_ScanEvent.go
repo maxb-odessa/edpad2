@@ -154,7 +154,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	}
 
 	t.Header(&fwt.Header{Text: " ", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "  Class   ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Class", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Lum", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Dist(ls)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Disc", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rn", FgColor: "gray", Underline: true, Italic: true})
@@ -168,17 +169,19 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	for _, s := range CurrentSystemStars {
 
 		if s.isMain {
-			t.Cell(idx, &fwt.Cell{Text: "*", FgColor: "white", Bold: true})
+			t.Cell(idx, &fwt.Cell{Text: "+", FgColor: "white", Bold: true})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: ""})
 		}
+
 		sname, scolor := CB(s.class)
-		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%s %d %s", sname, s.subClass, s.luminosity), FgColor: scolor, Left: true, Bold: true})
+		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%s %d", sname, s.subClass), FgColor: scolor, Left: true, Bold: true})
+		t.Cell(idx, &fwt.Cell{Text: s.luminosity, FgColor: scolor, Left: true})
 
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distance)})
 
 		if s.discovered {
-			t.Cell(idx, &fwt.Cell{Text: "Y", FgColor: "yellow"})
+			t.Cell(idx, &fwt.Cell{Text: "y", FgColor: "yellow"})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
 		}
@@ -201,7 +204,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	}
 
 	text := "\n" + t.Text()
-	slog.Debug(5, "STAR:%s", text)
+	slog.Debug(99, "STAR:%s", text)
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
