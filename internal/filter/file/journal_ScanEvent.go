@@ -334,6 +334,11 @@ func (h *handler) refreshPlanets() {
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
+		// will add extra column, could be seen by scrolling window left
+		if len(p.bios) > 0 {
+			t.Cell(idx, &fwt.Cell{Text: strings.Join(p.bios, ","), NoFormat: true})
+		}
+
 		idx++
 
 	}

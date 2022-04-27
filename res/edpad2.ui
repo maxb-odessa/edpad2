@@ -49,8 +49,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <signal name="button-press-event" handler="toggle_keypad" object="keypad" swapped="no"/>
-                <signal name="touch-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <signal name="notify::visible-child" handler="on_child_visible" object="stack" swapped="no"/>
+                <signal name="touch-event" handler="toggle_keypad" object="keypad" swapped="no"/>
                 <child>
                   <object class="GtkScrolledWindow" id="system_sw">
                     <property name="name">system_sw</property>
@@ -72,7 +72,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">system_tb</property>
                         <property name="monospace">True</property>
@@ -105,7 +104,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">planets_tb</property>
                         <property name="accepts-tab">False</property>
@@ -140,7 +138,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">signals_tb</property>
                         <property name="accepts-tab">False</property>
@@ -175,7 +172,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">notes_tb</property>
                         <property name="accepts-tab">False</property>
@@ -241,22 +237,28 @@
       </object>
     </child>
   </object>
-  <object class="GtkPopover" id="keypad">
+  <object class="GtkApplicationWindow" id="keypad">
     <property name="name">keypad</property>
-    <property name="width-request">600</property>
     <property name="can-focus">True</property>
-    <property name="can-default">True</property>
-    <property name="receives-default">True</property>
     <property name="no-show-all">True</property>
-    <property name="hexpand">False</property>
     <property name="vexpand">True</property>
-    <property name="relative-to">stack_switcher</property>
-    <property name="position">right</property>
-    <property name="transitions-enabled">false</property>
+    <property name="type">popup</property>
+    <property name="resizable">False</property>
+    <property name="window-position">center</property>
+    <property name="destroy-with-parent">True</property>
+    <property name="skip-taskbar-hint">True</property>
+    <property name="skip-pager-hint">True</property>
+    <property name="deletable">False</property>
+    <property name="gravity">center</property>
+    <property name="transient-for">top</property>
+    <property name="attached-to">top</property>
+    <property name="show-menubar">False</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="kpbox">
+        <property name="name">kpbox</property>
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="vexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">16</property>
         <child>
@@ -264,6 +266,7 @@
             <property name="name">numbox</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="vexpand">True</property>
             <property name="spacing">8</property>
             <property name="homogeneous">True</property>
             <child>
@@ -343,6 +346,7 @@
             <property name="name">navbox</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="vexpand">True</property>
             <property name="row-homogeneous">True</property>
             <property name="column-homogeneous">True</property>
             <child>
@@ -487,6 +491,7 @@
             <property name="name">buttonsbox</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="vexpand">True</property>
             <property name="row-spacing">8</property>
             <property name="column-spacing">8</property>
             <property name="row-homogeneous">True</property>
@@ -674,6 +679,9 @@ vision</property>
           </packing>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
 </interface>
