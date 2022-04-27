@@ -32,6 +32,7 @@ type planetData struct {
 	id            int
 	parentStarId  int
 	bodyName      string
+	distance      float64
 	discovered    bool
 	mapped        bool
 	class         string

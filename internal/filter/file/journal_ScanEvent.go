@@ -234,6 +234,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	pd.bodyName = ev.BodyName
 	pd.class = ev.PlanetClass
+	pd.distance = ev.DistanceFromArrivalLs
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
 	pd.massEm = ev.MassEm
@@ -264,16 +265,15 @@ func (h *handler) refreshPlanets() {
 
 	t.Header(&fwt.Header{Text: "  Name  ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Type ", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "D", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "M", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Dist ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "D/M", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "  M(e)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "  R(e)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "  Grav", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " T(K)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Rn", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Ld", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Tf", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "L/T", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "bgHGO", FgColor: "gray", Underline: true, Italic: true})
 
 	idx := 0
@@ -294,16 +294,22 @@ func (h *handler) refreshPlanets() {
 		ptype, pcolor := CB(p.class)
 		t.Cell(idx, &fwt.Cell{Text: ptype, FgColor: pcolor, Left: true})
 
+		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.distance)})
+
+		discovered := "-"
+		mapped := "-"
 		if p.discovered {
-			t.Cell(idx, &fwt.Cell{Text: "y", Bold: true, FgColor: "yellow"})
-		} else {
-			t.Cell(idx, &fwt.Cell{Text: "-", FgColor: "gray"})
+			discovered = "y"
 		}
 
 		if p.mapped {
-			t.Cell(idx, &fwt.Cell{Text: "y", Bold: true, FgColor: "yellow"})
+			mapped = "y"
+		}
+
+		if p.discovered || p.mapped {
+			t.Cell(idx, &fwt.Cell{Text: discovered + "/" + mapped, Bold: true, FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "-", FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: "-/-", FgColor: "gray"})
 		}
 
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.massEm)})
@@ -320,17 +326,17 @@ func (h *handler) refreshPlanets() {
 		t.Cell(idx, &fwt.Cell{Text: ringsNum})
 		t.Cell(idx, &fwt.Cell{Text: ringRad})
 
+		landable := "-"
+		terraformable := "-"
 		if p.landable {
-			t.Cell(idx, &fwt.Cell{Text: "y"})
-		} else {
-			t.Cell(idx, &fwt.Cell{Text: "-"})
+			landable = "y"
 		}
 
 		if p.terraformable {
-			t.Cell(idx, &fwt.Cell{Text: "y"})
-		} else {
-			t.Cell(idx, &fwt.Cell{Text: "-"})
+			terraformable = "y"
 		}
+
+		t.Cell(idx, &fwt.Cell{Text: landable + "/" + terraformable})
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
