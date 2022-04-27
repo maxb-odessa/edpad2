@@ -3,6 +3,7 @@ package display
 import (
 	"edpad2/internal/router"
 	"fmt"
+	"time"
 
 	uin "github.com/bendahl/uinput"
 	"github.com/gotk3/gotk3/gtk"
@@ -22,16 +23,26 @@ func (h *handler) keypad() error {
 		return fmt.Errorf("endpoint '%s': 'keypad' is not a *gtk.ApplicationWindow obj", h.endpoint)
 	}
 
-	//kp.Popdown()
 	kp.Hide()
 
-	toggleKeypad := func(s interface{}, e interface{}) {
+	lastClick := time.Now()
+	doubleClickDuration, _ := time.ParseDuration("200ms")
+
+	toggleKeypad := func(s interface{}) {
+		canShow := false
+
+		if time.Now().Sub(lastClick) <= doubleClickDuration {
+			canShow = true
+		}
+
+		lastClick = time.Now()
+
 		if kp.GetVisible() {
 			kp.Hide()
-		} else {
-			//kp.Popup()
+		} else if canShow {
 			kp.Show()
 		}
+
 	}
 
 	onButtonDownFunc := func(s interface{}) {
