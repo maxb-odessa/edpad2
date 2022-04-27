@@ -10,25 +10,25 @@ func TestText(t *testing.T) {
 	tbl := &Table{
 		Delimiter: " | ",
 		Default:   "?????",
-		Pango:     false,
+		Pango:     true,
 	}
 
 	tbl.Header(&Header{
-		Text:    "Cell 1!!!!!!!!!!!",
+		Text:    "HHHCell 1!!!!!!!!!!!",
 		FgColor: "blue",
 		BgColor: "red",
 	})
 
 	tbl.Header(&Header{
-		Text: "     Yet One Cell",
+		Text: "H     Yet One Cell",
 	})
 
 	tbl.Header(&Header{
-		Text: "     Yet One Cell",
+		Text: "H     Yet One Cell",
 	})
 
 	tbl.Header(&Header{
-		Text: "     Yet One Cell",
+		Text: "H     Yet One Cell",
 	})
 
 	tbl.Cell(0, &Cell{
@@ -37,8 +37,29 @@ func TestText(t *testing.T) {
 		Left: true,
 	})
 
-	tbl.Cell(0, &Cell{
+	tbl.Cell(1, &Cell{
 		Text:    "another text there",
+		FgColor: "red",
+		Left:    false,
+	})
+	tbl.Cell(1, &Cell{
+		Text:    "another text there",
+		FgColor: "red",
+		Left:    false,
+	})
+	tbl.Cell(1, &Cell{
+		Text:    "another text there",
+		FgColor: "red",
+		Left:    false,
+	})
+	tbl.Cell(1, &Cell{
+		Text:    "another text there",
+		FgColor: "red",
+		Left:    false,
+	})
+
+	tbl.Cell(1, &Cell{
+		Text:    "+++++another text there more",
 		FgColor: "red",
 		Left:    false,
 	})

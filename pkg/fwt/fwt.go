@@ -60,6 +60,13 @@ func (t *Table) Cell(row int, c *Cell) {
 	}
 
 	t.cells[row] = append(t.cells[row], c)
+
+	// extra cell in the row, no header for this column defined:
+	//  create empty anonymous header for this cell and mark the cell as 'do not format'
+	if len(t.headers) < len(t.cells[row]) {
+		t.headers = append(t.headers, &Header{})
+		c.NoFormat = true
+	}
 }
 
 // return formatted table
@@ -76,6 +83,7 @@ func (t *Table) Text() string {
 			c := *h
 			elem = pangofyText(cellData(c), elem)
 		}
+
 		text += t.Delimiter + elem
 
 	}
@@ -95,35 +103,37 @@ func (t *Table) Text() string {
 			}
 
 			// formating of this cell is disabled
+			cellElem := ""
 			if c.NoFormat {
-				text += t.Delimiter + c.Text
-				continue
-			}
+				cellElem = c.Text
+			} else {
 
-			// cut cell text to match header len
-			cellSize := len([]rune(t.headers[idx].Text))
-			cellText := c.Text
-			if len([]rune(c.Text)) > cellSize {
-				if c.Left {
-					cellText = cellText[(len([]rune(cellText)))-cellSize:]
-				} else {
-					cellText = cellText[0:cellSize]
+				// cut cell text to match header len
+				cellSize := len([]rune(t.headers[idx].Text))
+				cellText := c.Text
+				if len([]rune(c.Text)) > cellSize {
+					if c.Left {
+						cellText = cellText[(len([]rune(cellText)))-cellSize:]
+					} else {
+						cellText = cellText[0:cellSize]
+					}
 				}
+
+				format := "%*s"
+				if c.Left {
+					format = "%-*s"
+				}
+
+				cellElem = fmt.Sprintf(format, cellSize, cellText)
 			}
 
-			format := "%*s"
-			if c.Left {
-				format = "%-*s"
-			}
-
-			elem := fmt.Sprintf(format, cellSize, cellText)
-
+			// apply pango style if requested
 			if t.Pango {
 				cd := *c
-				elem = pangofyText(cellData(cd), elem)
+				cellElem = pangofyText(cellData(cd), cellElem)
 			}
 
-			text += t.Delimiter + elem
+			text += t.Delimiter + cellElem
 		}
 
 		text += t.Delimiter + "\n"
