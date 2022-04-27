@@ -24,11 +24,11 @@ func CB(body string) (name, color string) {
 		color = "#50FF50"
 		return
 	case "Water world":
-		name = "WW"
+		name = "Water"
 		color = "#5050FF"
 		return
 	case "Ammonia world":
-		name = "AW"
+		name = "Ammon"
 		color = "#FF5050"
 		return
 	case "High metal content body":
@@ -45,17 +45,17 @@ func CB(body string) (name, color string) {
 		return
 	case "Rocky body":
 		name = "Rocky"
-		color = "#FF9080"
+		color = "#FF7070"
 		return
 	case "Rocky ice body":
-		name = "RkIce"
-		color = "#FFFFA0"
+		name = "RoIce"
+		color = "#FFE070"
 		return
 	case "Gas giant with ammonia based life":
-		name = "GgAbl"
+		name = "GgABL"
 		return
 	case "Gas giant with water based life":
-		name = "GgWbl"
+		name = "GgWBL"
 		return
 	case "Sudarsky class I gas giant":
 		name = "GgI"
@@ -84,7 +84,7 @@ func CB(body string) (name, color string) {
 	}
 
 	// rename stars like A_BlueWhiteSuperGiant or K_OrangeGiant
-	if fnmatch.Match("*Giant*", body, 0) {
+	if fnmatch.Match("*Giant*", body, fnmatch.FNM_IGNORECASE) {
 		name = string(body[0]) + "+"
 	}
 

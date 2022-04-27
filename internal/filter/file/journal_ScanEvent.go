@@ -181,7 +181,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distance)})
 
 		if s.discovered {
-			t.Cell(idx, &fwt.Cell{Text: "y", FgColor: "yellow"})
+			t.Cell(idx, &fwt.Cell{Text: "Y", FgColor: "yellow"})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
 		}
@@ -263,13 +263,13 @@ func (h *handler) refreshPlanets() {
 		Pango:     true,
 	}
 
-	t.Header(&fwt.Header{Text: "  Name  ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " Name ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Type ", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Dist ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "  Dist", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "D/M", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "  M(e)", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "  R(e)", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "  Grav", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " M(e)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " R(e)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: " Grav", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " T(K)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Rn", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
@@ -296,20 +296,20 @@ func (h *handler) refreshPlanets() {
 
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.distance)})
 
-		discovered := "-"
-		mapped := "-"
+		discovered := "n"
+		mapped := "n"
 		if p.discovered {
-			discovered = "y"
+			discovered = "Y"
 		}
 
 		if p.mapped {
-			mapped = "y"
+			mapped = "Y"
 		}
 
 		if p.discovered || p.mapped {
 			t.Cell(idx, &fwt.Cell{Text: discovered + "/" + mapped, Bold: true, FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "-/-", FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: "n/n", FgColor: "gray"})
 		}
 
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.massEm)})
@@ -326,17 +326,21 @@ func (h *handler) refreshPlanets() {
 		t.Cell(idx, &fwt.Cell{Text: ringsNum})
 		t.Cell(idx, &fwt.Cell{Text: ringRad})
 
-		landable := "-"
-		terraformable := "-"
+		landable := "n"
+		terraformable := "n"
 		if p.landable {
-			landable = "y"
+			landable = "Y"
 		}
 
 		if p.terraformable {
-			terraformable = "y"
+			terraformable = "Y"
 		}
 
-		t.Cell(idx, &fwt.Cell{Text: landable + "/" + terraformable})
+		if p.landable || p.terraformable {
+			t.Cell(idx, &fwt.Cell{Text: landable + "/" + terraformable, FgColor: "white"})
+		} else {
+			t.Cell(idx, &fwt.Cell{Text: landable + "/" + terraformable, FgColor: "gray"})
+		}
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
@@ -351,7 +355,7 @@ func (h *handler) refreshPlanets() {
 
 	if idx > 0 {
 		text := "\n" + t.Text()
-		slog.Debug(5, "PLANET:%s", text)
+		slog.Debug(99, "PLANET:%s", text)
 		h.connector.ToRouterCh <- &router.Message{
 			Dst: router.LocalDisplay,
 			Data: &display.Text{
@@ -469,7 +473,7 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 // TODO: where to use? after planet parse and send to NOTES? as a popup in PLANETS? Where?
 func noteBios(ev *ScanEvent) []string {
 
-	var bios []string
+	bios := []string{"none yet", "to be done"}
 	//var starClass string
 	var starLum int
 	/*

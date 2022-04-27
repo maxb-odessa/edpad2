@@ -58,7 +58,6 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <property name="shadow-type">in</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -75,6 +74,7 @@
                         <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">system_tb</property>
+                        <property name="accepts-tab">False</property>
                         <property name="monospace">True</property>
                       </object>
                     </child>
@@ -91,7 +91,6 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <property name="shadow-type">in</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -126,7 +125,6 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <property name="shadow-type">in</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -161,7 +159,6 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
-                    <property name="shadow-type">in</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>

@@ -71,7 +71,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">system_tb</property>
                         <property name="accepts-tab">False</property>
@@ -104,7 +103,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">planets_tb</property>
                         <property name="accepts-tab">False</property>
@@ -138,7 +136,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">signals_tb</property>
                         <property name="accepts-tab">False</property>
@@ -172,7 +169,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">notes_tb</property>
                         <property name="accepts-tab">False</property>
