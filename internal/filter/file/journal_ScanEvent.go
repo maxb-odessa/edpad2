@@ -248,7 +248,11 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	}
 	pd.rings, pd.ringRad = calcRings(ev)
 
-	pd.bios = noteBios(ev)
+	pd.atmosphere = ev.Atmosphere
+	pd.atmosphereType = ev.AtmosphereType
+	pd.volcanism = ev.Volcanism
+
+	//pd.bios = possibleBios(pd)
 
 	// show planets list
 	h.refreshPlanets()
@@ -277,7 +281,6 @@ func (h *handler) refreshPlanets() {
 	t.Header(&fwt.Header{Text: "bgHGO", FgColor: "gray", Underline: true, Italic: true})
 
 	idx := 0
-
 	for _, p := range CurrentSystemPlanets {
 
 		// not enuff data yet (i.e. signals only detected, no Scan event happened), skip it
@@ -344,9 +347,17 @@ func (h *handler) refreshPlanets() {
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
-		// will add extra column, could be seen by scrolling window left
-		if len(p.bios) > 0 {
-			t.Cell(idx, &fwt.Cell{Text: strings.Join(p.bios, ","), NoFormat: true})
+		// those below will add extra columns, could be seen by scrolling window left
+		if p.atmosphereType != "" && p.atmosphereType != "none" {
+			t.Cell(idx, &fwt.Cell{Text: "Atmo:" + p.atmosphereType + ";", NoFormat: true, Italic: true})
+		}
+
+		// this must be recalculated each time
+		if p.signals.biological > 0 {
+			p.bios = possibleBios(p)
+			if len(p.bios) > 0 {
+				t.Cell(idx, &fwt.Cell{Text: "Bios:" + strings.Join(p.bios, ",") + ";", NoFormat: true, Italic: true})
+			}
 		}
 
 		idx++
@@ -470,46 +481,6 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 	return false
 }
 
-// TODO: where to use? after planet parse and send to NOTES? as a popup in PLANETS? Where?
-func noteBios(ev *ScanEvent) []string {
-
-	bios := []string{"none yet", "to be done"}
-	//var starClass string
-	var starLum int
-	/*
-		// find parents star class
-		psid := getParentStarId(ev)
-		for _, cs := range CurrentSystemStars {
-			if cs.id == psid {
-				starClass = cs.class
-				starLum = luminToInt(cs.luminosity)
-				break
-			}
-		}
-
-		// hmm... not scanned yet?
-		if starClass == "" {
-			return bios
-		}
-	*/
-	/* TODO map of plant names and their conditions, like
-	"aleoida spica" = {
-		temp[2] = {120, 160},
-		grav[2] = {01, 03},
-		atmo[] = {"ammonia", "thin neon", "nitro"}
-		geo[] = {"volcanic", "geysers"}
-		star[] = {"B, "O, "K", "F"}
-		starLum[] = {5, 3, 2}
-		body[] = {"hmc", "icy", "rocky"}
-	}
-	 use fnmatch() for strings matching
-	*/
-
-	slog.Debug(999, "%s", starLum)
-
-	return bios
-}
-
 func luminToInt(lum string) int {
 
 	if lum[0:4] == "VIII" {
@@ -546,4 +517,417 @@ func getParentStarId(ev *ScanEvent) int {
 	}
 
 	return parent
+}
+
+// TODO: where to use? after planet parse and send to NOTES? as a popup in PLANETS? Where?
+func possibleBios(pd *planetData) []string {
+
+	var sd *starData
+	var planets []string
+
+	// find parent star
+	for _, s := range CurrentSystemStars {
+		if s.id == pd.parentStarId {
+			sd = s
+			break
+		}
+	}
+
+	// baricenter! find lowest star id to have at least something
+	if sd == nil {
+		lowestId := 99999
+		for _, s := range CurrentSystemStars {
+			if s.id < lowestId {
+				lowestId = s.id
+				sd = s
+			}
+		}
+	}
+
+	// get all discovered planets list
+	for _, p := range CurrentSystemPlanets {
+		planets = append(planets, p.class)
+	}
+
+	if sd == nil {
+		slog.Debug(1, "possibleBios(): no parent star found for id pd.parentStarId")
+		return []string{}
+	}
+
+	return matchBios(pd, sd, planets)
+}
+
+func matchBios(pd *planetData, sd *starData, planets []string) []string {
+
+	temp := pd.temperatureK
+	grav := pd.gravityG
+	atmo := pd.atmosphere
+	volc := pd.volcanism
+	ptype := pd.class
+	dist := pd.distance
+	geoSigs := pd.signals.geological
+
+	sclass := sd.class
+	slumin := sd.luminosity
+
+	var bios []string
+
+	for name, bl := range bioDataLimits {
+
+		if temp < bl.temp[0] || temp > bl.temp[1] {
+			continue
+		}
+
+		if grav < bl.grav[0] || grav > bl.grav[1] {
+			continue
+		}
+
+		if !matches(atmo, bl.atmos) {
+			continue
+		}
+
+		if !matches(volc, bl.volcs) {
+			continue
+		}
+
+		if !matches(ptype, bl.ptypes) {
+			continue
+		}
+
+		if !matches(sclass, bl.sclass) {
+			continue
+		}
+
+		if !matches(slumin, bl.slumins) {
+			continue
+		}
+
+		if !matchesAny(planets, bl.needBodies) {
+			continue
+		}
+
+		if dist < bl.distLs[0] || dist > bl.distLs[1] {
+			continue
+		}
+
+		if bl.needGeo && geoSigs == 0 {
+			continue
+		}
+		bios = append(bios, name)
+
+	}
+
+	return bios
+}
+
+func matches(what string, where []string) bool {
+
+	for _, wp := range where {
+		if fnmatch.Match(wp, what, fnmatch.FNM_IGNORECASE) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func matchesAny(what []string, where []string) bool {
+
+	for _, wha := range what {
+		if matches(wha, where) {
+			return true
+		}
+	}
+
+	return false
+}
+
+type bioLimits struct {
+	temp       [2]float64
+	grav       [2]float64
+	atmos      []string
+	volcs      []string
+	ptypes     []string
+	sclass     []string
+	slumins    []string
+	needBodies []string
+	distLs     [2]float64
+	needGeo    bool
+}
+
+//
+var bioDataLimits = map[string]bioLimits{
+
+	"Aleoida": {
+		temp:       [2]float64{0.0, 195.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin carbon dioxide*", "*thin ammonia*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"high metal *", "rocky body"},
+		sclass:     []string{"B", "A", "F", "K", "M", "L", "T", "TTS", "Y", "N*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Amphora": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{""},
+		volcs:      []string{"*"},
+		ptypes:     []string{"metal rich *"},
+		sclass:     []string{"A"},
+		slumins:    []string{"*"},
+		needBodies: []string{"Earth*", "Ammonia*", "* based life", "water giant"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Anemone": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{""},
+		volcs:      []string{"*"},
+		ptypes:     []string{"*"},
+		sclass:     []string{"O", "B", "A"},
+		slumins:    []string{"*"},
+		needBodies: []string{"Earth*", "Ammonia*", "* based life", "water giant"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"(Bark Mounds)": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{""},
+		volcs:      []string{"*"},
+		ptypes:     []string{"*"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Bacterium": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"*"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"(Brain Tree)": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{""},
+		volcs:      []string{"* volcanism"},
+		ptypes:     []string{"*"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"water giant*", "earth*", "* water based life"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Cactoida": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*ammonia*", "*carbon dioxidie*", "*water*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body", "high metal *"},
+		sclass:     []string{"A", "F", "G", "M", "L", "T", "TTS", "N*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Clypeus": {
+		temp:       [2]float64{0.0, 190.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin carbon dioxidie*", "*water*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body", "high metal *"},
+		sclass:     []string{"A", "F", "G", "K", "M", "L", "N*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Concha": {
+		temp:       [2]float64{0.0, 190.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*ammonia*", "*nitrogen*", "*water*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body", "high metal *"},
+		sclass:     []string{"A", "F", "G", "K", "M", "L", "N*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"(Crystalline Shards)": {
+		temp:       [2]float64{0.0, 273.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{""},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body", "high metal *"},
+		sclass:     []string{"A", "F", "G", "K", "M", "S"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*ammonia*", "water giant*", "earth*", "* water based life"},
+		distLs:     [2]float64{12000.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"(Electricae)": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin helium*", "*argon*", "*neon*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"icy body"},
+		sclass:     []string{"*"},
+		slumins:    []string{"V", "IV", "III", "II", "I"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Fonticulua": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"icy *", "rocky ice *"},
+		sclass:     []string{"B", "A", "F", "G", "K", "M", "L", "Y", "D*", "N*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Frutexa": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body*", "high metal *"},
+		sclass:     []string{"B", "F", "G", "M", "L", "TTS", "D*", "N*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Fumerola": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*?"},
+		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    true,
+	},
+
+	"Fungoida": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Osseus": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
+		sclass:     []string{"A", "F", "G", "K", "T", "TTS"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Recepta": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin sulphur dioxide*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
+		sclass:     []string{"A", "F", "G", "K", "M", "T"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Sinuous Tubers": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{"*"},
+		volcs:      []string{"* volcan*"},
+		ptypes:     []string{"metal rich*", "rocky ice *", "rocky body*", "high metal *"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Stratum": {
+		temp:       [2]float64{0.0, 190.0},
+		grav:       [2]float64{0.0, 9999.0},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body*", "high metal *"},
+		sclass:     []string{"*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Tubus": {
+		temp:       [2]float64{0.0, 190.0},
+		grav:       [2]float64{0.0, 0.15},
+		atmos:      []string{"*thin *carbon*", "*thin *ammonia*"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body*", "high metal *"},
+		sclass:     []string{"B", "A", "F", "G", "K", "M", "L", "T", "TTS", "NS"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
+
+	"Tussock": {
+		temp:       [2]float64{0.0, 9999.0},
+		grav:       [2]float64{0.0, 0.27},
+		atmos:      []string{"*thin *"},
+		volcs:      []string{"*"},
+		ptypes:     []string{"rocky body*"},
+		sclass:     []string{"F", "G", "K", "M", "L", "T", "D*"},
+		slumins:    []string{"*"},
+		needBodies: []string{"*"},
+		distLs:     [2]float64{0.0, 99999999.0},
+		needGeo:    false,
+	},
 }

@@ -36,19 +36,25 @@ func (h *handler) evFSSBodySignals(ev *FSSBodySignalsEvent) {
 		switch s.Type {
 		case "$SAA_SignalType_Geological;":
 			pd.signals.geological += s.Count
-			refresh = true
 		case "$SAA_SignalType_Biological;":
 			pd.signals.biological += s.Count
+		case "$SAA_SignalType_Guardian;":
+			pd.signals.guardian += s.Count
+		case "$SAA_SignalType_Human;":
+			pd.signals.human += s.Count
+		case "$SAA_SignalType_Other;":
+			pd.signals.other += s.Count
 		}
 
 		refresh = true
 
 	}
 
-	// refresh planets table herea
+	// refresh planets table here
 	if refresh {
 		h.refreshPlanets()
 	}
 
 	return
+
 }

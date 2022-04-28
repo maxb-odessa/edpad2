@@ -29,24 +29,26 @@ type bodySignals struct {
 }
 
 type planetData struct {
-	id            int
-	parentStarId  int
-	bodyName      string
-	distance      float64
-	discovered    bool
-	mapped        bool
-	class         string
-	massEm        float64
-	radiusEm      float64
-	gravityG      float64
-	temperatureK  float64
-	rings         int
-	ringRad       float64
-	atmosphere    string
-	landable      bool
-	terraformable bool
-	signals       *bodySignals
-	bios          []string
+	id             int
+	parentStarId   int
+	bodyName       string
+	distance       float64
+	discovered     bool
+	mapped         bool
+	class          string
+	massEm         float64
+	radiusEm       float64
+	gravityG       float64
+	temperatureK   float64
+	rings          int
+	ringRad        float64
+	atmosphere     string
+	atmosphereType string
+	volcanism      string
+	landable       bool
+	terraformable  bool
+	signals        *bodySignals
+	bios           []string
 }
 
 type signalData struct {
