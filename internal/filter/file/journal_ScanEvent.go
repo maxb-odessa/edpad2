@@ -348,7 +348,7 @@ func (h *handler) refreshPlanets() {
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
 		// those below will add extra columns, could be seen by scrolling window left
-		if p.atmosphereType != "" && p.atmosphereType != "none" {
+		if p.atmosphereType != "" && p.atmosphereType != "None" {
 			t.Cell(idx, &fwt.Cell{Text: "Atmo:" + p.atmosphereType + ";", NoFormat: true, Italic: true})
 		}
 
