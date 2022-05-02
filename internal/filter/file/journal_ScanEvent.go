@@ -441,7 +441,7 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 	}
 
 	// wide ring
-	if pd.ringRad > float64(sconf.Float32Def("ed journal", "min outer ring radius", 25.0)) {
+	if pd.ringRad/LIGHT_SECOND > float64(sconf.Float32Def("ed journal", "min outer ring radius", 15.0)) {
 		return true
 	}
 
