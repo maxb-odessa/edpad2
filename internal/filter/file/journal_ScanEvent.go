@@ -165,9 +165,18 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	t.Header(&fwt.Header{Text: "R(sol)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Temp(K)", FgColor: "gray", Underline: true, Italic: true})
 
+	var keys []string
+	for key, _ := range CurrentSystemStars {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
 	idx := 0
 
-	for _, s := range CurrentSystemStars {
+	for _, key := range keys {
+
+		s, _ := CurrentSystemStars[key]
 
 		if s.isMain {
 			t.Cell(idx, &fwt.Cell{Text: "+", FgColor: "white", Bold: true})
@@ -280,9 +289,20 @@ func (h *handler) refreshPlanets() {
 	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "L/T", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "bgHGO", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Atmo  ", FgColor: "gray", Underline: true, Italic: true})
+
+	var keys []string
+	for key, _ := range CurrentSystemPlanets {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
 
 	idx := 0
-	for _, p := range CurrentSystemPlanets {
+
+	for _, key := range keys {
+
+		p, _ := CurrentSystemPlanets[key]
 
 		// not enuff data yet (i.e. signals only detected, no Scan event happened), skip it
 		if p.bodyName == "" {
@@ -348,16 +368,14 @@ func (h *handler) refreshPlanets() {
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
-		// those below will add extra columns, could be seen by scrolling window left
-		if p.atmosphereType != "" && p.atmosphereType != "None" {
-			t.Cell(idx, &fwt.Cell{Text: p.atmosphereType, FgColor: "#5050AA", NoFormat: true, Italic: true})
-		}
+		t.Cell(idx, &fwt.Cell{Text: atmoFormula(p.atmosphereType), FgColor: "#5050AA", NoFormat: true, Italic: true})
 
 		// this must be recalculated each time
 		if p.signals.biological > 0 {
 			p.bios = possibleBios(p)
 			if len(p.bios) > 0 {
 				sort.Strings(p.bios)
+				// this will add extra columns, could be seen by scrolling window left
 				t.Cell(idx, &fwt.Cell{Text: strings.Join(p.bios, ","), FgColor: "#50AA50", NoFormat: true, Italic: true})
 			}
 		}
@@ -933,4 +951,42 @@ var bioDataLimits = map[string]bioLimits{
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
 	},
+}
+
+func atmoFormula(atmo string) string {
+
+	switch atmo {
+	case "Ammonia", "AmmoniaRich":
+		return "NH3"
+	case "AmmoniaOxygen":
+		return "NH3+02"
+	case "Argon", "ArgonRich":
+		return "Ar"
+	case "CarbonDioxide", "CarbonDioxideRich":
+		return "CO2"
+	case "EarthLike":
+		return "N2+O2"
+	case "Helium":
+		return "He"
+	case "MetallicVapour":
+		return "Me+"
+	case "Methane", "MethaneRich":
+		return "CH4"
+	case "Neon", "NeonRich":
+		return "Ne"
+	case "Nitrogen":
+		return "N2"
+	case "None":
+		return "-"
+	case "Oxygen":
+		return "O2"
+	case "SilicateVapour":
+		return "SiO4+"
+	case "SulphurDioxide":
+		return "S2O"
+	case "Water", "WaterRich":
+		return "H2O"
+	}
+
+	return atmo[0:6]
 }

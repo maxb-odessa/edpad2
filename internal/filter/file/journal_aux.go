@@ -45,7 +45,7 @@ func CB(body string) (name, color string) {
 		return
 	case "Rocky body":
 		name = "Rocky"
-		color = "#FF7070"
+		color = "#CD7F32"
 		return
 	case "Rocky ice body":
 		name = "RoIce"
