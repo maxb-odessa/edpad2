@@ -988,5 +988,5 @@ func atmoFormula(atmo string) string {
 		return "H2O"
 	}
 
-	return atmo[0:6]
+	return atmo
 }
