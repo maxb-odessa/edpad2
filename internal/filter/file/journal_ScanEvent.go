@@ -350,7 +350,7 @@ func (h *handler) refreshPlanets() {
 
 		// those below will add extra columns, could be seen by scrolling window left
 		if p.atmosphereType != "" && p.atmosphereType != "None" {
-			t.Cell(idx, &fwt.Cell{Text: p.atmosphereType, FgColor: "5050AA", NoFormat: true, Italic: true})
+			t.Cell(idx, &fwt.Cell{Text: p.atmosphereType, FgColor: "#5050AA", NoFormat: true, Italic: true})
 		}
 
 		// this must be recalculated each time
