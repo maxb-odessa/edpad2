@@ -5,6 +5,7 @@ import (
 	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"edpad2/pkg/fwt"
+	"sort"
 	"strings"
 
 	"encoding/json"
@@ -349,14 +350,15 @@ func (h *handler) refreshPlanets() {
 
 		// those below will add extra columns, could be seen by scrolling window left
 		if p.atmosphereType != "" && p.atmosphereType != "None" {
-			t.Cell(idx, &fwt.Cell{Text: "Atmo:" + p.atmosphereType + ";", NoFormat: true, Italic: true})
+			t.Cell(idx, &fwt.Cell{Text: p.atmosphereType, FgColor: "5050AA", NoFormat: true, Italic: true})
 		}
 
 		// this must be recalculated each time
 		if p.signals.biological > 0 {
 			p.bios = possibleBios(p)
 			if len(p.bios) > 0 {
-				t.Cell(idx, &fwt.Cell{Text: "Bios:" + strings.Join(p.bios, ",") + ";", NoFormat: true, Italic: true})
+				sort.Strings(p.bios)
+				t.Cell(idx, &fwt.Cell{Text: strings.Join(p.bios, ","), FgColor: "#50AA50", NoFormat: true, Italic: true})
 			}
 		}
 
@@ -613,6 +615,7 @@ func matchBios(pd *planetData, sd *starData, planets []string) []string {
 		if bl.needGeo && geoSigs == 0 {
 			continue
 		}
+
 		bios = append(bios, name)
 
 	}
