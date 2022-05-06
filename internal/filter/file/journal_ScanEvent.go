@@ -368,7 +368,7 @@ func (h *handler) refreshPlanets() {
 
 		t.Cell(idx, &fwt.Cell{Text: calcSignals(p.signals), NoFormat: true})
 
-		t.Cell(idx, &fwt.Cell{Text: atmoFormula(p.atmosphereType), FgColor: "#5050AA", Italic: true})
+		t.Cell(idx, &fwt.Cell{Text: atmoFormula(p.atmosphereType), FgColor: "#5050AA", Left: true, Italic: true})
 
 		// this must be recalculated each time
 		if p.signals.biological > 0 {
