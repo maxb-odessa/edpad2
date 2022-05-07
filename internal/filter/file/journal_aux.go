@@ -1,7 +1,6 @@
 package file
 
 import (
-	"edpad2/internal/local/display"
 	"fmt"
 
 	"github.com/danwakefield/fnmatch"
@@ -117,8 +116,7 @@ func CB(body string) (name, color string) {
 	case 'D':
 		color = "#EEEEFF"
 	case 'H':
-		name = display.BLACKHOLE
-		color = "#A0A0A0"
+		color = "#909090"
 	case 'L', 'Y', 'T':
 		color = "#FF2000"
 	case 'N':

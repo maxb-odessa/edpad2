@@ -4,6 +4,7 @@ var CurrentSystemName string
 var CurrentMainStarName string
 var CurrentMainStarClass string
 var NextJumpSystem string
+var NextJumpStarClass string
 
 type starData struct {
 	id           int

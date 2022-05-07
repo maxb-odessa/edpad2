@@ -21,6 +21,7 @@ type FSDTargetEvent struct {
 func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 
 	NextJumpSystem = ev.Name
+	NextJumpStarClass = ev.StarClass
 
 	csclass, cscolor := CB(CurrentMainStarClass)
 	jtclass, jtcolor := CB(ev.StarClass)

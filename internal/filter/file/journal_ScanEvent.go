@@ -2,7 +2,6 @@ package file
 
 import (
 	"edpad2/internal/local/display"
-	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"edpad2/pkg/fwt"
 	"sort"
@@ -118,16 +117,6 @@ func calcRings(ev *ScanEvent) (rNum int, wRad float64) {
 }
 func (h *handler) parseStar(ev *ScanEvent) {
 
-	switch ev.StarType[0:1] {
-	case "N", "D", "H":
-		h.connector.ToRouterCh <- &router.Message{
-			Dst: router.LocalSound,
-			Data: &sound.Track{
-				Id: sound.WARP,
-			},
-		}
-	}
-
 	sd := new(starData)
 
 	sd.id = ev.BodyID
@@ -155,9 +144,9 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	}
 
 	t.Header(&fwt.Header{Text: " ", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Class", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Lum", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Dist(ls)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Class ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Lum   ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Dst(ls)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Disc", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rn", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
@@ -684,7 +673,7 @@ var bioDataLimits = map[string]bioLimits{
 		grav:       [2]float64{0.0, 0.27},
 		atmos:      []string{"*thin carbon dioxide*", "*thin ammonia*"},
 		volcs:      []string{"*"},
-		ptypes:     []string{"high metal *", "rocky body"},
+		ptypes:     []string{"*high metal*", "rocky body"},
 		sclass:     []string{"B", "A", "F", "K", "M", "L", "T", "TTS", "Y", "N*"},
 		slumins:    []string{"*"},
 		needBodies: []string{"*"},
@@ -700,7 +689,7 @@ var bioDataLimits = map[string]bioLimits{
 		ptypes:     []string{"metal rich *"},
 		sclass:     []string{"A"},
 		slumins:    []string{"*"},
-		needBodies: []string{"Earth*", "Ammonia*", "* based life", "water giant"},
+		needBodies: []string{"Earth*", "Ammonia*", "*based life", "water giant"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
 	},
@@ -713,7 +702,7 @@ var bioDataLimits = map[string]bioLimits{
 		ptypes:     []string{"*"},
 		sclass:     []string{"O", "B", "A"},
 		slumins:    []string{"*"},
-		needBodies: []string{"Earth*", "Ammonia*", "* based life", "water giant"},
+		needBodies: []string{"Earth*", "Ammonia*", "*based life", "water giant"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
 	},
@@ -760,7 +749,7 @@ var bioDataLimits = map[string]bioLimits{
 	"Cactoida": {
 		temp:       [2]float64{0.0, 9999.0},
 		grav:       [2]float64{0.0, 0.27},
-		atmos:      []string{"*ammonia*", "*carbon dioxidie*", "*water*"},
+		atmos:      []string{"*ammonia*", "*carbon dioxide*", "*water*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body", "high metal *"},
 		sclass:     []string{"A", "F", "G", "M", "L", "T", "TTS", "N*"},
@@ -771,9 +760,9 @@ var bioDataLimits = map[string]bioLimits{
 	},
 
 	"Clypeus": {
-		temp:       [2]float64{0.0, 190.0},
+		temp:       [2]float64{190.0, 9999.0},
 		grav:       [2]float64{0.0, 0.27},
-		atmos:      []string{"*thin carbon dioxidie*", "*water*"},
+		atmos:      []string{"*thin carbon dioxide*", "*water*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body", "high metal *"},
 		sclass:     []string{"A", "F", "G", "K", "M", "L", "N*"},
@@ -812,7 +801,7 @@ var bioDataLimits = map[string]bioLimits{
 	"(Electricae)": {
 		temp:       [2]float64{0.0, 9999.0},
 		grav:       [2]float64{0.0, 0.27},
-		atmos:      []string{"*thin helium*", "*argon*", "*neon*"},
+		atmos:      []string{"*helium*", "*argon*", "*neon*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"icy body"},
 		sclass:     []string{"*"},
@@ -914,7 +903,7 @@ var bioDataLimits = map[string]bioLimits{
 	},
 
 	"Stratum": {
-		temp:       [2]float64{0.0, 190.0},
+		temp:       [2]float64{165.0, 9999.0},
 		grav:       [2]float64{0.0, 9999.0},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
@@ -927,7 +916,7 @@ var bioDataLimits = map[string]bioLimits{
 	},
 
 	"Tubus": {
-		temp:       [2]float64{0.0, 190.0},
+		temp:       [2]float64{160.0, 9999.0},
 		grav:       [2]float64{0.0, 0.15},
 		atmos:      []string{"*thin *carbon*", "*thin *ammonia*"},
 		volcs:      []string{"*"},

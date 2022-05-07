@@ -82,7 +82,17 @@ type FSDJumpEvent struct {
 
 func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 
-	CurrentSystemName = ev.StarSystem // really neede? already set in StartJump event
+	CurrentSystemName = ev.StarSystem // really needed? already set in StartJump event
+
+	switch NextJumpStarClass[0:1] {
+	case "N", "D", "H":
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalSound,
+			Data: &sound.Track{
+				Id: sound.WARP,
+			},
+		}
+	}
 
 	// no more jumps in route
 	if CurrentSystemName == NextJumpSystem {
