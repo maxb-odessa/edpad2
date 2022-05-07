@@ -145,8 +145,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 	t.Header(&fwt.Header{Text: " ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Class ", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Lum   ", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "Dst(ls)", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Lumin ", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Dist(ls)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Disc", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rn", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
@@ -168,7 +168,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		s, _ := CurrentSystemStars[key]
 
 		if s.isMain {
-			t.Cell(idx, &fwt.Cell{Text: "+", FgColor: "white", Bold: true})
+			t.Cell(idx, &fwt.Cell{Text: "*", FgColor: "white", Bold: true})
 		} else {
 			t.Cell(idx, &fwt.Cell{Text: ""})
 		}
