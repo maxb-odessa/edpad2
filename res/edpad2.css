@@ -108,11 +108,11 @@ image {
 
 #keypad {
     border-style: solid;
-    background: alpha (#000000, 0.50);
+    background: alpha (#000000, 0.10);
 }
 
 #keypad button {
-    border-radius: 5px;
+    border-radius: 10px;
     border-style: solid;
     border-width: 1px 1px 1px 1px;
     color: #aaaaaa;
