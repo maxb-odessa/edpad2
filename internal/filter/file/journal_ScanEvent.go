@@ -493,7 +493,7 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 	// class
 	wantBodies := sconf.StrDef("ed journal", "want bodies", "Earth*,Water*,Ammonia*,Helium*")
 	for _, body := range strings.Split(wantBodies, ",") {
-		if fnmatch.Match(strings.TrimSpace(body), pd.class, 0) {
+		if fnmatch.Match(strings.TrimSpace(body), pd.class, fnmatch.FNM_IGNORECASE) {
 			return true
 		}
 	}

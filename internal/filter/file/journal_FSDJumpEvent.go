@@ -181,8 +181,8 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_NOTES,
-			Text:           "\n",
-			AppendText:     false,
+			Text:           "\n<u>" + CurrentSystemName + "</u>\n",
+			AppendText:     true,
 			UpdateText:     true,
 			Subtitle:       "",
 			UpdateSubtitle: true,
