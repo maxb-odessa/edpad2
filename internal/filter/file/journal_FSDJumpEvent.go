@@ -89,7 +89,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 		h.connector.ToRouterCh <- &router.Message{
 			Dst: router.LocalSound,
 			Data: &sound.Track{
-				Id: sound.WARP,
+				Id: sound.ALARM,
 			},
 		}
 	}

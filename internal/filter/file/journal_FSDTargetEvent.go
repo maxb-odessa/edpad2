@@ -3,7 +3,6 @@ package file
 import (
 	"edpad2/internal/local/display"
 	localDisplay "edpad2/internal/local/display"
-	"edpad2/internal/local/sound"
 	"edpad2/internal/router"
 	"fmt"
 	"time"
@@ -44,16 +43,6 @@ func (h *handler) evFSDTarget(ev *FSDTargetEvent) {
 			AppendText: false,
 			UpdateText: true,
 		},
-	}
-
-	switch jtclass[0:1] {
-	case "N", "D", "H":
-		h.connector.ToRouterCh <- &router.Message{
-			Dst: router.LocalSound,
-			Data: &sound.Track{
-				Id: sound.ALARM,
-			},
-		}
 	}
 
 	return
