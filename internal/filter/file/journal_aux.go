@@ -112,7 +112,7 @@ func CB(body string) (name, color string) {
 			color = "#FF3030"
 		}
 	case 'C':
-		color = "#AAAAAA"
+		color = "#DDDD70"
 	case 'D':
 		color = "#EEEEFF"
 	case 'H':

@@ -93,11 +93,9 @@ func (h *handler) play(s *Track) {
 	}
 
 	slog.Debug(9, "%s: PLAYING %s %d times", h.endpoint, so.confName, rTimes)
-	go func() {
-		for i := 0; i < rTimes; i++ {
-			trk := so.buffer.Streamer(0, so.buffer.Len())
-			speaker.Play(trk)
-		}
-	}()
+	for i := 0; i < rTimes; i++ {
+		trk := so.buffer.Streamer(0, so.buffer.Len())
+		speaker.Play(trk)
+	}
 
 }
