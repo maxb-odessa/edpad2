@@ -817,7 +817,7 @@ var bioDataLimits = map[string]bioLimits{
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"icy *", "rocky ice *"},
-		sclass:     []string{"B", "A", "F", "G", "K", "M", "L", "Y", "D*", "N*", "H"},
+		sclass:     []string{"B", "A", "F", "G", "K", "M", "L", "Y", "D*", "N*", "H", "T*"},
 		slumins:    []string{"*"},
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
