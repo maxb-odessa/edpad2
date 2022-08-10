@@ -7,6 +7,8 @@ GOBIN		=	${PREFIX}/bin
 
 GO111MODULE	=	auto
 
+CC			=	gcc -march=native
+
 all: build
 
 build:
