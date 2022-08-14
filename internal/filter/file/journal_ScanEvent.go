@@ -311,12 +311,12 @@ func (h *handler) refreshPlanets() {
 			}
 
 			if dist <= float64(minDist) {
-				text := fmt.Sprintf("Close bodies, approx distance is %f\n"+
-					`  |_ %s\n`+
-					`  |_ %s\n\n`,
+				text := fmt.Sprintf("Close bodies, approx distance is %.3f\n"+
+					"  |_ %s\n"+
+					"  |_ %s\n\n",
 					dist,
-					CurrentSystemPlanets[prevKey].id,
-					CurrentSystemPlanets[key].id)
+					CurrentSystemPlanets[prevKey].bodyName,
+					CurrentSystemPlanets[key].bodyName)
 				h.connector.ToRouterCh <- &router.Message{
 					Dst: router.LocalDisplay,
 					Data: &display.Text{
