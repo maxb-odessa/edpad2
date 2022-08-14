@@ -289,7 +289,6 @@ func (h *handler) refreshPlanets() {
 
 	idx := 0
 
-	prevKey := keys[0]
 	minDist := sconf.Float32Def("ed journal", "min bodies distance", 0.0)
 
 	for _, key := range keys {
@@ -302,9 +301,9 @@ func (h *handler) refreshPlanets() {
 		}
 
 		// close bodies?
-		if prevKey != key {
+		if p.bodyName != key {
 
-			dist := CurrentSystemPlanets[prevKey].distance - CurrentSystemPlanets[key].distance
+			dist := p.distance - CurrentSystemPlanets[key].distance
 
 			if dist < 0.0 {
 				dist = -dist
@@ -315,7 +314,7 @@ func (h *handler) refreshPlanets() {
 					"  |_ %s\n"+
 					"  \\_ %s\n\n",
 					dist,
-					CurrentSystemPlanets[prevKey].bodyName,
+					p.bodyName,
 					CurrentSystemPlanets[key].bodyName)
 				h.connector.ToRouterCh <- &router.Message{
 					Dst: router.LocalDisplay,
