@@ -190,7 +190,7 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
-			ViewPort:       display.VP_NOTES,
+			ViewPort:       display.VP_LOGS,
 			Text:           "\n<u>" + CurrentSystemName + "</u>\n",
 			AppendText:     true,
 			UpdateText:     true,

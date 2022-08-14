@@ -93,7 +93,7 @@ image {
     background: alpha (#000000, 0.30);
 }
 
-#notes_tv {
+#logs_tv {
     font-size: 25px;
     font-family: "noto sans mono";
     background: alpha (#000000, 0.30);
@@ -102,7 +102,7 @@ image {
 #system_tv text,
 #planets_tv text,
 #signals_tv text,
-#notes_tv text {
+#logs_tv text {
     color: #c0c0c0;
 }
 

@@ -311,16 +311,16 @@ func (h *handler) refreshPlanets() {
 			}
 
 			if dist <= float64(minDist) {
-				text := fmt.Sprintf("Close bodies, approx distance is %.3f\n"+
+				text := fmt.Sprintf("Close bodies, approx distance is %.3f Ls\n"+
 					"  |_ %s\n"+
-					"  |_ %s\n\n",
+					"  \\_ %s\n\n",
 					dist,
 					CurrentSystemPlanets[prevKey].bodyName,
 					CurrentSystemPlanets[key].bodyName)
 				h.connector.ToRouterCh <- &router.Message{
 					Dst: router.LocalDisplay,
 					Data: &display.Text{
-						ViewPort:       display.VP_NOTES,
+						ViewPort:       display.VP_LOGS,
 						Text:           text,
 						AppendText:     true,
 						UpdateText:     true,
@@ -570,7 +570,7 @@ func getParentStarId(ev *ScanEvent) int {
 	return parent
 }
 
-// TODO: where to use? after planet parse and send to NOTES? as a popup in PLANETS? Where?
+// TODO: where to use? after planet parse and send to LOGS? as a popup in PLANETS? Where?
 func possibleBios(pd *planetData) []string {
 
 	var sd *starData

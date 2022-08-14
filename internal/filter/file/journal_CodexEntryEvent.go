@@ -41,7 +41,7 @@ func (h *handler) evCodexEntry(ev *CodexEntryEvent) {
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
-			ViewPort:       display.VP_NOTES,
+			ViewPort:       display.VP_LOGS,
 			Text:           text,
 			AppendText:     true,
 			UpdateText:     true,
