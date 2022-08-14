@@ -1,6 +1,10 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"time"
+)
 
 type ScanOrganicEvent struct {
 	Body             int       `mapstructure:"Body,omitempty"`
@@ -15,5 +19,20 @@ type ScanOrganicEvent struct {
 }
 
 func (h *handler) evScanOrganic(ev *ScanOrganicEvent) {
+
+	text := "Biological discovery:" + ev.GenusLocalised + ", " + ev.SpeciesLocalised + "\n"
+
+	h.connector.ToRouterCh <- &router.Message{
+		Dst: router.LocalDisplay,
+		Data: &display.Text{
+			ViewPort:       display.VP_NOTES,
+			Text:           text,
+			AppendText:     true,
+			UpdateText:     true,
+			Subtitle:       "[!]",
+			UpdateSubtitle: true,
+		},
+	}
+
 	return
 }
