@@ -289,6 +289,9 @@ func (h *handler) refreshPlanets() {
 
 	idx := 0
 
+	prevKey := keys[0]
+	minDist := sconf.Float32Def("ed journal", "min bodies distance", 0.0)
+
 	for _, key := range keys {
 
 		p, _ := CurrentSystemPlanets[key]
@@ -296,6 +299,37 @@ func (h *handler) refreshPlanets() {
 		// not enuff data yet (i.e. signals only detected, no Scan event happened), skip it
 		if p.bodyName == "" {
 			continue
+		}
+
+		// close bodies?
+		if prevKey != key {
+
+			dist := CurrentSystemPlanets[prevKey].distance - CurrentSystemPlanets[key].distance
+
+			if dist < 0.0 {
+				dist = -dist
+			}
+
+			if dist <= float64(minDist) {
+				text := fmt.Sprintf("Close bodies, approx distance is %f\n"+
+					`  |_ %s\n`+
+					`  |_ %s\n\n`,
+					dist,
+					CurrentSystemPlanets[prevKey].id,
+					CurrentSystemPlanets[key].id)
+				h.connector.ToRouterCh <- &router.Message{
+					Dst: router.LocalDisplay,
+					Data: &display.Text{
+						ViewPort:       display.VP_NOTES,
+						Text:           text,
+						AppendText:     true,
+						UpdateText:     true,
+						Subtitle:       "[!]",
+						UpdateSubtitle: true,
+					},
+				}
+			}
+
 		}
 
 		if !h.remarkablePlanet(p) {
@@ -483,6 +517,14 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 	wantBodies := sconf.StrDef("ed journal", "want bodies", "Earth*,Water*,Ammonia*,Helium*")
 	for _, body := range strings.Split(wantBodies, ",") {
 		if fnmatch.Match(strings.TrimSpace(body), pd.class, fnmatch.FNM_IGNORECASE) {
+			return true
+		}
+	}
+
+	// atmos
+	wantAtmos := sconf.StrDef("ed journal", "want atmospheres", "none")
+	for _, atmo := range strings.Split(wantAtmos, ",") {
+		if fnmatch.Match(strings.TrimSpace(atmo), pd.atmosphere, fnmatch.FNM_IGNORECASE) {
 			return true
 		}
 	}
