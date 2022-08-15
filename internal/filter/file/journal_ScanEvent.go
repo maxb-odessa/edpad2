@@ -219,6 +219,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	return
 }
 
+var minBodyDist float64 = float64(sconf.Float32Def("ed journal", "min bodies distance", 0.0))
+
 func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	// either add new or update existing one
@@ -251,7 +253,41 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	pd.atmosphereType = ev.AtmosphereType
 	pd.volcanism = ev.Volcanism
 
-	//pd.bios = possibleBios(pd)
+	// close bodies?
+	for pname, pdata := range CurrentSystemPlanets {
+
+		// skip self comparison
+		if pd.bodyName == pname {
+			continue
+		}
+
+		dist := pd.distance - pdata.distance
+
+		if dist < 0.0 {
+			dist = -dist
+		}
+
+		if dist <= minBodyDist {
+			text := fmt.Sprintf("Close bodies, approx distance is %.4f Ls\n"+
+				"  |_ %s\n"+
+				"  \\_ %s\n\n",
+				dist,
+				pd.bodyName,
+				pdata.bodyName)
+			h.connector.ToRouterCh <- &router.Message{
+				Dst: router.LocalDisplay,
+				Data: &display.Text{
+					ViewPort:       display.VP_LOGS,
+					Text:           text,
+					AppendText:     true,
+					UpdateText:     true,
+					Subtitle:       "[!]",
+					UpdateSubtitle: true,
+				},
+			}
+		}
+
+	}
 
 	// show planets list
 	h.refreshPlanets()
@@ -288,9 +324,6 @@ func (h *handler) refreshPlanets() {
 	sort.Strings(keys)
 
 	idx := 0
-
-	minDist := sconf.Float32Def("ed journal", "min bodies distance", 0.0)
-
 	for _, key := range keys {
 
 		p, _ := CurrentSystemPlanets[key]
@@ -298,37 +331,6 @@ func (h *handler) refreshPlanets() {
 		// not enuff data yet (i.e. signals only detected, no Scan event happened), skip it
 		if p.bodyName == "" {
 			continue
-		}
-
-		// close bodies?
-		if p.bodyName != key {
-
-			dist := p.distance - CurrentSystemPlanets[key].distance
-
-			if dist < 0.0 {
-				dist = -dist
-			}
-
-			if dist <= float64(minDist) {
-				text := fmt.Sprintf("Close bodies, approx distance is %.3f Ls\n"+
-					"  |_ %s\n"+
-					"  \\_ %s\n\n",
-					dist,
-					p.bodyName,
-					CurrentSystemPlanets[key].bodyName)
-				h.connector.ToRouterCh <- &router.Message{
-					Dst: router.LocalDisplay,
-					Data: &display.Text{
-						ViewPort:       display.VP_LOGS,
-						Text:           text,
-						AppendText:     true,
-						UpdateText:     true,
-						Subtitle:       "[!]",
-						UpdateSubtitle: true,
-					},
-				}
-			}
-
 		}
 
 		if !h.remarkablePlanet(p) {
