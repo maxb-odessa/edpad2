@@ -219,9 +219,10 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	return
 }
 
-var minBodyDist float64 = float64(sconf.Float32Def("ed journal", "min bodies distance", 0.0))
-
 func (h *handler) parsePlanet(ev *ScanEvent) {
+
+	// TODO init once
+	var minBodyDist float64 = float64(sconf.Float32Def("ed journal", "min bodies distance", 1.0))
 
 	// either add new or update existing one
 	pd, ok := CurrentSystemPlanets[ev.BodyName]
@@ -818,7 +819,7 @@ var bioDataLimits = map[string]bioLimits{
 	"Concha": {
 		temp:       [2]float64{0.0, 190.0},
 		grav:       [2]float64{0.0, 0.27},
-		atmos:      []string{"*ammonia*", "*nitrogen*", "*water*"},
+		atmos:      []string{"*carbon dioxide*", "*ammonia*", "*nitrogen*", "*water*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body", "high metal *"},
 		sclass:     []string{"A", "F", "G", "K", "M", "L", "N*", "H"},
