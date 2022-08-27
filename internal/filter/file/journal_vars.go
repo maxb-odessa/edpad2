@@ -38,7 +38,8 @@ type planetData struct {
 	mapped         bool
 	class          string
 	massEm         float64
-	radiusEm       float64
+	radiusEr       float64
+	radiusLs       float64
 	gravityG       float64
 	temperatureK   float64
 	rings          int

@@ -118,7 +118,7 @@ func CB(body string) (name, color string) {
 	case 'H':
 		color = "#909090"
 	case 'L', 'Y', 'T':
-		color = "#FF2000"
+		color = "#FF2080"
 	case 'N':
 		color = "#AAAAFF"
 	case 'S':
@@ -132,9 +132,10 @@ func CB(body string) (name, color string) {
 
 // in meters
 const (
-	SOLAR_RADIUS = 696340000.0
-	EARTH_RADIUS = 6371.0 * 1000.0
-	LIGHT_SECOND = 299792.0 * 1000.
+	SOLAR_RADIUS  = 696340000.0
+	EARTH_RADIUS  = 6371.0 * 1000.0
+	LIGHT_SECOND  = 299792.0 * 1000.0
+	SECODS_IN_DAY = 24.0 * 60.0 * 60.0
 )
 
 func formatLargeNum(val float64) string {

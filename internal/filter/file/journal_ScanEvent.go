@@ -221,9 +221,6 @@ func (h *handler) parseStar(ev *ScanEvent) {
 
 func (h *handler) parsePlanet(ev *ScanEvent) {
 
-	// TODO init once
-	var minBodyDist float64 = float64(sconf.Float32Def("ed journal", "min bodies distance", 1.0))
-
 	// either add new or update existing one
 	pd, ok := CurrentSystemPlanets[ev.BodyName]
 	if !ok {
@@ -240,7 +237,8 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
 	pd.massEm = ev.MassEm
-	pd.radiusEm = ev.Radius / EARTH_RADIUS
+	pd.radiusEr = ev.Radius / EARTH_RADIUS
+	pd.radiusLs = ev.Radius / LIGHT_SECOND
 	pd.gravityG = ev.SurfaceGravity / 10.0
 	pd.temperatureK = ev.SurfaceTemperature
 	pd.rings = len(ev.Rings)
@@ -254,6 +252,8 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	pd.atmosphereType = ev.AtmosphereType
 	pd.volcanism = ev.Volcanism
 
+	codexText := ""
+
 	// close bodies?
 	for pname, pdata := range CurrentSystemPlanets {
 
@@ -262,32 +262,48 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			continue
 		}
 
-		dist := pd.distance - pdata.distance
+		dist := (pd.distance - pd.radiusLs) - (pdata.distance - pdata.radiusLs)
 
 		if dist < 0.0 {
 			dist = -dist
 		}
 
-		if dist <= minBodyDist {
-			text := fmt.Sprintf("Close bodies, approx distance is %.4f Ls\n"+
-				"  |_ %s\n"+
-				"  \\_ %s\n\n",
-				dist,
-				pd.bodyName,
-				pdata.bodyName)
-			h.connector.ToRouterCh <- &router.Message{
-				Dst: router.LocalDisplay,
-				Data: &display.Text{
-					ViewPort:       display.VP_LOGS,
-					Text:           text,
-					AppendText:     true,
-					UpdateText:     true,
-					Subtitle:       "[!]",
-					UpdateSubtitle: true,
-				},
-			}
+		if dist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
+			codexText += fmt.Sprintf("Close bodies, approx distance = %.4f Ls\n"+
+				"  +- %s\n"+
+				"  +- %s\n\n",
+				dist, pd.bodyName, pdata.bodyName)
 		}
 
+	}
+
+	// short orbital period
+	if ev.OrbitalPeriod/SECODS_IN_DAY <= float64(sconf.Float32Def("ed journal", "max orbital period", 0.1)) {
+		codexText += fmt.Sprintf("Short orbital period = %.2f Days\n"+
+			"  +- %s\n\n",
+			ev.BodyName, ev.OrbitalPeriod/SECODS_IN_DAY)
+	}
+
+	// fast rotating
+	if ev.TidalLock == false && ev.RotationPeriod/SECODS_IN_DAY <= float64(sconf.Float32Def("ed journal", "max rotation period", 0.1)) {
+		codexText += fmt.Sprintf("Fast rotation period = %.2f Days\n"+
+			"  +- %s\n\n",
+			ev.BodyName, ev.RotationPeriod/SECODS_IN_DAY)
+
+	}
+
+	if codexText != "" {
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalDisplay,
+			Data: &display.Text{
+				ViewPort:       display.VP_LOGS,
+				Text:           codexText,
+				AppendText:     true,
+				UpdateText:     true,
+				Subtitle:       "[!]",
+				UpdateSubtitle: true,
+			},
+		}
 	}
 
 	// show planets list
@@ -362,7 +378,7 @@ func (h *handler) refreshPlanets() {
 		}
 
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.massEm)})
-		t.Cell(idx, &fwt.Cell{Text: formatE(p.radiusEm)})
+		t.Cell(idx, &fwt.Cell{Text: formatE(p.radiusEr)})
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.gravityG)})
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.temperatureK)})
 
