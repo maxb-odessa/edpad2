@@ -9,6 +9,7 @@ import (
 
 	"encoding/json"
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/danwakefield/fnmatch"
@@ -262,33 +263,30 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			continue
 		}
 
-		dist := (pd.distance - pd.radiusLs) - (pdata.distance - pdata.radiusLs)
-
-		if dist < 0.0 {
-			dist = -dist
-		}
-
+		dist := math.Abs((pd.distance - pd.radiusLs) - (pdata.distance - pdata.radiusLs))
 		if dist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
 			codexText += fmt.Sprintf("Close bodies, approx distance = %.4f Ls\n"+
 				"  +- %s\n"+
-				"  +- %s\n\n",
+				"  +- %s\n",
 				dist, pd.bodyName, pdata.bodyName)
 		}
 
 	}
 
 	// short orbital period
-	if ev.OrbitalPeriod/SECODS_IN_DAY <= float64(sconf.Float32Def("ed journal", "max orbital period", 0.1)) {
+	orbPeriod := math.Abs(ev.OrbitalPeriod / SECONDS_IN_DAY)
+	if orbPeriod <= float64(sconf.Float32Def("ed journal", "max orbital period", 0.1)) {
 		codexText += fmt.Sprintf("Short orbital period = %.2f Days\n"+
-			"  +- %s\n\n",
-			ev.BodyName, ev.OrbitalPeriod/SECODS_IN_DAY)
+			"  +- %s\n",
+			orbPeriod, ev.BodyName)
 	}
 
 	// fast rotating
-	if ev.TidalLock == false && ev.RotationPeriod/SECODS_IN_DAY <= float64(sconf.Float32Def("ed journal", "max rotation period", 0.1)) {
+	rotPeriod := math.Abs(ev.RotationPeriod / SECONDS_IN_DAY)
+	if ev.TidalLock == false && rotPeriod <= float64(sconf.Float32Def("ed journal", "max rotation period", 0.1)) {
 		codexText += fmt.Sprintf("Fast rotation period = %.2f Days\n"+
-			"  +- %s\n\n",
-			ev.BodyName, ev.RotationPeriod/SECODS_IN_DAY)
+			"  +- %s\n",
+			rotPeriod, ev.BodyName)
 
 	}
 
@@ -725,7 +723,6 @@ type bioLimits struct {
 	needGeo    bool
 }
 
-//
 var bioDataLimits = map[string]bioLimits{
 
 	"Aleoida": {
