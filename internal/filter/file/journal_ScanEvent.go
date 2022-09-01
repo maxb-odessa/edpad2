@@ -263,12 +263,14 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			continue
 		}
 
-		dist := math.Abs((pd.distance - pd.radiusLs) - (pdata.distance - pdata.radiusLs))
-		if dist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
+		radSum := pd.radiusLs + pdata.radiusLs
+		centerDist := math.Abs(pd.distance - pdata.distance)
+		absDist := centerDist - radSum
+		if absDist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
 			codexText += fmt.Sprintf("Close bodies, approx distance = %.4f Ls\n"+
 				"  +- %s\n"+
 				"  +- %s\n",
-				dist, pd.bodyName, pdata.bodyName)
+				absDist, pd.bodyName, pdata.bodyName)
 		}
 
 	}
