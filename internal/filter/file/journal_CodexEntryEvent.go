@@ -35,8 +35,8 @@ func (h *handler) evCodexEntry(ev *CodexEntryEvent) {
 		isNew = " (NEW)"
 	}
 
-	text := "Codex" + isNew + ":" + ev.CategoryLocalised + ", " + ev.SubCategoryLocalised + "\n" + ` \__ ` +
-		ev.NameLocalised + ", " + ev.RegionLocalised + "\n"
+	text := "Codex" + isNew + ":" + ev.CategoryLocalised + ", " + ev.SubCategoryLocalised + "\n" + `  +- ` +
+		ev.NameLocalised + ", region: " + ev.RegionLocalised + "\n"
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
