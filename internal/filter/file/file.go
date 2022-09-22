@@ -40,22 +40,25 @@ func (h *handler) run() {
 		select {
 
 		case <-h.connector.DoneCh:
-
 			close(h.connector.ToRouterCh)
 			close(h.connector.FromRouterCh)
 			return
 
 		case m := <-h.connector.FromRouterCh:
-
 			slog.Debug(9, "file filter got msg! %+v", m)
 
-			msg := m.Data.(*pb.FileMsg)
+			if m.Src == router.LocalFile {
+				h.processJournalLine(m.Data.(string))
+			}
 
-			name := msg.GetName()
-			if proc, ok := processors[name]; !ok {
-				slog.Warn("filter file: unconfigured source file '%s'", name)
-			} else {
-				proc(msg.GetEvent())
+			if m.Src == router.NetFile {
+				msg := m.Data.(*pb.FileMsg)
+				name := msg.GetName()
+				if proc, ok := processors[name]; !ok {
+					slog.Warn("filter file: unconfigured source file '%s'", name)
+				} else {
+					proc(msg.GetEvent())
+				}
 			}
 
 		} //select...

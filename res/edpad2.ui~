@@ -2,16 +2,26 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkTextBuffer" id="info_tb"/>
-  <object class="GtkTextBuffer" id="notes_tb"/>
+  <object class="GtkTextBuffer" id="logs_tb"/>
   <object class="GtkTextBuffer" id="planets_tb"/>
   <object class="GtkTextBuffer" id="route_tb"/>
   <object class="GtkTextBuffer" id="signals_tb"/>
   <object class="GtkTextBuffer" id="system_tb"/>
   <object class="GtkWindow" id="top">
     <property name="name">top</property>
-    <property name="width-request">1200</property>
-    <property name="height-request">750</property>
+    <property name="width-request">1280</property>
+    <property name="height-request">800</property>
     <property name="can-focus">False</property>
     <property name="gravity">center</property>
     <child>
@@ -58,6 +68,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -71,7 +83,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">system_tb</property>
                         <property name="accepts-tab">False</property>
@@ -91,6 +102,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">always</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -104,7 +117,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">planets_tb</property>
                         <property name="accepts-tab">False</property>
@@ -125,6 +137,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -138,7 +152,6 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
                         <property name="buffer">signals_tb</property>
                         <property name="accepts-tab">False</property>
@@ -153,18 +166,20 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow" id="notes_sw">
-                    <property name="name">notes_sw</property>
+                  <object class="GtkScrolledWindow" id="logs_sw">
+                    <property name="name">logs_sw</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
                     <child>
-                      <object class="GtkTextView" id="notes_tv">
-                        <property name="name">notes_tv</property>
+                      <object class="GtkTextView" id="logs_tv">
+                        <property name="name">logs_tv</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="hexpand">True</property>
@@ -172,17 +187,16 @@
                         <property name="hscroll-policy">natural</property>
                         <property name="vscroll-policy">natural</property>
                         <property name="editable">False</property>
-                        <property name="wrap-mode">word</property>
                         <property name="cursor-visible">False</property>
-                        <property name="buffer">notes_tb</property>
+                        <property name="buffer">logs_tb</property>
                         <property name="accepts-tab">False</property>
                         <property name="monospace">True</property>
                       </object>
                     </child>
                   </object>
                   <packing>
-                    <property name="name">Notes</property>
-                    <property name="title" translatable="yes">Notes</property>
+                    <property name="name">Logs</property>
+                    <property name="title" translatable="yes">Logs</property>
                     <property name="position">3</property>
                   </packing>
                 </child>
@@ -250,7 +264,6 @@
     <property name="relative-to">stack_switcher</property>
     <property name="position">right</property>
     <property name="modal">False</property>
-    <property name="transitions-enabled">False</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -449,7 +462,18 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="quit">
+                <property name="label" translatable="yes">quit</property>
+                <property name="name">quit</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left-attach">4</property>
+                <property name="top-attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

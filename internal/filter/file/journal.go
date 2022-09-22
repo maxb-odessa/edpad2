@@ -9,8 +9,10 @@ import (
 )
 
 func (h *handler) processJournalMsg(ev *pb.FileEvent) {
+	h.processJournalLine(ev.GetLine().GetLine())
+}
 
-	line := ev.GetLine().GetLine()
+func (h *handler) processJournalLine(line string) {
 	slog.Debug(9, "get line: '%+v", line)
 
 	var mData map[string]interface{}

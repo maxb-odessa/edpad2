@@ -84,13 +84,15 @@ func (h *handler) evFSDJump(ev *FSDJumpEvent) {
 
 	CurrentSystemName = ev.StarSystem // really needed? already set in StartJump event
 
-	switch CurrentMainStarClass[0:1] {
-	case "N", "D", "H":
-		h.connector.ToRouterCh <- &router.Message{
-			Dst: router.LocalSound,
-			Data: &sound.Track{
-				Id: sound.TONE,
-			},
+	if len(CurrentMainStarClass) > 1 {
+		switch CurrentMainStarClass[0:1] {
+		case "N", "D", "H":
+			h.connector.ToRouterCh <- &router.Message{
+				Dst: router.LocalSound,
+				Data: &sound.Track{
+					Id: sound.TONE,
+				},
+			}
 		}
 	}
 

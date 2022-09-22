@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"syscall"
 
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/glib"
@@ -55,6 +56,7 @@ type handler struct {
 	gtkBuilder  *gtk.Builder
 	viewPorts   map[int]*viewPort
 	gtkStack    *gtk.Stack
+	needQuit    chan bool
 }
 
 func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
@@ -64,6 +66,7 @@ func Connect(ep router.Endpoint) (router.Endpoint, *router.Connector) {
 	h.connector.FromRouterCh = make(chan *router.Message, 8) // wait for router messages on this chan
 	h.connector.ToRouterCh = make(chan *router.Message, 8)   // send messages to the router into this chan
 	h.connector.DoneCh = make(chan bool)                     // termination chan
+	h.needQuit = make(chan bool)
 
 	if err := h.init(); err != nil {
 		slog.Err("endpoint '%s': failed: %s", ep, err)
@@ -194,14 +197,16 @@ func (h *handler) run() {
 
 		select {
 
-		case <-h.connector.DoneCh:
+		case <-h.needQuit:
+			slog.Info("'quit' key pressed")
+			syscall.Kill(syscall.Getpid(), syscall.SIGTERM)
 
+		case <-h.connector.DoneCh:
 			close(h.connector.ToRouterCh)
 			close(h.connector.FromRouterCh)
 			return
 
 		case d, ok := <-h.connector.FromRouterCh:
-
 			if !ok {
 				return // must exit
 			}

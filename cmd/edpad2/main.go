@@ -13,8 +13,9 @@ import (
 
 	filterFile "edpad2/internal/filter/file"
 	localDisplay "edpad2/internal/local/display"
+	localFile "edpad2/internal/local/file"
+	localKeyboard "edpad2/internal/local/keyboard"
 	localSound "edpad2/internal/local/sound"
-	network "edpad2/internal/net"
 	"edpad2/internal/router"
 )
 
@@ -53,13 +54,15 @@ func main() {
 
 	// register everything in router
 	// no special error check, router.Register() will take care of them
-	router.Register(network.Connect(router.NetFile))
+	//router.Register(network.Connect(router.NetFile))
 	//router.Register(network.Connect(router.NetJoystick))
-	router.Register(network.Connect(router.NetKeyboard))
+	//router.Register(network.Connect(router.NetKeyboard))
 	//router.Register(network.Connect(router.NetSound))
 	router.Register(filterFile.Connect(router.FilterFile))
 	router.Register(localDisplay.Connect(router.LocalDisplay))
 	router.Register(localSound.Connect(router.LocalSound))
+	router.Register(localFile.Connect(router.LocalFile))
+	router.Register(localKeyboard.Connect(router.LocalKeyboard))
 
 	// set proggie termination signal handler(s)
 	done := make(chan bool)
@@ -84,13 +87,15 @@ func main() {
 	<-done
 
 	// unregister all endpoints
-	router.Unregister(router.NetFile)
+	//router.Unregister(router.NetFile)
 	//router.Unregister(router.NetJoystick)
-	router.Unregister(router.NetKeyboard)
+	//router.Unregister(router.NetKeyboard)
 	//router.Unregister(router.NetSound)
 	router.Unregister(router.FilterFile)
 	router.Unregister(router.LocalDisplay)
 	router.Unregister(router.LocalSound)
+	router.Unregister(router.LocalFile)
+	router.Unregister(router.LocalKeyboard)
 
 	// wait for the router to finish
 	wg.Wait()

@@ -264,11 +264,14 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		}
 
 		centerDist := math.Abs(pd.distance - pdata.distance)
+		surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
 		if centerDist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
-			codexText += fmt.Sprintf("Close bodies, approx center distance = %.4f Ls\n"+
-				"  +- %s (R = %.6f Ls)\n"+
-				"  +- %s (R = %.6f Ls)\n",
-				centerDist, pd.bodyName, pd.radiusLs, pdata.bodyName, pdata.radiusLs)
+			codexText += fmt.Sprintf("Close bodies, approx dist: surf: %.4f Ls, cent: %.4f Ls\n"+
+				"<i>"+
+				"  +- %s, R:%.4f Ls\n"+
+				"  +- %s, R:%.4f Ls\n"+
+				"</i>",
+				surfaceDist, centerDist, pd.bodyName, pd.radiusLs, pdata.bodyName, pdata.radiusLs)
 		}
 
 	}
@@ -538,10 +541,12 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 	}
 
 	// atmos
-	wantAtmos := sconf.StrDef("ed journal", "want atmospheres", "none")
-	for _, atmo := range strings.Split(wantAtmos, ",") {
-		if fnmatch.Match(strings.TrimSpace(atmo), pd.atmosphere, fnmatch.FNM_IGNORECASE) {
-			return true
+	if pd.landable {
+		wantAtmos := sconf.StrDef("ed journal", "want atmospheres", "none")
+		for _, atmo := range strings.Split(wantAtmos, ",") {
+			if fnmatch.Match(strings.TrimSpace(atmo), pd.atmosphere, fnmatch.FNM_IGNORECASE) {
+				return true
+			}
 		}
 	}
 

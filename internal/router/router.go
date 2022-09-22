@@ -18,6 +18,8 @@ const (
 
 	LocalSound
 	LocalDisplay
+	LocalFile
+	LocalKeyboard
 
 	FilterJoystick
 	FilterFile
@@ -39,6 +41,10 @@ func (ep Endpoint) String() string {
 		return "LocalSound"
 	case LocalDisplay:
 		return "LocalDisplay"
+	case LocalFile:
+		return "LocalFile"
+	case LocalKeyboard:
+		return "LocalKeyboard"
 	case FilterJoystick:
 		return "FilterJoystick"
 	case FilterFile:

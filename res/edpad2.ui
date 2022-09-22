@@ -10,8 +10,8 @@
   <object class="GtkTextBuffer" id="system_tb"/>
   <object class="GtkWindow" id="top">
     <property name="name">top</property>
-    <property name="width-request">1200</property>
-    <property name="height-request">750</property>
+    <property name="width-request">1280</property>
+    <property name="height-request">800</property>
     <property name="can-focus">False</property>
     <property name="gravity">center</property>
     <child>
@@ -58,6 +58,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -90,6 +92,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">always</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -123,6 +127,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -156,6 +162,8 @@
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vscrollbar-policy">always</property>
                     <property name="overlay-scrolling">False</property>
                     <property name="propagate-natural-width">True</property>
                     <property name="propagate-natural-height">True</property>
@@ -246,7 +254,6 @@
     <property name="relative-to">stack_switcher</property>
     <property name="position">right</property>
     <property name="modal">False</property>
-    <property name="transitions-enabled">False</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -445,7 +452,18 @@
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="quit">
+                <property name="label" translatable="yes">quit</property>
+                <property name="name">quit</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <signal name="pressed" handler="onPress" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left-attach">4</property>
+                <property name="top-attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>

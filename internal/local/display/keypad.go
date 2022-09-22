@@ -1,14 +1,13 @@
 package display
 
 import (
+	"edpad2/internal/local/keyboard"
 	"edpad2/internal/router"
 	"fmt"
 	"time"
 
 	uin "github.com/bendahl/uinput"
 	"github.com/gotk3/gotk3/gtk"
-
-	pb "github.com/maxb-odessa/gamenode/pkg/gamenodepb"
 )
 
 func (h *handler) keypad() error {
@@ -47,7 +46,11 @@ func (h *handler) keypad() error {
 
 	onButtonDownFunc := func(s interface{}) {
 		if name, err := s.(*gtk.Button).GetName(); err == nil {
-			h.sendKeyEvent(name, true)
+			if name == "quit" {
+				h.needQuit <- true
+			} else {
+				h.sendKeyEvent(name, true)
+			}
 		}
 	}
 
@@ -98,24 +101,9 @@ func nameToCode(name string) uint32 {
 }
 
 func (h *handler) sendKeyEvent(name string, pressed bool) {
-
-	msg := &pb.KbdMsg{
-		Name: "keyboard",
-		Msg: &pb.KbdMsg_Event{
-			Event: &pb.KbdEvent{
-				Obj: &pb.KbdEvent_Key_{
-					Key: &pb.KbdEvent_Key{
-						Code:    nameToCode(name),
-						Pressed: pressed,
-					},
-				},
-			},
-		},
-	}
-
 	h.connector.ToRouterCh <- &router.Message{
-		Dst:  router.NetKeyboard,
-		Data: msg,
+		Dst:  router.LocalKeyboard,
+		Data: &keyboard.Key{Code: nameToCode(name), Pressed: pressed},
 	}
 }
 
