@@ -227,6 +227,8 @@ func (h *handler) run() {
 
 func (h *handler) printText(t *Text) {
 
+	slog.Debug(1, "TEXT: '%s', TITLE: '%s'\n", t.Text, t.Subtitle)
+
 	vp, ok := h.viewPorts[t.ViewPort]
 	if !ok {
 		slog.Warn("endpoint '%s': undefined viewport %d", t.ViewPort)

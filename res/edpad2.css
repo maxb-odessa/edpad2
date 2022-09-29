@@ -100,20 +100,20 @@ image {
 
 
 scrollbar {
-    background-color: #442211;
+    /* background-color: black; */
     -GtkScrollbar-has-backward-stepper: false;
     -GtkScrollbar-has-forward-stepper: false;
-    -GtkScrollbar-fixed-slider-length: true;
+    -GtkScrollbar-fixed-slider-length: false;
 }
 
 scrollbar.vertical slider { 
-    background-color: gray;
+    background-color: #606060;
     min-width: 16px;
     min-height: 64px;
 }
 
 scrollbar.horizontal slider { 
-    background-color: gray;
+    background-color: #606060;
     min-width: 64px;
     min-height: 16px;
 }

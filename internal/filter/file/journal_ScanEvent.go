@@ -262,16 +262,30 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		if pd.bodyName == pname {
 			continue
 		}
+		/*
+			centerDist := math.Abs(pd.distance - pdata.distance)
+			surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
+			if centerDist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
+				codexText += fmt.Sprintf("Close bodies, approx dist: surf: %.4f Ls, cent: %.4f Ls\n"+
+					"<i>"+
+					"  +- %s, R:%.4f Ls\n"+
+					"  +- %s, R:%.4f Ls\n"+
+					"</i>",
+					surfaceDist, centerDist, pd.bodyName, pd.radiusLs, pdata.bodyName, pdata.radiusLs)
+			}
+		*/
 
 		centerDist := math.Abs(pd.distance - pdata.distance)
-		surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
-		if centerDist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
-			codexText += fmt.Sprintf("Close bodies, approx dist: surf: %.4f Ls, cent: %.4f Ls\n"+
+		surfaceDist := centerDist - pd.radiusLs - pdata.radiusLs
+		maxRad := math.Max(pd.radiusLs, pdata.radiusLs)
+		radComp := math.Abs(surfaceDist / maxRad)
+		if math.Abs(surfaceDist) <= maxRad {
+			codexText += fmt.Sprintf("Close bodies: dSurf:%.4f Ls, dCntr:%.4f Ls, dSurf/Rad:%.2f\n"+
 				"<i>"+
-				"  +- %s, R:%.4f Ls\n"+
-				"  +- %s, R:%.4f Ls\n"+
+				"  +- R:%.4f Ls, %s\n"+
+				"  +- R:%.4f Ls, %s\n"+
 				"</i>",
-				surfaceDist, centerDist, pd.bodyName, pd.radiusLs, pdata.bodyName, pdata.radiusLs)
+				surfaceDist, centerDist, radComp, pd.radiusLs, pd.bodyName, pdata.radiusLs, pdata.bodyName)
 		}
 
 	}
@@ -285,7 +299,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	}
 
 	// fast rotating
-	rotPeriod := math.Abs(ev.RotationPeriod / SECONDS_IN_DAY)
+	rotPeriod := math.Abs(ev.RotationPeriod) / SECONDS_IN_DAY
 	if ev.TidalLock == false && rotPeriod <= float64(sconf.Float32Def("ed journal", "max rotation period", 0.1)) {
 		codexText += fmt.Sprintf("Fast rotation period = %.2f Days\n"+
 			"  +- %s\n",
