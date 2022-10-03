@@ -12,7 +12,7 @@ type starData struct {
 	isMain       bool
 	class        string
 	subClass     int
-	distance     float64
+	distanceLs   float64
 	luminosity   string
 	massSol      float64
 	radiusSol    float64
@@ -33,7 +33,7 @@ type planetData struct {
 	id             int
 	parentStarId   int
 	bodyName       string
-	distance       float64
+	distanceLs     float64
 	discovered     bool
 	mapped         bool
 	class          string
@@ -48,6 +48,8 @@ type planetData struct {
 	atmosphereType string
 	volcanism      string
 	landable       bool
+	smAxisLs       float64
+	rotPeriod      float64
 	terraformable  bool
 	signals        *bodySignals
 	bios           []string

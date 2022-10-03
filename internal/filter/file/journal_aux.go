@@ -2,6 +2,7 @@ package file
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/danwakefield/fnmatch"
 )
@@ -146,4 +147,15 @@ func formatLargeNum(val float64) string {
 	} else {
 		return fmt.Sprintf("%4.0f", val)
 	}
+}
+
+func encEntities(s string) string {
+	line := s
+
+	line = strings.ReplaceAll(line, "&", "&amp;")
+	line = strings.ReplaceAll(line, "<", "&lt;")
+	line = strings.ReplaceAll(line, ">", "&gt;")
+	line = strings.ReplaceAll(line, "::", "&#58;&#58;")
+
+	return line
 }

@@ -34,9 +34,9 @@ func (h *handler) evStartJump(ev *StartJumpEvent) {
 
 	sname, scolor := CB(ev.StarClass)
 
-	text := `<i><span size="x-large">` + "\n\nJumping to: \n\n" + ev.StarSystem +
-		` <span fgcolor="` + scolor + `">(` + sname + `)</span>` +
-		`</span></i>`
+	text := `<i><span size="large">` + "\n\nJumping to\n" + `</span></i>` +
+		`<span size="x-large">` + ev.StarSystem + ` <span fgcolor="` + scolor + `">(` + sname + `)</span>` +
+		`</span>`
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,

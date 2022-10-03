@@ -128,7 +128,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	}
 	sd.class = ev.StarType
 	sd.subClass = ev.Subclass
-	sd.distance = ev.DistanceFromArrivalLs
+	sd.distanceLs = ev.DistanceFromArrivalLs
 	sd.luminosity = ev.Luminosity
 	sd.rings = len(ev.Rings)
 	sd.massSol = ev.StellarMass
@@ -178,7 +178,7 @@ func (h *handler) parseStar(ev *ScanEvent) {
 		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%s %d", sname, s.subClass), FgColor: scolor, Left: true, Bold: true})
 		t.Cell(idx, &fwt.Cell{Text: s.luminosity, FgColor: scolor, Left: true})
 
-		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distance)})
+		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(s.distanceLs)})
 
 		if s.discovered {
 			t.Cell(idx, &fwt.Cell{Text: "Y", FgColor: "yellow"})
@@ -234,16 +234,18 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	pd.bodyName = ev.BodyName
 	pd.class = ev.PlanetClass
-	pd.distance = ev.DistanceFromArrivalLs
+	pd.distanceLs = ev.DistanceFromArrivalLs
 	pd.discovered = ev.WasDiscovered
 	pd.mapped = ev.WasMapped
 	pd.massEm = ev.MassEm
+	pd.rotPeriod = ev.RotationPeriod
 	pd.radiusEr = ev.Radius / EARTH_RADIUS
 	pd.radiusLs = ev.Radius / LIGHT_SECOND
 	pd.gravityG = ev.SurfaceGravity / 10.0
 	pd.temperatureK = ev.SurfaceTemperature
 	pd.rings = len(ev.Rings)
 	pd.landable = ev.Landable
+	pd.smAxisLs = ev.SemiMajorAxis / LIGHT_SECOND
 	if ev.TerraformState != "" {
 		pd.terraformable = true
 	}
@@ -262,30 +264,24 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		if pd.bodyName == pname {
 			continue
 		}
-		/*
-			centerDist := math.Abs(pd.distance - pdata.distance)
-			surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
-			if centerDist <= float64(sconf.Float32Def("ed journal", "max bodies distance", 1.0)) {
-				codexText += fmt.Sprintf("Close bodies, approx dist: surf: %.4f Ls, cent: %.4f Ls\n"+
-					"<i>"+
-					"  +- %s, R:%.4f Ls\n"+
-					"  +- %s, R:%.4f Ls\n"+
-					"</i>",
-					surfaceDist, centerDist, pd.bodyName, pd.radiusLs, pdata.bodyName, pdata.radiusLs)
-			}
-		*/
 
-		centerDist := math.Abs(pd.distance - pdata.distance)
-		surfaceDist := centerDist - pd.radiusLs - pdata.radiusLs
-		maxRad := math.Max(pd.radiusLs, pdata.radiusLs)
-		radComp := math.Abs(surfaceDist / maxRad)
-		if math.Abs(surfaceDist) <= maxRad {
-			codexText += fmt.Sprintf("Close bodies: dSurf:%.4f Ls, dCntr:%.4f Ls, dSurf/Rad:%.2f\n"+
+		// TODO calcDist = math.Sqrt3(pd.rotPeriod*pd.rotPeriod*(1+
+		centerDist := math.Abs(pd.distanceLs - pdata.distanceLs)
+		surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
+		maxRad := math.Max(pd.radiusLs, pdata.radiusLs) * float64(sconf.Float32Def("ed journal", "max bodies distance", 3))
+		smAxDist := pd.smAxisLs + pdata.smAxisLs - pd.radiusLs - pdata.radiusLs
+		if surfaceDist <= maxRad && smAxDist <= maxRad {
+			codexText += fmt.Sprintf("Close bodies, distance: %.4f Ls\n"+
 				"<i>"+
-				"  +- R:%.4f Ls, %s\n"+
-				"  +- R:%.4f Ls, %s\n"+
+				"  +- r: %.4f Ls, %s\n"+
+				"  +- r: %.4f Ls, %s\n"+
 				"</i>",
-				surfaceDist, centerDist, radComp, pd.radiusLs, pd.bodyName, pdata.radiusLs, pdata.bodyName)
+				smAxDist,
+				pd.radiusLs,
+				pd.bodyName,
+				pdata.radiusLs,
+				pdata.bodyName,
+			)
 		}
 
 	}
@@ -374,7 +370,7 @@ func (h *handler) refreshPlanets() {
 		ptype, pcolor := CB(p.class)
 		t.Cell(idx, &fwt.Cell{Text: ptype, FgColor: pcolor, Left: true})
 
-		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.distance)})
+		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.distanceLs)})
 
 		discovered := "n"
 		mapped := "n"
@@ -650,7 +646,7 @@ func matchBios(pd *planetData, sd *starData, planets []string) []string {
 	atmo := pd.atmosphere
 	volc := pd.volcanism
 	ptype := pd.class
-	dist := pd.distance
+	dist := pd.distanceLs
 	geoSigs := pd.signals.geological
 
 	sclass := sd.class
@@ -1009,7 +1005,7 @@ var bioDataLimits = map[string]bioLimits{
 		grav:       [2]float64{0.0, 0.27},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
-		ptypes:     []string{"rocky body*"},
+		ptypes:     []string{"rocky body*", "rocky ice*"},
 		sclass:     []string{"F", "G", "K", "M", "L", "T", "D*", "H"},
 		slumins:    []string{"*"},
 		needBodies: []string{"*"},
