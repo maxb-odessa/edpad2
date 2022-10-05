@@ -239,6 +239,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	pd.mapped = ev.WasMapped
 	pd.massEm = ev.MassEm
 	pd.rotPeriod = ev.RotationPeriod
+	pd.orbitalPeriod = ev.OrbitalPeriod
 	pd.radiusEr = ev.Radius / EARTH_RADIUS
 	pd.radiusLs = ev.Radius / LIGHT_SECOND
 	pd.gravityG = ev.SurfaceGravity / 10.0
@@ -265,18 +266,28 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			continue
 		}
 
-		// TODO calcDist = math.Sqrt3(pd.rotPeriod*pd.rotPeriod*(1+
 		centerDist := math.Abs(pd.distanceLs - pdata.distanceLs)
 		surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
 		maxRad := math.Max(pd.radiusLs, pdata.radiusLs) * float64(sconf.Float32Def("ed journal", "max bodies distance", 3))
 		smAxDist := pd.smAxisLs + pdata.smAxisLs - pd.radiusLs - pdata.radiusLs
+		/* T = years, r = AU
+		var keplerDist float64
+		if math.Max(pd.massEm, pdata.massEm) == pdata.massEm {
+			keplerDist = math.Cbrt(pd.orbitalPeriod * pd.orbitalPeriod * (1 + pd.massEm/pdata.massEm))
+		} else {
+			keplerDist = math.Cbrt(pdata.orbitalPeriod * pdata.orbitalPeriod * (1 + pdata.massEm/pd.massEm))
+		}
+		*/
 		if surfaceDist <= maxRad && smAxDist <= maxRad {
-			codexText += fmt.Sprintf("Close bodies, distance: %.4f Ls\n"+
+			//if surfaceDist <= maxRad && (smAxDist <= maxRad || keplerDist <= maxRad) {
+			//codexText += fmt.Sprintf("Close bodies, distance: smAxis %.4f Ls, kepler %.8f Ls\n"+
+			codexText += fmt.Sprintf("Close bodies, distance: smAxis %.4f Ls\n"+
 				"<i>"+
 				"  +- r: %.4f Ls, %s\n"+
 				"  +- r: %.4f Ls, %s\n"+
 				"</i>",
 				smAxDist,
+				//		keplerDist/LIGHT_SECOND,
 				pd.radiusLs,
 				pd.bodyName,
 				pdata.radiusLs,
@@ -1044,7 +1055,7 @@ func atmoFormula(atmo string) string {
 	case "SilicateVapour":
 		return "SiO4+"
 	case "SulphurDioxide":
-		return "S2O"
+		return "SO2"
 	case "Water", "WaterRich":
 		return "H2O"
 	}

@@ -50,6 +50,7 @@ type planetData struct {
 	landable       bool
 	smAxisLs       float64
 	rotPeriod      float64
+	orbitalPeriod  float64
 	terraformable  bool
 	signals        *bodySignals
 	bios           []string
