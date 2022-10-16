@@ -1,0 +1,16 @@
+# Simple systemd scenario for edpad2
+# - put it in @HOME@/.config/systemd/user/
+# - run: systemd --user reload-daemon
+# - use: systemctl --user <status|start|stop> edpad2
+###########################################################
+
+[Unit]
+Description = EDPad2: client for GameNode
+
+[Service]
+Type = simple
+StandardOutput = journal
+ExecStart = vncserver -fg -geometry 1280x800 -depth 16 -xstartup %h/.local/bin/edpad2.sh
+
+[Install]
+WantedBy=default.target
