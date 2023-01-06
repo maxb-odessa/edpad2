@@ -149,8 +149,8 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	t.Header(&fwt.Header{Text: "Lumin ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Dist(ls)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Disc", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: " Rn", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: " Rr", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Rn", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "Rr(ls)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "M(sol)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "R(sol)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Temp(K)", FgColor: "gray", Underline: true, Italic: true})
@@ -266,28 +266,20 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			continue
 		}
 
-		centerDist := math.Abs(pd.distanceLs - pdata.distanceLs)
-		surfaceDist := math.Abs(centerDist - pd.radiusLs - pdata.radiusLs)
-		maxRad := math.Max(pd.radiusLs, pdata.radiusLs) * float64(sconf.Float32Def("ed journal", "max bodies distance", 3))
-		smAxDist := pd.smAxisLs + pdata.smAxisLs - pd.radiusLs - pdata.radiusLs
-		/* T = years, r = AU
-		var keplerDist float64
-		if math.Max(pd.massEm, pdata.massEm) == pdata.massEm {
-			keplerDist = math.Cbrt(pd.orbitalPeriod * pd.orbitalPeriod * (1 + pd.massEm/pdata.massEm))
-		} else {
-			keplerDist = math.Cbrt(pdata.orbitalPeriod * pdata.orbitalPeriod * (1 + pdata.massEm/pd.massEm))
-		}
-		*/
-		if surfaceDist <= maxRad && smAxDist <= maxRad {
-			//if surfaceDist <= maxRad && (smAxDist <= maxRad || keplerDist <= maxRad) {
-			//codexText += fmt.Sprintf("Close bodies, distance: smAxis %.4f Ls, kepler %.8f Ls\n"+
-			codexText += fmt.Sprintf("Close bodies, distance: smAxis %.4f Ls\n"+
-				"<i>"+
-				"  +- r: %.4f Ls, %s\n"+
-				"  +- r: %.4f Ls, %s\n"+
-				"</i>",
-				smAxDist,
-				//		keplerDist/LIGHT_SECOND,
+		centerDistLs := math.Abs(pd.distanceLs - pdata.distanceLs)
+		surfaceDistLs := math.Abs(centerDistLs - pd.radiusLs - pdata.radiusLs)
+		maxRad := math.Max(pd.radiusLs, pdata.radiusLs)
+		wantedRadDistLs := maxRad * float64(sconf.Float32Def("ed journal", "max bodies distance", 3.0))
+		smAxDistLs := pd.smAxisLs + pdata.smAxisLs
+		smAxSurfDistLs := smAxDistLs - pd.radiusLs - pdata.radiusLs
+
+		if surfaceDistLs <= wantedRadDistLs && smAxSurfDistLs <= wantedRadDistLs {
+			codexText += fmt.Sprintf("Close bodies, approx surface distance: %.4f Ls\n"+
+				` | SmAxDist: %.4f Ls`+"\n"+
+				` | R: %.4f Ls, %s`+"\n"+
+				` | R: %.4f Ls, %s`+"\n",
+				smAxSurfDistLs,
+				smAxDistLs,
 				pd.radiusLs,
 				pd.bodyName,
 				pdata.radiusLs,
@@ -298,21 +290,27 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	}
 
 	// short orbital period
-	orbPeriod := math.Abs(ev.OrbitalPeriod / SECONDS_IN_DAY)
-	if orbPeriod <= float64(sconf.Float32Def("ed journal", "max orbital period", 0.1)) {
-		codexText += fmt.Sprintf("Short orbital period = %.2f Days\n"+
-			"  +- %s\n",
-			orbPeriod, ev.BodyName)
+	orbPeriod := math.Abs(pd.orbitalPeriod / SECONDS_IN_HOUR)
+	if orbPeriod <= float64(sconf.Float32Def("ed journal", "max orbital period", 3.0)) {
+		codexText += fmt.Sprintf("Short orbital period = %.2f Hours\n"+
+			" | %s\n",
+			orbPeriod, pd.bodyName)
 	}
 
 	// fast rotating
-	rotPeriod := math.Abs(ev.RotationPeriod) / SECONDS_IN_DAY
-	if ev.TidalLock == false && rotPeriod <= float64(sconf.Float32Def("ed journal", "max rotation period", 0.1)) {
-		codexText += fmt.Sprintf("Fast rotation period = %.2f Days\n"+
-			"  +- %s\n",
-			rotPeriod, ev.BodyName)
+	rotPeriod := math.Abs(pd.rotPeriod) / SECONDS_IN_HOUR
+	if ev.TidalLock == false && rotPeriod <= float64(sconf.Float32Def("ed journal", "max rotation period", 3.0)) {
+		codexText += fmt.Sprintf("Fast rotation period = %.2f Hours\n"+
+			" | %s\n",
+			rotPeriod, pd.bodyName)
 
 	}
+
+	// high orbital inclination (not for GGs)
+	//TODO
+
+	// inside parent body ring (including stars)
+	// TODO
 
 	if codexText != "" {
 		h.connector.ToRouterCh <- &router.Message{
@@ -753,7 +751,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Aleoida": {
 		temp:       [2]float64{0.0, 195.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin carbon dioxide*", "*thin ammonia*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"*high metal*", "rocky body"},
@@ -831,7 +829,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Cactoida": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*ammonia*", "*carbon dioxide*", "*water*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body", "high metal *"},
@@ -844,7 +842,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Clypeus": {
 		temp:       [2]float64{190.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin carbon dioxide*", "*water*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body", "high metal *"},
@@ -857,7 +855,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Concha": {
 		temp:       [2]float64{0.0, 190.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*carbon dioxide*", "*ammonia*", "*nitrogen*", "*water*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body", "high metal *"},
@@ -883,7 +881,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"(Electricae)": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*helium*", "*argon*", "*neon*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"icy body"},
@@ -896,7 +894,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Fonticulua": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"icy *", "rocky ice *"},
@@ -909,7 +907,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Frutexa": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body*", "high metal *"},
@@ -922,7 +920,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Fumerola": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*?"},
 		ptypes:     []string{"icy body", "rocky ice *", "rocky body*", "high metal *"},
@@ -935,7 +933,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Fungoida": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
@@ -948,7 +946,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Osseus": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
@@ -961,7 +959,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Recepta": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin sulphur dioxide*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
@@ -1000,7 +998,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Tubus": {
 		temp:       [2]float64{160.0, 9999.0},
-		grav:       [2]float64{0.0, 0.15},
+		grav:       [2]float64{0.0, 0.16},
 		atmos:      []string{"*thin *carbon*", "*thin *ammonia*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body*", "high metal *"},
@@ -1013,7 +1011,7 @@ var bioDataLimits = map[string]bioLimits{
 
 	"Tussock": {
 		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.27},
+		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin *"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"rocky body*", "rocky ice*"},
