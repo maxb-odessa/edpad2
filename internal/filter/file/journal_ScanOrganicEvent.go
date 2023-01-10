@@ -3,6 +3,7 @@ package file
 import (
 	"edpad2/internal/local/display"
 	"edpad2/internal/router"
+	"fmt"
 	"time"
 )
 
@@ -20,13 +21,14 @@ type ScanOrganicEvent struct {
 
 func (h *handler) evScanOrganic(ev *ScanOrganicEvent) {
 
-	text := "Biological discovery:" + ev.GenusLocalised + ", " + ev.SpeciesLocalised + "\n"
+	text := "Biological discovery:" + ev.GenusLocalised + ", " + ev.SpeciesLocalised + "\n" +
+		" | diversity: %d meters\n"
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,
 		Data: &display.Text{
 			ViewPort:       display.VP_LOGS,
-			Text:           text,
+			Text:           fmt.Sprintf(text, bioDataLimits[ev.GenusLocalised].diversityM),
 			AppendText:     true,
 			UpdateText:     true,
 			Subtitle:       "[!]",

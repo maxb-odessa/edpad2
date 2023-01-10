@@ -32,6 +32,7 @@ type bodySignals struct {
 type planetData struct {
 	id             int
 	parentStarId   int
+	parentPlanetId int
 	bodyName       string
 	distanceLs     float64
 	discovered     bool

@@ -230,6 +230,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		CurrentSystemPlanets[ev.BodyName] = pd
 		pd.id = ev.BodyID
 		pd.parentStarId = getParentStarId(ev)
+		pd.parentPlanetId = getParentPlanetId(ev)
 	}
 
 	pd.bodyName = ev.BodyName
@@ -287,6 +288,30 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			)
 		}
 
+		// prev scanned body has parent body and it is US
+		var parent, satellite *planetData
+		if pdata.parentPlanetId > 0 && pdata.parentPlanetId == pd.id {
+			parent = pdata
+			satellite = pd
+			// current body has parent and it was already scanned
+		} else if pd.parentPlanetId > 0 && pd.parentPlanetId == pdata.id {
+			parent = pd
+			satellite = pdata
+		}
+
+		// body orbit is inside parent's ring
+		if parent != nil && satellite != nil && parent.ringRad/LIGHT_SECOND > satellite.smAxisLs {
+			codexText += fmt.Sprintf("Body orbit is inside parent ring\n"+
+				` | Ring radius: %.4f Ls, Orbit radius: %.4f Ls`+"\n"+
+				` | Parent:    %s`+"\n"+
+				` | Sattelite: %s`+"\n",
+				parent.ringRad/LIGHT_SECOND,
+				satellite.smAxisLs,
+				parent.bodyName,
+				satellite.bodyName,
+			)
+		}
+
 	}
 
 	// short orbital period
@@ -305,12 +330,6 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			rotPeriod, pd.bodyName)
 
 	}
-
-	// high orbital inclination (not for GGs)
-	//TODO
-
-	// inside parent body ring (including stars)
-	// TODO
 
 	if codexText != "" {
 		h.connector.ToRouterCh <- &router.Message{
@@ -610,6 +629,19 @@ func getParentStarId(ev *ScanEvent) int {
 	return parent
 }
 
+func getParentPlanetId(ev *ScanEvent) int {
+
+	parent := 0
+
+	for _, p := range ev.Parents {
+		if p.Planet > parent {
+			parent = p.Planet
+		}
+	}
+
+	return parent
+}
+
 // TODO: where to use? after planet parse and send to LOGS? as a popup in PLANETS? Where?
 func possibleBios(pd *planetData) []string {
 
@@ -745,6 +777,7 @@ type bioLimits struct {
 	needBodies []string
 	distLs     [2]float64
 	needGeo    bool
+	diversityM int
 }
 
 var bioDataLimits = map[string]bioLimits{
@@ -760,6 +793,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 150,
 	},
 
 	"Amphora": {
@@ -773,12 +807,13 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"Earth*", "Ammonia*", "*based life", "water giant"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 100,
 	},
 
 	"Anemone": {
 		temp:       [2]float64{0.0, 9999.0},
 		grav:       [2]float64{0.0, 9999.0},
-		atmos:      []string{""},
+		atmos:      []string{"", "*thin*"},
 		volcs:      []string{"*"},
 		ptypes:     []string{"*"},
 		sclass:     []string{"O", "B", "A", "H"},
@@ -786,6 +821,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"Earth*", "Ammonia*", "*based life", "water giant"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 100,
 	},
 
 	"(Bark Mounds)": {
@@ -799,6 +835,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 100,
 	},
 
 	"Bacterium": {
@@ -812,6 +849,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 500,
 	},
 
 	"(Brain Tree)": {
@@ -825,6 +863,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*water giant*", "*earth*", "* water based life*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 100,
 	},
 
 	"Cactoida": {
@@ -838,6 +877,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 300,
 	},
 
 	"Clypeus": {
@@ -851,6 +891,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 150,
 	},
 
 	"Concha": {
@@ -864,6 +905,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 150,
 	},
 
 	"(Crystalline Shards)": {
@@ -877,6 +919,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*ammonia*", "water giant*", "earth*", "* water based life"},
 		distLs:     [2]float64{12000.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 100,
 	},
 
 	"(Electricae)": {
@@ -890,6 +933,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 1000,
 	},
 
 	"Fonticulua": {
@@ -903,6 +947,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 500,
 	},
 
 	"Frutexa": {
@@ -916,6 +961,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 150,
 	},
 
 	"Fumerola": {
@@ -929,6 +975,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    true,
+		diversityM: 100,
 	},
 
 	"Fungoida": {
@@ -942,6 +989,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 300,
 	},
 
 	"Osseus": {
@@ -955,6 +1003,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 800,
 	},
 
 	"Recepta": {
@@ -962,12 +1011,13 @@ var bioDataLimits = map[string]bioLimits{
 		grav:       [2]float64{0.0, 0.28},
 		atmos:      []string{"*thin sulphur dioxide*"},
 		volcs:      []string{"*"},
-		ptypes:     []string{"rocky ice *", "rocky body*", "high metal *"},
+		ptypes:     []string{"*"},
 		sclass:     []string{"A", "F", "G", "K", "M", "T", "H"},
 		slumins:    []string{"*"},
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 150,
 	},
 
 	"Sinuous Tubers": {
@@ -981,6 +1031,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 100,
 	},
 
 	"Stratum": {
@@ -994,6 +1045,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 500,
 	},
 
 	"Tubus": {
@@ -1007,6 +1059,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 800,
 	},
 
 	"Tussock": {
@@ -1020,6 +1073,7 @@ var bioDataLimits = map[string]bioLimits{
 		needBodies: []string{"*"},
 		distLs:     [2]float64{0.0, 99999999.0},
 		needGeo:    false,
+		diversityM: 200,
 	},
 }
 
