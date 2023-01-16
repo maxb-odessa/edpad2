@@ -18,7 +18,7 @@ type starData struct {
 	radiusSol    float64
 	temperatureK float64
 	rings        int
-	ringRad      float64
+	ringRadLs    float64
 }
 
 type bodySignals struct {
@@ -44,7 +44,7 @@ type planetData struct {
 	gravityG       float64
 	temperatureK   float64
 	rings          int
-	ringRad        float64
+	ringRadLs      float64
 	atmosphere     string
 	atmosphereType string
 	volcanism      string

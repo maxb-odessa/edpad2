@@ -134,14 +134,14 @@ func (h *handler) parseStar(ev *ScanEvent) {
 	sd.massSol = ev.StellarMass
 	sd.radiusSol = ev.Radius / SOLAR_RADIUS
 	sd.temperatureK = ev.SurfaceTemperature
-	sd.rings, sd.ringRad = calcRings(ev)
+	sd.rings, sd.ringRadLs = calcRings(ev)
 
 	CurrentSystemStars[ev.BodyName] = sd
 
 	t := &fwt.Table{
 		Delimiter: " ",
 		Pango:     true,
-		Default:   "-",
+		Default:   "",
 	}
 
 	t.Header(&fwt.Header{Text: " ", FgColor: "gray", Underline: true, Italic: true})
@@ -186,14 +186,14 @@ func (h *handler) parseStar(ev *ScanEvent) {
 			t.Cell(idx, &fwt.Cell{Text: "n", FgColor: "gray"})
 		}
 
-		ringRad := "-"
-		ringsNum := "-"
+		ringRadLs := ""
+		ringsNum := ""
 		if s.rings > 0 {
-			ringRad = fmt.Sprintf("%.0f", s.ringRad/LIGHT_SECOND)
+			ringRadLs = fmt.Sprintf("%.0f", s.ringRadLs/LIGHT_SECOND)
 			ringsNum = fmt.Sprintf("%d", s.rings)
 		}
 		t.Cell(idx, &fwt.Cell{Text: ringsNum})
-		t.Cell(idx, &fwt.Cell{Text: ringRad})
+		t.Cell(idx, &fwt.Cell{Text: ringRadLs})
 
 		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%.2f", s.massSol)})
 		t.Cell(idx, &fwt.Cell{Text: fmt.Sprintf("%.2f", s.radiusSol)})
@@ -251,7 +251,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	if ev.TerraformState != "" {
 		pd.terraformable = true
 	}
-	pd.rings, pd.ringRad = calcRings(ev)
+	pd.rings, pd.ringRadLs = calcRings(ev)
 
 	pd.atmosphere = ev.Atmosphere
 	pd.atmosphereType = ev.AtmosphereType
@@ -259,7 +259,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 	codexText := ""
 
-	// close bodies?
+	// close bodies, close rings, etc
 	for pname, pdata := range CurrentSystemPlanets {
 
 		// skip self comparison
@@ -269,17 +269,33 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 		centerDistLs := math.Abs(pd.distanceLs - pdata.distanceLs)
 		surfaceDistLs := math.Abs(centerDistLs - pd.radiusLs - pdata.radiusLs)
+		ringDistLs := math.Abs(centerDistLs - pd.ringRadLs - pdata.ringRadLs)
 		maxRad := math.Max(pd.radiusLs, pdata.radiusLs)
 		wantedRadDistLs := maxRad * float64(sconf.Float32Def("ed journal", "max bodies distance", 3.0))
 		smAxDistLs := pd.smAxisLs + pdata.smAxisLs
 		smAxSurfDistLs := smAxDistLs - pd.radiusLs - pdata.radiusLs
+		smAxRingDistLs := smAxDistLs - pd.ringRadLs - pdata.ringRadLs
 
 		if surfaceDistLs <= wantedRadDistLs && smAxSurfDistLs <= wantedRadDistLs {
-			codexText += fmt.Sprintf("Close bodies, approx surface distance: %.4f Ls\n"+
-				` | SmAxDist: %.4f Ls`+"\n"+
+			codexText += fmt.Sprintf("Close BODIES, approx distance: %.4f Ls\n"+
+				` | SemiAxis: %.4f Ls`+"\n"+
 				` | R: %.4f Ls, %s`+"\n"+
 				` | R: %.4f Ls, %s`+"\n",
 				smAxSurfDistLs,
+				smAxDistLs,
+				pd.radiusLs,
+				pd.bodyName,
+				pdata.radiusLs,
+				pdata.bodyName,
+			)
+		}
+
+		if ringDistLs <= wantedRadDistLs && smAxRingDistLs <= wantedRadDistLs {
+			codexText += fmt.Sprintf("Close RING(S), approx distance: %.4f Ls\n"+
+				` | SemiAxis: %.4f Ls`+"\n"+
+				` | R: %.4f Ls, %s`+"\n"+
+				` | R: %.4f Ls, %s`+"\n",
+				smAxRingDistLs,
 				smAxDistLs,
 				pd.radiusLs,
 				pd.bodyName,
@@ -300,12 +316,12 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		}
 
 		// body orbit is inside parent's ring
-		if parent != nil && satellite != nil && parent.ringRad/LIGHT_SECOND > satellite.smAxisLs {
+		if parent != nil && satellite != nil && parent.ringRadLs/LIGHT_SECOND > satellite.smAxisLs {
 			codexText += fmt.Sprintf("Body orbit is inside parent ring\n"+
 				` | Ring radius: %.4f Ls, Orbit radius: %.4f Ls`+"\n"+
 				` | Parent:    %s`+"\n"+
 				` | Sattelite: %s`+"\n",
-				parent.ringRad/LIGHT_SECOND,
+				parent.ringRadLs/LIGHT_SECOND,
 				satellite.smAxisLs,
 				parent.bodyName,
 				satellite.bodyName,
@@ -353,7 +369,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 func (h *handler) refreshPlanets() {
 
 	t := fwt.Table{
-		Default:   "-",
+		Default:   "",
 		Delimiter: " ",
 		Pango:     true,
 	}
@@ -421,14 +437,14 @@ func (h *handler) refreshPlanets() {
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.gravityG)})
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.temperatureK)})
 
-		ringRad := "-"
-		ringsNum := "-"
+		ringRadLs := ""
+		ringsNum := ""
 		if p.rings > 0 {
-			ringRad = fmt.Sprintf("%3.0f", p.ringRad/LIGHT_SECOND)
+			ringRadLs = fmt.Sprintf("%3.0f", p.ringRadLs/LIGHT_SECOND)
 			ringsNum = fmt.Sprintf("%d", p.rings)
 		}
 		t.Cell(idx, &fwt.Cell{Text: ringsNum})
-		t.Cell(idx, &fwt.Cell{Text: ringRad})
+		t.Cell(idx, &fwt.Cell{Text: ringRadLs})
 
 		landable := "n"
 		terraformable := "n"
@@ -541,7 +557,7 @@ func (h *handler) remarkablePlanet(pd *planetData) bool {
 	}
 
 	// wide ring
-	if pd.ringRad/LIGHT_SECOND > float64(sconf.Float32Def("ed journal", "min outer ring radius", 15.0)) {
+	if pd.ringRadLs/LIGHT_SECOND > float64(sconf.Float32Def("ed journal", "min outer ring radius", 15.0)) {
 		return true
 	}
 
@@ -673,8 +689,8 @@ func possibleBios(pd *planetData) []string {
 	}
 
 	if sd == nil {
-		slog.Debug(1, "possibleBios(): no parent star found for id pd.parentStarId")
-		return []string{}
+		slog.Debug(1, "possibleBios(): no parent star found for id = %d", pd.parentStarId)
+		//return []string{}
 	}
 
 	return matchBios(pd, sd, planets)
@@ -690,8 +706,14 @@ func matchBios(pd *planetData, sd *starData, planets []string) []string {
 	dist := pd.distanceLs
 	geoSigs := pd.signals.geological
 
-	sclass := sd.class
-	slumin := sd.luminosity
+	var sclass, slumin string
+	if sd != nil {
+		sclass = sd.class
+		slumin = sd.luminosity
+	} else {
+		sclass = "none"
+		slumin = "none"
+	}
 
 	var bios []string
 
@@ -1101,7 +1123,7 @@ func atmoFormula(atmo string) string {
 	case "Nitrogen":
 		return "N2"
 	case "None":
-		return "-"
+		return ""
 	case "Oxygen":
 		return "O2"
 	case "SilicateVapour":
