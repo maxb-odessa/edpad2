@@ -1,6 +1,13 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"fmt"
+	"time"
+
+	"github.com/maxb-odessa/slog"
+)
 
 type SAASignalsFoundEvent struct {
 	BodyID   int    `mapstructure:"BodyID,omitempty"`
@@ -10,52 +17,105 @@ type SAASignalsFoundEvent struct {
 		Type          string `mapstructure:"Type,omitempty"`
 		TypeLocalised string `mapstructure:"Type_Localised,omitempty"`
 	} `mapstructure:"Signals,omitempty"`
+	Genuses []struct {
+		Genus          string `mapstructure:"Genus,omitempty"`
+		GenusLocalised string `mapstructure:"Genus_Localised,omitempty"`
+	} `mapstructure:"Genuses,omitempty"`
+
 	SystemAddress int       `mapstructure:"SystemAddress,omitempty"`
 	Event         string    `mapstructure:"event,omitempty"`
 	Timestamp     time.Time `mapstructure:"timestamp,omitempty"`
 }
 
-/*
-{ "timestamp":"2021-03-16T14:11:06Z", "event":"SAASignalsFound", "BodyName":"Synuefe NL-N c23-4 B 3", "SystemAddress":1184840454858, "BodyID":18, "Signals":[ { "Type":"$SAA_SignalType_Guardian;", "Type_Localised":"Guardian", "Count":4 }, { "Type":"$SAA_SignalType_Human;", "Type_Localised":"Human", "Count":16 } ] }
-{ "timestamp":"2021-02-07T14:59:45Z", "event":"SAASignalsFound", "BodyName":"Moon", "SystemAddress":10477373803, "BodyID":4, "Signals":[ { "Type":"$SAA_SignalType_Other;", "Type_Localised":"Other", "Count":1 }, { "Type":"$SAA_SignalType_Human;", "Type_Localised":"Human", "Count":1 } ] }
-*/
-
-// Surface Scanner, not FSS !
+// DSS scan complete
 func (h *handler) evSAASignalsFound(ev *SAASignalsFoundEvent) {
 
-	/*
-		pd, ok := CurrentSystemPlanets[ev.BodyName]
-		if !ok {
-			pd = new(planetData)
-			pd.signals = new(bodySignals)
-			CurrentSystemPlanets[ev.BodyName] = pd
+	pd, ok := CurrentSystemPlanets[ev.BodyName]
+	if !ok {
+		return
+	}
+
+	var text string
+
+	for _, gen := range ev.Genuses {
+		f := guessFlora(pd, gen.GenusLocalised)
+		if f != "" {
+			text += fmt.Sprintf(" | Bio: %s\n", f)
+		}
+	}
+
+	for _, sig := range ev.Signals {
+		text += fmt.Sprintf(" | Sig: %s (%d)\n", sig.TypeLocalised, sig.Count)
+	}
+
+	if text != "" {
+		text = `<i>` + ev.BodyName + `</i>` + "\n" + text
+
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalDisplay,
+			Data: &display.Text{
+				ViewPort:       display.VP_SIGNALS,
+				Text:           text,
+				AppendText:     true,
+				UpdateText:     true,
+				Subtitle:       `[!]`,
+				UpdateSubtitle: true,
+			},
 		}
 
-		refresh := false
+		slog.Debug(5, "SIGNAL: %s\n%+v", text, ev)
+	}
 
-		for _, s := range ev.Signals {
-
-			switch s.Type {
-			case "$SAA_SignalType_Geological;":
-				pd.signals.geological += s.Count
-			case "$SAA_SignalType_Biological;":
-				pd.signals.biological += s.Count
-			case "$SAA_SignalType_Guardian;":
-				pd.signals.guardian += s.Count
-			case "$SAA_SignalType_Human;":
-				pd.signals.human += s.Count
-			case "$SAA_SignalType_Other;":
-				pd.signals.other += s.Count
-			}
-
-			refresh = true
-
-		}
-
-		// refresh planets table here
-		if refresh {
-			h.refreshPlanets()
-		}
-	*/
 	return
+}
+
+func guessFlora(pd *planetData, name string) string {
+
+	for floraName, floraVariants := range floras {
+
+		if floraName != name {
+			continue
+		}
+
+		for varName, varData := range floraVariants {
+
+			if matches(pd.atmosphere, varData.atmos) &&
+				matches(pd.class, varData.bodies) &&
+				pd.gravityG >= varData.gravG[0] && pd.gravityG <= varData.gravG[1] &&
+				pd.temperatureK >= varData.tempK[0] && pd.temperatureK <= varData.tempK[1] {
+				return fmt.Sprintf("%s %s, price %d", floraName, varName, varData.price)
+
+			}
+		}
+
+	}
+
+	return ""
+}
+
+type variant struct {
+	price  int
+	bodies []string
+	atmos  []string
+	gravG  []float64
+	tempK  []float64
+}
+
+var floras = map[string]map[string]variant{
+	"Aleoida": {
+		"arcus": {
+			price:  379300,
+			bodies: []string{"rocky body*", "*high metal*"},
+			atmos:  []string{"*thin carbon dioxide*"},
+			gravG:  []float64{0.0, 0.27},
+			tempK:  []float64{175.0, 180.0},
+		},
+		"TODO": {
+			price:  0,
+			bodies: []string{"*"},
+			atmos:  []string{"*"},
+			gravG:  []float64{0.0, 99999.0},
+			tempK:  []float64{0.0, 9999.0},
+		},
+	},
 }
