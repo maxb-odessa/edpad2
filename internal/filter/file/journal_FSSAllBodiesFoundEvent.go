@@ -1,6 +1,12 @@
 package file
 
-import "time"
+import (
+	"edpad2/internal/local/display"
+	"edpad2/internal/router"
+	"time"
+
+	"github.com/maxb-odessa/slog"
+)
 
 type FSSAllBodiesFoundEvent struct {
 	Count         int       `mapstructure:"Count,omitempty"`
@@ -11,5 +17,34 @@ type FSSAllBodiesFoundEvent struct {
 }
 
 func (h *handler) evFSSAllBodiesFound(ev *FSSAllBodiesFoundEvent) {
+
+	for pname, pdata := range CurrentSystemPlanets {
+		var text string
+
+		for _, bio := range pdata.bios {
+			text += guessFlora(pdata, bio)
+		}
+
+		if text == "" {
+			continue
+		}
+
+		text = `<i>` + pname + `</i>` + "\n" + text
+
+		h.connector.ToRouterCh <- &router.Message{
+			Dst: router.LocalDisplay,
+			Data: &display.Text{
+				ViewPort:       display.VP_SIGNALS,
+				Text:           text,
+				AppendText:     true,
+				UpdateText:     true,
+				Subtitle:       `[!]`,
+				UpdateSubtitle: true,
+			},
+		}
+
+		slog.Debug(5, "BIOS: %s\n%+v", text, ev)
+	}
+
 	return
 }

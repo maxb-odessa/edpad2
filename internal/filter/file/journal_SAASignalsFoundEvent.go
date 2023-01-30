@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/danwakefield/fnmatch"
 	"github.com/maxb-odessa/slog"
 )
 
@@ -30,20 +31,18 @@ type SAASignalsFoundEvent struct {
 // DSS scan complete
 func (h *handler) evSAASignalsFound(ev *SAASignalsFoundEvent) {
 
-	pd, ok := CurrentSystemPlanets[ev.BodyName]
-	if !ok {
-		return
-	}
-
 	var text string
 
-	for _, gen := range ev.Genuses {
-		f := guessFlora(pd, gen.GenusLocalised)
-		if f != "" {
-			text += fmt.Sprintf(" | Bio: %s\n", f)
+	/*
+		pd, ok := CurrentSystemPlanets[ev.BodyName]
+		if !ok {
+			return
 		}
-	}
 
+		for _, gen := range ev.Genuses {
+			text += guessFlora(pd, gen.GenusLocalised)
+		}
+	*/
 	for _, sig := range ev.Signals {
 		text += fmt.Sprintf(" | Sig: %s (%d)\n", sig.TypeLocalised, sig.Count)
 	}
@@ -63,59 +62,312 @@ func (h *handler) evSAASignalsFound(ev *SAASignalsFoundEvent) {
 			},
 		}
 
-		slog.Debug(5, "SIGNAL: %s\n%+v", text, ev)
+		slog.Debug(5, "SIGNALS: %s\n%+v", text, ev)
 	}
 
 	return
 }
 
 func guessFlora(pd *planetData, name string) string {
+	var text string
 
-	for floraName, floraVariants := range floras {
+	for floraName, floraVar := range floras {
 
-		if floraName != name {
+		// match something like "Aleoida" over "Aleoida Gravis"
+		slog.Debug(5, "FLORA MATCH %s and %s\n", "*"+name+" *", floraName)
+		if !fnmatch.Match("*"+name+" *", floraName, fnmatch.FNM_IGNORECASE) {
 			continue
 		}
 
-		for varName, varData := range floraVariants {
-
-			if matches(pd.atmosphere, varData.atmos) &&
-				matches(pd.class, varData.bodies) &&
-				pd.gravityG >= varData.gravG[0] && pd.gravityG <= varData.gravG[1] &&
-				pd.temperatureK >= varData.tempK[0] && pd.temperatureK <= varData.tempK[1] {
-				return fmt.Sprintf("%s %s, price %d", floraName, varName, varData.price)
-
-			}
+		slog.Debug(5, "FLORA MATCHED! %s and %s\n", "*"+name+" *", floraName)
+		if matches(pd.atmosphere, floraVar.atmos) &&
+			matches(pd.class, floraVar.bodies) &&
+			pd.gravityG >= floraVar.gravG[0] && pd.gravityG <= floraVar.gravG[1] &&
+			pd.temperatureK >= floraVar.tempK[0] && pd.temperatureK <= floraVar.tempK[1] {
+			text += fmt.Sprintf(" ? Bio: %s, price %.2f Mil\n", floraName, floraVar.priceM)
 		}
 
 	}
 
-	return ""
+	return text
 }
 
 type variant struct {
-	price  int
+	priceM float32
 	bodies []string
 	atmos  []string
 	gravG  []float64
 	tempK  []float64
 }
 
-var floras = map[string]map[string]variant{
-	"Aleoida": {
-		"arcus": {
-			price:  379300,
-			bodies: []string{"rocky body*", "*high metal*"},
-			atmos:  []string{"*thin carbon dioxide*"},
-			gravG:  []float64{0.0, 0.27},
-			tempK:  []float64{175.0, 180.0},
-		},
-		"TODO": {
-			price:  0,
-			bodies: []string{"*"},
-			atmos:  []string{"*"},
-			gravG:  []float64{0.0, 99999.0},
-			tempK:  []float64{0.0, 9999.0},
-		},
+var floras = map[string]variant{
+	"Aleoida Arcus": {
+		priceM: 7.2,
+		atmos:  []string{"*thin carbon dioxide*"},
+		bodies: []string{"*high metal*", "*rocky body*"},
+		tempK:  []float64{175.0, 180.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+	"Aleoida Coronamus": {
+		priceM: 6.2,
+		atmos:  []string{"*thin carbon dioxide*"},
+		bodies: []string{"*high metal*", "*rocky body"},
+		tempK:  []float64{180.0, 190.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+	"Aleoida Gravis": {
+		priceM: 12.9,
+		atmos:  []string{"*thin carbon dioxide*"},
+		bodies: []string{"*high metal*", "*rocky body"},
+		tempK:  []float64{190.0, 195.0},
+		gravG:  []float64{0.27},
+	},
+	"Bacterium Informem": {
+		priceM: 8.4,
+		atmos:  []string{"*nitrogen*"},
+		bodies: []string{"*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 9999.0},
+	},
+	"Bacterium Nebulus": {
+		priceM: 5.2,
+		atmos:  []string{"*thin helium*"},
+		bodies: []string{"*icy*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 9999.0},
+	},
+	"Bacterium Volu": {
+		priceM: 7.7,
+		atmos:  []string{"*oxygen*"},
+		bodies: []string{"*high metal*", "*icy*", "*rocky ice*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 9999.0},
+	},
+	"Cactoida Vermis": {
+		priceM: 16.2,
+		atmos:  []string{"*water*"},
+		bodies: []string{"*high metal*", "*rocky body*"},
+		tempK:  []float64{165.0, 450.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+	"Clypeus Lacrimam": {
+		priceM: 8.4,
+		atmos:  []string{"*carbon dioxide*", "*water*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{190.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+	"Clypeus Margaritus": {
+		priceM: 11.8,
+		atmos:  []string{"*carbon dioxide*", "*water*"},
+		bodies: []string{"*high metal*"},
+		tempK:  []float64{190.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Clypeus Speculumi (>2500Ls to star)": {
+		priceM: 16.2,
+		atmos:  []string{"*carbon dioxide*", "*water*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{190.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Concha Aureolas": {
+		priceM: 7.7,
+		atmos:  []string{"*ammonia*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Concha Biconcavis": {
+		priceM: 19.0,
+		atmos:  []string{"*nitrogen*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Electricae (All)": {
+		priceM: 6.2,
+		atmos:  []string{"*helium*", "*neon*", "*argon*"},
+		bodies: []string{"*icy*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+	"Fonticulua Fluctus": {
+		priceM: 20.0,
+		atmos:  []string{"*oxygen*"},
+		bodies: []string{"*rocky ice*", "*icy*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Fonticulua Segmentatus": {
+		priceM: 19.0,
+		atmos:  []string{"*neon*"},
+		bodies: []string{"*rocky ice*", "*icy*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Fonticulua Upupam": {
+		priceM: 5.7,
+		atmos:  []string{"*argon*rich*"},
+		bodies: []string{"*icy*", "*rocky ice*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Frutexa Acus": {
+		priceM: 7.7,
+		atmos:  []string{"*carbon dioxide*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 195.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Frutexa Flammasis": {
+		priceM: 10.3,
+		atmos:  []string{"*ammonia*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Frutexa Sponsae": {
+		priceM: 5.9,
+		atmos:  []string{"*water*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Fumerola (All)": {
+		priceM: 7.0,
+		atmos:  []string{"*"},
+		bodies: []string{"*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Osseus Discus": {
+		priceM: 12.9,
+		atmos:  []string{"*water*"},
+		bodies: []string{"*high metal*", "*rocky body*"},
+		tempK:  []float64{0.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Osseus Pellebantus": {
+		priceM: 9.7,
+		atmos:  []string{"*carbon dioxide*"},
+		bodies: []string{"*high metal*", "*rocky body*"},
+		tempK:  []float64{180.0, 195.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Recepta Conditivus": {
+		priceM: 14.3,
+		atmos:  []string{"*sulphur dioxide*"},
+		bodies: []string{"*icy*", "*rocky ice*"},
+		tempK:  []float64{132.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Recepta Deltahedronix": {
+		priceM: 16.2,
+		atmos:  []string{"*sulphur dioxide*"},
+		bodies: []string{"*high metal*", "*rocky body*"},
+		tempK:  []float64{132.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Recepta Umbrux": {
+		priceM: 12.9,
+		atmos:  []string{"*sulphur dioxide*"},
+		bodies: []string{"*"},
+		tempK:  []float64{132.0, 9999.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Stratum Cucumisis": {
+		priceM: 16.2,
+		atmos:  []string{"*carbon dioxide*", "*sulphur dioxide*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{190.0, 9999.0},
+		gravG:  []float64{0.0, 9999.0},
+	},
+
+	"Stratum Tectonicas": {
+		priceM: 19.0,
+		atmos:  []string{"*thin*"},
+		bodies: []string{"*high metal*"},
+		tempK:  []float64{165.0, 9999.0},
+		gravG:  []float64{0.0, 9999.0},
+	},
+
+	"Tubus (Cavas, Compagibus, Conifer)": {
+		priceM: 9.0,
+		atmos:  []string{"*carbon dioxide*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{160.0, 190.0},
+		gravG:  []float64{0.0, 0.15},
+	},
+
+	"Tubus Sororibus": {
+		priceM: 5.7,
+		atmos:  []string{"*ammonia*", "*carbon dioxide*"},
+		bodies: []string{"*high metal*"},
+		tempK:  []float64{160.0, 190.0},
+		gravG:  []float64{0.0, 0.15},
+	},
+	"Tubus Rosarium": {
+		priceM: 5.7,
+		atmos:  []string{"*ammonia*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{160.0, 190.0},
+		gravG:  []float64{0.0, 0.15},
+	},
+
+	"Tussock Capillum": {
+		priceM: 7.0,
+		atmos:  []string{"*argon*", "*methane*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 195.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Tussock Pennata": {
+		priceM: 5.8,
+		atmos:  []string{"*carbon dioxide*"},
+		bodies: []string{"*high metal*", "*rocky"},
+		tempK:  []float64{145.0, 155.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Tussock Stigmasis": {
+		priceM: 19.0,
+		atmos:  []string{"*sulphur dioxide"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 195.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Tussock Triticum": {
+		priceM: 7.7,
+		atmos:  []string{"Carbon dioxide"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{190.0, 195.0},
+		gravG:  []float64{0.0, 0.27},
+	},
+
+	"Tussock Virgam": {
+		priceM: 14.3,
+		atmos:  []string{"*water*"},
+		bodies: []string{"*rocky body*"},
+		tempK:  []float64{0.0, 190.0},
+		gravG:  []float64{0.0, 0.27},
 	},
 }
