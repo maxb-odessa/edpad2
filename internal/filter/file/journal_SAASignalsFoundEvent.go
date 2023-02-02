@@ -33,22 +33,21 @@ func (h *handler) evSAASignalsFound(ev *SAASignalsFoundEvent) {
 
 	var text string
 
-	/*
-		pd, ok := CurrentSystemPlanets[ev.BodyName]
-		if !ok {
-			return
-		}
-
-		for _, gen := range ev.Genuses {
-			text += guessFlora(pd, gen.GenusLocalised)
-		}
-	*/
-	for _, sig := range ev.Signals {
-		text += fmt.Sprintf(" | Sig: %s (%d)\n", sig.TypeLocalised, sig.Count)
+	pd, ok := CurrentSystemPlanets[ev.BodyName]
+	if !ok {
+		return
 	}
 
+	for _, gen := range ev.Genuses {
+		text += guessFlora(pd, gen.GenusLocalised, " |- ")
+	}
+	/*
+		for _, sig := range ev.Signals {
+			text += fmt.Sprintf(" | Sig: %s (%d)\n", sig.TypeLocalised, sig.Count)
+		}
+	*/
 	if text != "" {
-		text = `<i>` + ev.BodyName + `</i>` + "\n" + text
+		text = `BIOs (valuable) at <i><b>` + ev.BodyName + `</b></i>` + "\n" + text
 
 		h.connector.ToRouterCh <- &router.Message{
 			Dst: router.LocalDisplay,
@@ -68,23 +67,23 @@ func (h *handler) evSAASignalsFound(ev *SAASignalsFoundEvent) {
 	return
 }
 
-func guessFlora(pd *planetData, name string) string {
+func guessFlora(pd *planetData, name string, prefix string) string {
 	var text string
 
 	for floraName, floraVar := range floras {
 
 		// match something like "Aleoida" over "Aleoida Gravis"
-		slog.Debug(5, "FLORA MATCH %s and %s\n", "*"+name+" *", floraName)
+		slog.Debug(15, "FLORA MATCH %s and %s\n", "*"+name+" *", floraName)
 		if !fnmatch.Match("*"+name+" *", floraName, fnmatch.FNM_IGNORECASE) {
 			continue
 		}
 
-		slog.Debug(5, "FLORA MATCHED! %s and %s\n", "*"+name+" *", floraName)
+		slog.Debug(15, "FLORA MATCHED! %s and %s\n", "*"+name+" *", floraName)
 		if matches(pd.atmosphere, floraVar.atmos) &&
 			matches(pd.class, floraVar.bodies) &&
 			pd.gravityG >= floraVar.gravG[0] && pd.gravityG <= floraVar.gravG[1] &&
 			pd.temperatureK >= floraVar.tempK[0] && pd.temperatureK <= floraVar.tempK[1] {
-			text += fmt.Sprintf(" ? Bio: %s, price %.2f Mil\n", floraName, floraVar.priceM)
+			text += fmt.Sprintf("%s%s, price %.2f Mil\n", prefix, floraName, floraVar.priceM)
 		}
 
 	}
@@ -252,7 +251,7 @@ var floras = map[string]variant{
 		gravG:  []float64{0.0, 0.27},
 	},
 
-	"Osseus Discus": {
+	"Osseus Discus (on rocks)": {
 		priceM: 12.9,
 		atmos:  []string{"*water*"},
 		bodies: []string{"*high metal*", "*rocky body*"},
@@ -260,7 +259,7 @@ var floras = map[string]variant{
 		gravG:  []float64{0.0, 0.27},
 	},
 
-	"Osseus Pellebantus": {
+	"Osseus Pellebantus (on rocks)": {
 		priceM: 9.7,
 		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*high metal*", "*rocky body*"},
@@ -320,13 +319,6 @@ var floras = map[string]variant{
 		priceM: 5.7,
 		atmos:  []string{"*ammonia*", "*carbon dioxide*"},
 		bodies: []string{"*high metal*"},
-		tempK:  []float64{160.0, 190.0},
-		gravG:  []float64{0.0, 0.15},
-	},
-	"Tubus Rosarium": {
-		priceM: 5.7,
-		atmos:  []string{"*ammonia*"},
-		bodies: []string{"*rocky body*"},
 		tempK:  []float64{160.0, 190.0},
 		gravG:  []float64{0.0, 0.15},
 	},

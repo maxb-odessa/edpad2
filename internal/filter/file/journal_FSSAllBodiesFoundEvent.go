@@ -22,14 +22,14 @@ func (h *handler) evFSSAllBodiesFound(ev *FSSAllBodiesFoundEvent) {
 		var text string
 
 		for _, bio := range pdata.bios {
-			text += guessFlora(pdata, bio)
+			text += guessFlora(pdata, bio, " ?- ")
 		}
 
 		if text == "" {
 			continue
 		}
 
-		text = `<i>` + pname + `</i>` + "\n" + text
+		text = `BIOs (valuable) at <i><b>` + pname + `</b></i>` + "\n" + text
 
 		h.connector.ToRouterCh <- &router.Message{
 			Dst: router.LocalDisplay,

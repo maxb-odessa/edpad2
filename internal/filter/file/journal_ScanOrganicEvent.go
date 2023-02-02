@@ -22,7 +22,7 @@ type ScanOrganicEvent struct {
 func (h *handler) evScanOrganic(ev *ScanOrganicEvent) {
 
 	text := "Biological discovery:" + ev.GenusLocalised + ", " + ev.SpeciesLocalised + "\n" +
-		" | diversity: %d meters\n"
+		" |- diversity: %d meters\n"
 
 	h.connector.ToRouterCh <- &router.Message{
 		Dst: router.LocalDisplay,

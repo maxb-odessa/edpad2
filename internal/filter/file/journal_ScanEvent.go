@@ -278,9 +278,9 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 		if surfaceDistLs <= wantedRadDistLs && smAxSurfDistLs <= wantedRadDistLs {
 			codexText += fmt.Sprintf("Close BODIES, approx distance: %.4f Ls\n"+
-				` | SemiAxis: %.4f Ls`+"\n"+
-				` | R: %.4f Ls, %s`+"\n"+
-				` | R: %.4f Ls, %s`+"\n",
+				` |- SemiAxis: %.4f Ls`+"\n"+
+				` |- R: %.4f Ls, %s`+"\n"+
+				` |- R: %.4f Ls, %s`+"\n",
 				smAxSurfDistLs,
 				smAxDistLs,
 				pd.radiusLs,
@@ -292,9 +292,9 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 
 		if ringDistLs <= wantedRadDistLs && smAxRingDistLs <= wantedRadDistLs {
 			codexText += fmt.Sprintf("Close RING(S), approx distance: %.4f Ls\n"+
-				` | SemiAxis: %.4f Ls`+"\n"+
-				` | R: %.4f Ls, %s`+"\n"+
-				` | R: %.4f Ls, %s`+"\n",
+				` |- SemiAxis: %.4f Ls`+"\n"+
+				` |- R: %.4f Ls, %s`+"\n"+
+				` |- R: %.4f Ls, %s`+"\n",
 				smAxRingDistLs,
 				smAxDistLs,
 				pd.radiusLs,
@@ -318,9 +318,9 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		// body orbit is inside parent's ring
 		if parent != nil && satellite != nil && parent.ringRadLs/LIGHT_SECOND > satellite.smAxisLs {
 			codexText += fmt.Sprintf("Body orbit is inside parent ring\n"+
-				` | Ring radius: %.4f Ls, Orbit radius: %.4f Ls`+"\n"+
-				` | Parent:    %s`+"\n"+
-				` | Sattelite: %s`+"\n",
+				` |- Ring radius: %.4f Ls, Orbit radius: %.4f Ls`+"\n"+
+				` |- Parent:    %s`+"\n"+
+				` |- Sattelite: %s`+"\n",
 				parent.ringRadLs/LIGHT_SECOND,
 				satellite.smAxisLs,
 				parent.bodyName,
@@ -334,7 +334,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	orbPeriod := math.Abs(pd.orbitalPeriod / SECONDS_IN_HOUR)
 	if orbPeriod <= float64(sconf.Float32Def("ed journal", "max orbital period", 3.0)) {
 		codexText += fmt.Sprintf("Short orbital period = %.2f Hours\n"+
-			" | %s\n",
+			" |- %s\n",
 			orbPeriod, pd.bodyName)
 	}
 
@@ -342,7 +342,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 	rotPeriod := math.Abs(pd.rotPeriod) / SECONDS_IN_HOUR
 	if ev.TidalLock == false && rotPeriod <= float64(sconf.Float32Def("ed journal", "max rotation period", 3.0)) {
 		codexText += fmt.Sprintf("Fast rotation period = %.2f Hours\n"+
-			" | %s\n",
+			" |- %s\n",
 			rotPeriod, pd.bodyName)
 
 	}
