@@ -118,8 +118,8 @@ var floras = map[string]variant{
 		priceM: 12.9,
 		atmos:  []string{"*thin carbon dioxide*"},
 		bodies: []string{"*high metal*", "*rocky body"},
-		tempK:  []float64{190.0, 195.0},
-		gravG:  []float64{0.27},
+		tempK:  []float64{190.0, 195.5},
+		gravG:  []float64{0.0, 0.27},
 	},
 	"Bacterium Informem": {
 		priceM: 8.4,
@@ -223,7 +223,7 @@ var floras = map[string]variant{
 		priceM: 7.7,
 		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 195.0},
+		tempK:  []float64{0.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
@@ -263,7 +263,7 @@ var floras = map[string]variant{
 		priceM: 9.7,
 		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*high metal*", "*rocky body*"},
-		tempK:  []float64{180.0, 195.0},
+		tempK:  []float64{180.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
@@ -311,7 +311,7 @@ var floras = map[string]variant{
 		priceM: 9.0,
 		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{160.0, 190.0},
+		tempK:  []float64{160.0, 190.5},
 		gravG:  []float64{0.0, 0.15},
 	},
 
@@ -319,7 +319,7 @@ var floras = map[string]variant{
 		priceM: 5.7,
 		atmos:  []string{"*ammonia*", "*carbon dioxide*"},
 		bodies: []string{"*high metal*"},
-		tempK:  []float64{160.0, 190.0},
+		tempK:  []float64{160.0, 190.5},
 		gravG:  []float64{0.0, 0.15},
 	},
 
@@ -327,7 +327,7 @@ var floras = map[string]variant{
 		priceM: 7.0,
 		atmos:  []string{"*argon*", "*methane*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 195.0},
+		tempK:  []float64{0.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
@@ -335,7 +335,7 @@ var floras = map[string]variant{
 		priceM: 5.8,
 		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*high metal*", "*rocky"},
-		tempK:  []float64{145.0, 155.0},
+		tempK:  []float64{145.0, 155.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
@@ -343,7 +343,7 @@ var floras = map[string]variant{
 		priceM: 19.0,
 		atmos:  []string{"*sulphur dioxide"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 195.0},
+		tempK:  []float64{0.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
@@ -351,7 +351,7 @@ var floras = map[string]variant{
 		priceM: 7.7,
 		atmos:  []string{"Carbon dioxide"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{190.0, 195.0},
+		tempK:  []float64{190.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
@@ -359,7 +359,7 @@ var floras = map[string]variant{
 		priceM: 14.3,
 		atmos:  []string{"*water*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 190.0},
+		tempK:  []float64{0.0, 190.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 }
