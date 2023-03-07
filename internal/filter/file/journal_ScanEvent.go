@@ -89,15 +89,17 @@ func (h *handler) evScan(ev *ScanEvent) {
 	} else if ev.PlanetClass != "" {
 		h.parsePlanet(ev)
 	} else {
-		// ateroids? other?
+		// ateroids? baricenter? other?
 	}
 }
 
 func formatE(val float64) string {
 	if val >= 100.0 { // yes, 100.0 is correct
-		return fmt.Sprintf("%3.1fK", val/1000.0)
+		return fmt.Sprintf("%.1fK", val/1000.0)
+	} else if val >= 1 {
+		return fmt.Sprintf("%3.2f", val)
 	} else {
-		return fmt.Sprintf("%4.1f", val)
+		return fmt.Sprintf("%.2f", val)
 	}
 }
 
@@ -229,7 +231,7 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		pd.signals = new(bodySignals)
 		CurrentSystemPlanets[ev.BodyName] = pd
 		pd.id = ev.BodyID
-		pd.parentStarId = getParentStarId(ev)
+		//pd.parentStarId = getParentStarId(ev) BUGGY! for BIOs we need to exclude T,Y,L etc non-main stars
 		pd.parentPlanetId = getParentPlanetId(ev)
 	}
 
@@ -377,7 +379,7 @@ func (h *handler) refreshPlanets() {
 	t.Header(&fwt.Header{Text: " Name ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "Type ", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: "  Dist", FgColor: "gray", Underline: true, Italic: true})
-	t.Header(&fwt.Header{Text: "D/M", FgColor: "gray", Underline: true, Italic: true})
+	t.Header(&fwt.Header{Text: "D,M", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " M(e)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " R(e)", FgColor: "gray", Underline: true, Italic: true})
 	t.Header(&fwt.Header{Text: " Grav", FgColor: "gray", Underline: true, Italic: true})
@@ -416,20 +418,20 @@ func (h *handler) refreshPlanets() {
 
 		t.Cell(idx, &fwt.Cell{Text: formatLargeNum(p.distanceLs)})
 
-		discovered := "n"
-		mapped := "n"
+		discovered := ""
+		mapped := ""
 		if p.discovered {
-			discovered = "Y"
+			discovered = "D "
 		}
 
 		if p.mapped {
-			mapped = "Y"
+			mapped = "M"
 		}
 
 		if p.discovered || p.mapped {
-			t.Cell(idx, &fwt.Cell{Text: discovered + "/" + mapped, Bold: true, FgColor: "yellow"})
+			t.Cell(idx, &fwt.Cell{Text: discovered + mapped, Bold: true, FgColor: "yellow"})
 		} else {
-			t.Cell(idx, &fwt.Cell{Text: "n/n", FgColor: "gray"})
+			t.Cell(idx, &fwt.Cell{Text: " - ", FgColor: "gray"})
 		}
 
 		t.Cell(idx, &fwt.Cell{Text: formatE(p.massEm)})
@@ -759,7 +761,11 @@ func matchBios(pd *planetData, sd *starData, planets []string) []string {
 			continue
 		}
 
-		bios = append(bios, name)
+		if bl.specialCond {
+			bios = append(bios, "("+name+")")
+		} else {
+			bios = append(bios, name)
+		}
 
 	}
 
@@ -789,17 +795,18 @@ func matchesAny(what []string, where []string) bool {
 }
 
 type bioLimits struct {
-	temp       [2]float64
-	grav       [2]float64
-	atmos      []string
-	volcs      []string
-	ptypes     []string
-	sclass     []string
-	slumins    []string
-	needBodies []string
-	distLs     [2]float64
-	needGeo    bool
-	diversityM int
+	temp        [2]float64
+	grav        [2]float64
+	atmos       []string
+	volcs       []string
+	ptypes      []string
+	sclass      []string
+	slumins     []string
+	needBodies  []string
+	distLs      [2]float64
+	needGeo     bool
+	diversityM  int
+	specialCond bool
 }
 
 var bioDataLimits = map[string]bioLimits{
@@ -846,18 +853,19 @@ var bioDataLimits = map[string]bioLimits{
 		diversityM: 100,
 	},
 
-	"(Bark Mounds)": {
-		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 9999.0},
-		atmos:      []string{""},
-		volcs:      []string{"*"},
-		ptypes:     []string{"*"},
-		sclass:     []string{"*"},
-		slumins:    []string{"*"},
-		needBodies: []string{"*"},
-		distLs:     [2]float64{0.0, 99999999.0},
-		needGeo:    false,
-		diversityM: 100,
+	"Bark Mounds": {
+		temp:        [2]float64{0.0, 9999.0},
+		grav:        [2]float64{0.0, 9999.0},
+		atmos:       []string{""},
+		volcs:       []string{"*"},
+		ptypes:      []string{"*"},
+		sclass:      []string{"*"},
+		slumins:     []string{"*"},
+		needBodies:  []string{"*"},
+		distLs:      [2]float64{0.0, 99999999.0},
+		needGeo:     false,
+		diversityM:  100,
+		specialCond: true,
 	},
 
 	"Bacterium": {
@@ -874,18 +882,19 @@ var bioDataLimits = map[string]bioLimits{
 		diversityM: 500,
 	},
 
-	"(Brain Tree)": {
-		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 9999.0},
-		atmos:      []string{"*"},
-		volcs:      []string{"* volcanism*"},
-		ptypes:     []string{"rocky ice*", "rocky body", "metal rich*", "high metal *"},
-		sclass:     []string{"*"},
-		slumins:    []string{"*"},
-		needBodies: []string{"*water giant*", "*earth*", "* water based life*"},
-		distLs:     [2]float64{0.0, 99999999.0},
-		needGeo:    false,
-		diversityM: 100,
+	"Brain Trees": {
+		temp:        [2]float64{0.0, 9999.0},
+		grav:        [2]float64{0.0, 9999.0},
+		atmos:       []string{"*"},
+		volcs:       []string{"* volcanism*"},
+		ptypes:      []string{"rocky ice*", "rocky body", "metal rich*", "high metal *"},
+		sclass:      []string{"*"},
+		slumins:     []string{"*"},
+		needBodies:  []string{"*water giant*", "*earth*", "* water based life*"},
+		distLs:      [2]float64{0.0, 99999999.0},
+		needGeo:     false,
+		diversityM:  100,
+		specialCond: true,
 	},
 
 	"Cactoida": {
@@ -931,31 +940,33 @@ var bioDataLimits = map[string]bioLimits{
 	},
 
 	"(Crystalline Shards)": {
-		temp:       [2]float64{0.0, 273.0},
-		grav:       [2]float64{0.0, 9999.0},
-		atmos:      []string{""},
-		volcs:      []string{"*"},
-		ptypes:     []string{"rocky body", "high metal *"},
-		sclass:     []string{"A", "F", "G", "K", "M", "S", "H"},
-		slumins:    []string{"*"},
-		needBodies: []string{"*ammonia*", "water giant*", "earth*", "* water based life"},
-		distLs:     [2]float64{12000.0, 99999999.0},
-		needGeo:    false,
-		diversityM: 100,
+		temp:        [2]float64{0.0, 273.0},
+		grav:        [2]float64{0.0, 9999.0},
+		atmos:       []string{""},
+		volcs:       []string{"*"},
+		ptypes:      []string{"rocky body", "high metal *"},
+		sclass:      []string{"A", "F", "G", "K", "M", "S", "H"},
+		slumins:     []string{"*"},
+		needBodies:  []string{"*ammonia*", "water giant*", "earth*", "* water based life"},
+		distLs:      [2]float64{12000.0, 99999999.0},
+		needGeo:     false,
+		diversityM:  100,
+		specialCond: true,
 	},
 
-	"(Electricae)": {
-		temp:       [2]float64{0.0, 9999.0},
-		grav:       [2]float64{0.0, 0.28},
-		atmos:      []string{"*helium*", "*argon*", "*neon*"},
-		volcs:      []string{"*"},
-		ptypes:     []string{"icy body"},
-		sclass:     []string{"*"},
-		slumins:    []string{"VII", "VI", "V", "IV", "III", "II", "I"},
-		needBodies: []string{"*"},
-		distLs:     [2]float64{0.0, 99999999.0},
-		needGeo:    false,
-		diversityM: 1000,
+	"Electricae": {
+		temp:        [2]float64{0.0, 9999.0},
+		grav:        [2]float64{0.0, 0.28},
+		atmos:       []string{"*helium*", "*argon*", "*neon*"},
+		volcs:       []string{"*"},
+		ptypes:      []string{"icy body"},
+		sclass:      []string{"*"},
+		slumins:     []string{"VII", "VI", "V", "IV", "III", "II", "I"},
+		needBodies:  []string{"*"},
+		distLs:      [2]float64{0.0, 99999999.0},
+		needGeo:     false,
+		diversityM:  1000,
+		specialCond: true,
 	},
 
 	"Fonticulua": {

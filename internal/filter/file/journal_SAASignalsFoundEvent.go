@@ -293,7 +293,7 @@ var floras = map[string]variant{
 
 	"Stratum Cucumisis": {
 		priceM: 16.2,
-		atmos:  []string{"*carbon dioxide*", "*sulphur dioxide*"},
+		atmos:  []string{"*thin carbon dioxide*", "*sulphur dioxide*"},
 		bodies: []string{"*rocky body*"},
 		tempK:  []float64{190.0, 9999.0},
 		gravG:  []float64{0.0, 9999.0},

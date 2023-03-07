@@ -146,7 +146,7 @@ func formatLargeNum(val float64) string {
 	} else if val >= 1000.0 {
 		return fmt.Sprintf("%3.1fK", val/1000.0)
 	} else {
-		return fmt.Sprintf("%4.0f", val)
+		return fmt.Sprintf("%3.1f", val)
 	}
 }
 
