@@ -110,14 +110,14 @@ var floras = map[string]variant{
 	"Aleoida Coronamus": {
 		priceM: 6.2,
 		atmos:  []string{"*thin carbon dioxide*"},
-		bodies: []string{"*high metal*", "*rocky body"},
+		bodies: []string{"*high metal*", "*rocky body*"},
 		tempK:  []float64{180.0, 190.0},
 		gravG:  []float64{0.0, 0.27},
 	},
 	"Aleoida Gravis": {
 		priceM: 12.9,
 		atmos:  []string{"*thin carbon dioxide*"},
-		bodies: []string{"*high metal*", "*rocky body"},
+		bodies: []string{"*high metal*", "*rocky body*"},
 		tempK:  []float64{190.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
 	},
@@ -195,6 +195,7 @@ var floras = map[string]variant{
 		tempK:  []float64{0.0, 9999.0},
 		gravG:  []float64{0.0, 0.27},
 	},
+
 	"Fonticulua Fluctus": {
 		priceM: 20.0,
 		atmos:  []string{"*oxygen*"},
@@ -278,7 +279,7 @@ var floras = map[string]variant{
 	"Recepta Deltahedronix": {
 		priceM: 16.2,
 		atmos:  []string{"*sulphur dioxide*"},
-		bodies: []string{"*high metal*", "*rocky body*"},
+		bodies: []string{"*high metal*", "*rocky body*", "*icy*"},
 		tempK:  []float64{132.0, 9999.0},
 		gravG:  []float64{0.0, 0.27},
 	},
@@ -286,7 +287,7 @@ var floras = map[string]variant{
 	"Recepta Umbrux": {
 		priceM: 12.9,
 		atmos:  []string{"*sulphur dioxide*"},
-		bodies: []string{"*"},
+		bodies: []string{"*icy*", "*rocky*", "*ice*"},
 		tempK:  []float64{132.0, 9999.0},
 		gravG:  []float64{0.0, 0.27},
 	},
@@ -307,8 +308,8 @@ var floras = map[string]variant{
 		gravG:  []float64{0.0, 9999.0},
 	},
 
-	"Tubus (Cavas, Compagibus, Conifer)": {
-		priceM: 9.0,
+	"Tubus (Cavas 11, Compagibus 7)": {
+		priceM: 11.0,
 		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*rocky body*"},
 		tempK:  []float64{160.0, 190.5},
@@ -327,29 +328,29 @@ var floras = map[string]variant{
 		priceM: 7.0,
 		atmos:  []string{"*argon*", "*methane*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 195.5},
+		tempK:  []float64{0.0, 9999.0},
 		gravG:  []float64{0.0, 0.27},
 	},
 
 	"Tussock Pennata": {
 		priceM: 5.8,
 		atmos:  []string{"*carbon dioxide*"},
-		bodies: []string{"*high metal*", "*rocky"},
+		bodies: []string{"*high metal*", "*rocky body*"},
 		tempK:  []float64{145.0, 155.5},
 		gravG:  []float64{0.0, 0.27},
 	},
 
 	"Tussock Stigmasis": {
 		priceM: 19.0,
-		atmos:  []string{"*sulphur dioxide"},
+		atmos:  []string{"*sulphur dioxide*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 195.5},
+		tempK:  []float64{0.0, 9999.0},
 		gravG:  []float64{0.0, 0.27},
 	},
 
 	"Tussock Triticum": {
 		priceM: 7.7,
-		atmos:  []string{"Carbon dioxide"},
+		atmos:  []string{"*carbon dioxide*"},
 		bodies: []string{"*rocky body*"},
 		tempK:  []float64{190.0, 195.5},
 		gravG:  []float64{0.0, 0.27},
@@ -359,7 +360,7 @@ var floras = map[string]variant{
 		priceM: 14.3,
 		atmos:  []string{"*water*"},
 		bodies: []string{"*rocky body*"},
-		tempK:  []float64{0.0, 190.5},
+		tempK:  []float64{0.0, 99999.9},
 		gravG:  []float64{0.0, 0.27},
 	},
 }
