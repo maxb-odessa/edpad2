@@ -279,10 +279,10 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 		smAxRingDistLs := smAxDistLs - pd.ringRadLs - pdata.ringRadLs
 
 		if surfaceDistLs <= wantedRadDistLs && smAxSurfDistLs <= wantedRadDistLs {
-			codexText += fmt.Sprintf("Close BODIES, approx distance: %.4f Ls\n"+
-				` |- SemiAxis: %.4f Ls`+"\n"+
-				` |- R: %.4f Ls, %s`+"\n"+
-				` |- R: %.4f Ls, %s`+"\n",
+			codexText += fmt.Sprintf("Close <b>BODIES</b>, approx distance: %.4f Ls\n"+
+				` |- SM Dist: %.4f Ls`+"\n"+
+				` |- Rad: %.4f Ls, %s`+"\n"+
+				` |- Rad: %.4f Ls, %s`+"\n",
 				smAxSurfDistLs,
 				smAxDistLs,
 				pd.radiusLs,
@@ -292,16 +292,16 @@ func (h *handler) parsePlanet(ev *ScanEvent) {
 			)
 		}
 
-		if ringDistLs <= wantedRadDistLs && smAxRingDistLs <= wantedRadDistLs {
-			codexText += fmt.Sprintf("Close RING(S), approx distance: %.4f Ls\n"+
-				` |- SemiAxis: %.4f Ls`+"\n"+
-				` |- R: %.4f Ls, %s`+"\n"+
-				` |- R: %.4f Ls, %s`+"\n",
+		if (pd.ringRadLs > 0.0 || pdata.ringRadLs > 0.0) && ringDistLs <= wantedRadDistLs && smAxRingDistLs <= wantedRadDistLs {
+			codexText += fmt.Sprintf("Close <b>RING(S)</b>, approx distance: %.4f Ls\n"+
+				` |- SM Rings Dist: %.4f Ls`+"\n"+
+				` |- Rad: %.4f Ls, %s`+"\n"+
+				` |- Rad: %.4f Ls, %s`+"\n",
 				smAxRingDistLs,
 				smAxDistLs,
-				pd.radiusLs,
+				pd.ringRadLs,
 				pd.bodyName,
-				pdata.radiusLs,
+				pdata.ringRadLs,
 				pdata.bodyName,
 			)
 		}
